@@ -5,8 +5,6 @@ import io.github.jonloucks.concurrency.api.Idempotent;
 import io.github.jonloucks.contracts.api.AutoClose;
 import io.github.jonloucks.contracts.api.Repository;
 
-import static io.github.jonloucks.contracts.api.Checks.configCheck;
-import static io.github.jonloucks.contracts.api.Checks.nullCheck;
 import static java.util.Optional.ofNullable;
 
 final class ConcurrencyImpl implements Concurrency {
@@ -17,8 +15,8 @@ final class ConcurrencyImpl implements Concurrency {
     }
     
     ConcurrencyImpl(Config config, Repository repository) {
-        this.config = configCheck(config);
-        this.repository = nullCheck(repository, "Repository must be present.");
+//        this.config = configCheck(config);
+//        this.repository = nullCheck(repository, "Repository must be present.");
         this.closeRepository = repository.open();
         this.idempotent = config.contracts().claim(Idempotent.FACTORY).get();
     }
@@ -33,16 +31,16 @@ final class ConcurrencyImpl implements Concurrency {
     
     private void realClose() {
         ofNullable(closeRepository).ifPresent(close -> {
-            repository = null;
+//            repository = null;
             closeRepository = null;
             close.close();
         });
     }
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final Config config;
+//    private final Config config;
     private final Idempotent idempotent;
     @SuppressWarnings("unused")
-    private Repository repository;
+//    private Repository repository;
     private AutoClose closeRepository;
 }
