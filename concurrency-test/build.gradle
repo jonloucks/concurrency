@@ -1,0 +1,23 @@
+plugins {
+    id 'io.github.jonloucks.java-library-kit'
+    id 'io.github.jonloucks.maven-publish-kit'
+}
+
+apply from: "${rootDir}/gradle/java-publishing.gradle"
+
+javadoc {
+    exclude '**/**'
+}
+
+dependencies {
+    api project(':concurrency-api')
+    api libs.contracts.test
+    api libs.contracts.api
+
+    testImplementation libs.contracts
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
