@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConcurrencyFactoryFinder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">concurrency</a> &gt; <a href="index.source.html" class="el_package">io.github.jonloucks.concurrency.api</a> &gt; <span class="el_source">ConcurrencyFactoryFinder.java</span></div><h1>ConcurrencyFactoryFinder.java</h1><pre class="source lang-java linenums">package io.github.jonloucks.concurrency.api;
+
+import java.util.Optional;
+import java.util.ServiceLoader;
+
+import static io.github.jonloucks.contracts.api.Checks.configCheck;
+import static io.github.jonloucks.contracts.api.Checks.nullCheck;
+import static java.util.Optional.ofNullable;
+
+/**
+ * Responsible for locating and creating the ConcurrencyFactory for a deployment.
+ */
+final class ConcurrencyFactoryFinder {
+<span class="fc" id="L14">    ConcurrencyFactoryFinder(Concurrency.Config config) {</span>
+<span class="fc" id="L15">        this.config = configCheck(config);</span>
+<span class="fc" id="L16">    }</span>
+    
+    ConcurrencyFactory find() {
+<span class="fc" id="L19">        return createByReflection()</span>
+<span class="fc" id="L20">            .or(this::createByServiceLoader)</span>
+<span class="fc" id="L21">            .orElseThrow(this::newNotFoundException);</span>
+    }
+    
+    private Optional&lt;? extends ConcurrencyFactory&gt; createByServiceLoader() {
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        if (config.useServiceLoader()) {</span>
+            try {
+<span class="fc" id="L27">                return ServiceLoader.load(getServiceFactoryClass()).findFirst();</span>
+<span class="fc" id="L28">            } catch (Throwable ignored) {</span>
+<span class="fc" id="L29">                return Optional.empty();</span>
+            }
+        }
+<span class="fc" id="L32">        return Optional.empty();</span>
+    }
+    
+    private Class&lt;? extends ConcurrencyFactory&gt; getServiceFactoryClass() {
+<span class="fc" id="L36">        return nullCheck(config.serviceLoaderClass(), &quot;Concurrency Service Loader class must be present.&quot;);</span>
+    }
+    
+    private Optional&lt;ConcurrencyFactory&gt; createByReflection() {
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (config.useReflection()) {</span>
+<span class="fc" id="L41">            return getReflectionClassName().map(this::createNewInstance);</span>
+        }
+<span class="fc" id="L43">        return Optional.empty();</span>
+    }
+    
+    private ConcurrencyFactory createNewInstance(String className) {
+        try {
+<span class="fc" id="L48">            return (ConcurrencyFactory)Class.forName(className).getConstructor().newInstance();</span>
+<span class="fc" id="L49">        } catch (Throwable thrown) {</span>
+<span class="fc" id="L50">            return null;</span>
+        }
+    }
+
+    private Optional&lt;String&gt; getReflectionClassName() {
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        return ofNullable(config.reflectionClassName()).filter(x -&gt; !x.isEmpty());</span>
+    }
+    
+    private ConcurrencyException newNotFoundException() {
+<span class="fc" id="L59">        return new ConcurrencyException(&quot;Unable to find Concurrency factory.&quot;);</span>
+    }
+    
+    private final Concurrency.Config config;
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

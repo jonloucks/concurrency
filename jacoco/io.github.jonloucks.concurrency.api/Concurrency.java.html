@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Concurrency.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">concurrency</a> &gt; <a href="index.source.html" class="el_package">io.github.jonloucks.concurrency.api</a> &gt; <span class="el_source">Concurrency.java</span></div><h1>Concurrency.java</h1><pre class="source lang-java linenums">package io.github.jonloucks.concurrency.api;
+
+import io.github.jonloucks.contracts.api.*;
+
+import java.time.Duration;
+import java.util.function.Supplier;
+
+/**
+ * The Concurrency API
+ */
+public interface Concurrency extends AutoOpen {
+    /**
+     * Access the current Concurrency implementation
+     */
+<span class="fc" id="L15">    Contract&lt;Concurrency&gt; CONTRACT = Contract.create(Concurrency.class);</span>
+
+    /**
+     * The configuration used to create a new Concurrency instance.
+     */
+    interface Config {
+        
+        /**
+         * The default configuration used when creating a new Concurrency instance
+         */
+<span class="fc" id="L25">        Config DEFAULT = new Config() {};</span>
+        
+        /**
+         * @return if true, reflection might be used to locate the ConcurrencyFactory
+         */
+        default boolean useReflection() {
+<span class="fc" id="L31">            return true;</span>
+        }
+        
+        /**
+         * @return the class name to use if reflection is used to find the ConcurrencyFactory
+         */
+        default String reflectionClassName() {
+<span class="fc" id="L38">            return &quot;io.github.jonloucks.concurrency.impl.ConcurrencyFactoryImpl&quot;;</span>
+        }
+        
+        /**
+         * @return if true, the ServiceLoader might be used to locate the ConcurrencyFactory
+         */
+        default boolean useServiceLoader() {
+<span class="fc" id="L45">            return true;</span>
+        }
+        
+        /**
+         * @return the class name to load from the ServiceLoader to find the ConcurrencyFactory
+         */
+        default Class&lt;? extends ConcurrencyFactory&gt; serviceLoaderClass() {
+<span class="fc" id="L52">            return ConcurrencyFactory.class;</span>
+        }
+        
+        /**
+         * @return the contracts, some use case have their own Contracts instance.
+         */
+        default Contracts contracts() {
+<span class="fc" id="L59">            return GlobalContracts.getInstance();</span>
+        }
+        
+        /**
+         * How long to wait for logging to shut down before giving up
+         * @return the timeout duration
+         */
+        default Duration shutdownTimeout() {
+<span class="fc" id="L67">            return Duration.ofSeconds(60);</span>
+        }
+        
+        interface Builder extends Config {
+<span class="fc" id="L71">            Contract&lt;Supplier&lt;Builder&gt;&gt; FACTORY = Contract.create(&quot;Concurrency Config Builder Factory&quot;);</span>
+            
+            Builder useReflection(boolean useReflection);
+            Builder useServiceLoader(boolean useServiceLoader);
+            Builder contracts(Contracts contracts);
+            Builder shutdownTimeout(Duration shutdownTimeout);
+            Builder reflectionClassName(String reflectionClassName);
+            Builder serviceLoaderClass(Class&lt;? extends ConcurrencyFactory&gt; serviceLoaderClass);
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

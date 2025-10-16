@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalConcurrency.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">concurrency</a> &gt; <a href="index.source.html" class="el_package">io.github.jonloucks.concurrency.api</a> &gt; <span class="el_source">GlobalConcurrency.java</span></div><h1>GlobalConcurrency.java</h1><pre class="source lang-java linenums">package io.github.jonloucks.concurrency.api;
+
+import io.github.jonloucks.contracts.api.AutoClose;
+
+import java.util.Optional;
+
+import static io.github.jonloucks.contracts.api.Checks.nullCheck;
+import static java.util.Optional.ofNullable;
+
+/**
+ * Globally shared Concurrency singleton
+ */
+public final class GlobalConcurrency {
+    
+    /**
+     * Return the global instance of Contracts
+     * @return the instance
+     */
+    public static Concurrency getInstance() {
+<span class="fc" id="L20">        return INSTANCE.concurrency;</span>
+    }
+    
+    /**
+     * @param config the Concurrency configuration
+     * @return the new Concurrency
+     * @see ConcurrencyFactory#create(Concurrency.Config)
+     * Note: Services created from this method are destink any that used internally
+     * &lt;p&gt;
+     * Caller is responsible for invoking open() before use and close when no longer needed
+     * &lt;/p&gt;
+     */
+    public static Concurrency createConcurrency(Concurrency.Config config) {
+<span class="fc" id="L33">        final ConcurrencyFactory factory = findConcurrencyFactory(config)</span>
+<span class="pc" id="L34">            .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Concurrency factory must be present.&quot;));</span>
+   
+<span class="fc" id="L36">        return nullCheck(factory.create(config), &quot;Concurrency could not be created.&quot;);</span>
+    }
+    
+    /**
+     * Finds the ConcurrencyFactory implementation
+     * @param config the configuration used to find the factory
+     * @return the factory if found
+     */
+    public static Optional&lt;ConcurrencyFactory&gt; findConcurrencyFactory(Concurrency.Config config) {
+<span class="fc" id="L45">        return ofNullable(new ConcurrencyFactoryFinder(config).find());</span>
+    }
+    
+<span class="fc" id="L48">    private GlobalConcurrency() {</span>
+<span class="fc" id="L49">        this.concurrency = createConcurrency(Concurrency.Config.DEFAULT);</span>
+<span class="fc" id="L50">        this.close = concurrency.open();</span>
+<span class="fc" id="L51">    }</span>
+    
+<span class="fc" id="L53">    private static final GlobalConcurrency INSTANCE = new GlobalConcurrency();</span>
+    
+    private final Concurrency concurrency;
+    @SuppressWarnings({&quot;FieldCanBeLocal&quot;, &quot;unused&quot;})
+    private final AutoClose close;
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

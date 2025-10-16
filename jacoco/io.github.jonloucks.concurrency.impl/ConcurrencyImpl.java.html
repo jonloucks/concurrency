@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConcurrencyImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">concurrency</a> &gt; <a href="index.source.html" class="el_package">io.github.jonloucks.concurrency.impl</a> &gt; <span class="el_source">ConcurrencyImpl.java</span></div><h1>ConcurrencyImpl.java</h1><pre class="source lang-java linenums">package io.github.jonloucks.concurrency.impl;
+
+import io.github.jonloucks.concurrency.api.Concurrency;
+import io.github.jonloucks.concurrency.api.Idempotent;
+import io.github.jonloucks.contracts.api.AutoClose;
+import io.github.jonloucks.contracts.api.Repository;
+
+import static java.util.Optional.ofNullable;
+
+final class ConcurrencyImpl implements Concurrency {
+    
+    @Override
+    public AutoClose open() {
+<span class="fc" id="L14">        return idempotent.transitionToOpened(this::realOpen);</span>
+    }
+    
+<span class="fc" id="L17">    ConcurrencyImpl(Config config, Repository repository) {</span>
+//        this.config = configCheck(config);
+//        this.repository = nullCheck(repository, &quot;Repository must be present.&quot;);
+<span class="fc" id="L20">        this.closeRepository = repository.open();</span>
+<span class="fc" id="L21">        this.idempotent = config.contracts().claim(Idempotent.FACTORY).get();</span>
+<span class="fc" id="L22">    }</span>
+    
+    private AutoClose realOpen() {
+<span class="fc" id="L25">        return this::close;</span>
+    }
+
+    private void close() {
+<span class="fc" id="L29">        idempotent.transitionToClosed(this::realClose);</span>
+<span class="fc" id="L30">    }</span>
+    
+    private void realClose() {
+<span class="fc" id="L33">        ofNullable(closeRepository).ifPresent(close -&gt; {</span>
+//            repository = null;
+<span class="fc" id="L35">            closeRepository = null;</span>
+<span class="fc" id="L36">            close.close();</span>
+<span class="fc" id="L37">        });</span>
+<span class="fc" id="L38">    }</span>
+
+    @SuppressWarnings(&quot;FieldCanBeLocal&quot;)
+//    private final Config config;
+    private final Idempotent idempotent;
+    @SuppressWarnings(&quot;unused&quot;)
+//    private Repository repository;
+    private AutoClose closeRepository;
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

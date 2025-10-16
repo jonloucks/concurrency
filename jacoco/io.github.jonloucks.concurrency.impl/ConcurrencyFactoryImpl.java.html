@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConcurrencyFactoryImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">concurrency</a> &gt; <a href="index.source.html" class="el_package">io.github.jonloucks.concurrency.impl</a> &gt; <span class="el_source">ConcurrencyFactoryImpl.java</span></div><h1>ConcurrencyFactoryImpl.java</h1><pre class="source lang-java linenums">package io.github.jonloucks.concurrency.impl;
+
+
+import io.github.jonloucks.contracts.api.Contracts;
+import io.github.jonloucks.contracts.api.Promisors;
+import io.github.jonloucks.contracts.api.Repository;
+import io.github.jonloucks.concurrency.api.*;
+
+import java.util.function.Consumer;
+
+import static io.github.jonloucks.contracts.api.BindStrategy.ALWAYS;
+import static io.github.jonloucks.contracts.api.BindStrategy.IF_NOT_BOUND;
+import static io.github.jonloucks.contracts.api.Checks.*;
+
+/**
+ * Creates Concurrency instances
+ * Opt-in construction via reflection, ServiceLoader or directly.
+ */
+public final class ConcurrencyFactoryImpl implements ConcurrencyFactory {
+    
+    /**
+     * Publicly accessible constructor as an entry point into this library.
+     * It can be invoked via reflection, ServiceLoader or directly.
+     */
+<span class="fc" id="L25">    public ConcurrencyFactoryImpl() {</span>
+<span class="fc" id="L26">    }</span>
+    
+    @Override
+    public Concurrency create(Concurrency.Config config) {
+<span class="fc" id="L30">        final Concurrency.Config validConfig = enhancedConfigCheck(config);</span>
+<span class="fc" id="L31">        final Repository repository = validConfig.contracts().claim(Repository.FACTORY).get();</span>
+        
+<span class="fc" id="L33">        installCore(validConfig, repository);</span>
+        
+<span class="fc" id="L35">        final ConcurrencyImpl concurrency = new ConcurrencyImpl(validConfig, repository);</span>
+<span class="pc" id="L36">        repository.keep(Concurrency.CONTRACT, () -&gt; concurrency);</span>
+<span class="fc" id="L37">        return concurrency;</span>
+    }
+    
+    @Override
+    public Concurrency create(Consumer&lt;Concurrency.Config.Builder&gt; builderConsumer) {
+<span class="fc" id="L42">        final Consumer&lt;Concurrency.Config.Builder&gt; validBuilderConsumer = builderConsumerCheck(builderConsumer);</span>
+<span class="fc" id="L43">        final ConfigBuilderImpl builder = new ConfigBuilderImpl();</span>
+        
+<span class="fc" id="L45">        validBuilderConsumer.accept(builder);</span>
+        
+<span class="fc" id="L47">        return create(builder);</span>
+    }
+    
+    @Override
+    public void install(Concurrency.Config config, Repository repository) {
+<span class="fc" id="L52">        final Concurrency.Config validConfig = enhancedConfigCheck(config);</span>
+<span class="fc" id="L53">        final Repository validRepository = nullCheck(repository, &quot;Repository must be present.&quot;);</span>
+        
+<span class="fc" id="L55">        installCore(validConfig, validRepository);</span>
+        
+<span class="fc" id="L57">        validRepository.keep(Concurrency.CONTRACT, () -&gt; new ConcurrencyImpl(validConfig, validRepository), ALWAYS);</span>
+<span class="fc" id="L58">    }</span>
+  
+    private Concurrency.Config enhancedConfigCheck(Concurrency.Config config) {
+<span class="fc" id="L61">        final Concurrency.Config candidateConfig = configCheck(config);</span>
+<span class="fc" id="L62">        final Contracts contracts = contractsCheck(candidateConfig.contracts());</span>
+        
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (contracts.isBound(Concurrency.CONTRACT)) {</span>
+<span class="fc" id="L65">            throw new ConcurrencyException(&quot;Concurrency is already bound.&quot;);</span>
+        }
+        
+<span class="fc" id="L68">        return candidateConfig;</span>
+    }
+    
+    private void installCore(Concurrency.Config config, Repository repository) {
+<span class="fc" id="L72">        final Promisors promisors = config.contracts().claim(Promisors.CONTRACT);</span>
+        
+<span class="fc" id="L74">        repository.keep(Idempotent.FACTORY, () -&gt; IdempotentImpl::new, IF_NOT_BOUND);</span>
+<span class="fc" id="L75">        repository.keep(Concurrency.Config.Builder.FACTORY, () -&gt; ConfigBuilderImpl::new, IF_NOT_BOUND);</span>
+<span class="fc" id="L76">        repository.keep(ConcurrencyFactory.CONTRACT, promisors.createLifeCyclePromisor(ConcurrencyFactoryImpl::new), IF_NOT_BOUND);</span>
+<span class="fc" id="L77">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
