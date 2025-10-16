@@ -1,0 +1,32 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        mavenLocal()
+    }
+}
+
+plugins {
+    id 'io.github.jonloucks.java-library-kit' version libs.versions.gradle.kit.version
+    id 'io.github.jonloucks.maven-publish-kit' version libs.versions.gradle.kit.version
+    id 'io.github.jonloucks.signing-kit' version libs.versions.gradle.kit.version
+}
+
+apply from: "${rootDir}/gradle/java-publishing.gradle"
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    api project(':concurrency-api')
+    api project(':concurrency-impl')
+    api project(':concurrency-test')
+    api libs.contracts.api
+
+    testImplementation libs.contracts.test
+    testImplementation libs.contracts
+
+    testImplementation project(':concurrency-test')
+}

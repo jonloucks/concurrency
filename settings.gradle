@@ -1,0 +1,11 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal() // Also include the Gradle Plugin Portal for other plugins
+        mavenLocal() // Add mavenLocal to the repositories for plugin resolution
+    }
+}
+
+rootProject.name = 'concurrency'
+include 'concurrency-api'
+include 'concurrency-test'
+include 'concurrency-impl'
