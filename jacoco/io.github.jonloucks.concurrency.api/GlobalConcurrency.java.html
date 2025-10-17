@@ -5,7 +5,6 @@ import io.github.jonloucks.contracts.api.AutoClose;
 import java.util.Optional;
 
 import static io.github.jonloucks.contracts.api.Checks.nullCheck;
-import static java.util.Optional.ofNullable;
 
 /**
  * Globally shared Concurrency singleton
@@ -13,11 +12,21 @@ import static java.util.Optional.ofNullable;
 public final class GlobalConcurrency {
     
     /**
+     * Create a new Waitable with the given initial value
+     * @param initialValue (null is not allowed)
+     * @return the waitable
+     * @param &lt;T&gt; the type of waitable
+     */
+    public static &lt;T&gt; Waitable&lt;T&gt; createWaitable(T initialValue) {
+<span class="fc" id="L21">        return INSTANCE.concurrency.createWaitable(initialValue);</span>
+    }
+    
+    /**
      * Return the global instance of Contracts
      * @return the instance
      */
     public static Concurrency getInstance() {
-<span class="fc" id="L20">        return INSTANCE.concurrency;</span>
+<span class="fc" id="L29">        return INSTANCE.concurrency;</span>
     }
     
     /**
@@ -30,10 +39,10 @@ public final class GlobalConcurrency {
      * &lt;/p&gt;
      */
     public static Concurrency createConcurrency(Concurrency.Config config) {
-<span class="fc" id="L33">        final ConcurrencyFactory factory = findConcurrencyFactory(config)</span>
-<span class="pc" id="L34">            .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Concurrency factory must be present.&quot;));</span>
+<span class="fc" id="L42">        final ConcurrencyFactory factory = findConcurrencyFactory(config)</span>
+<span class="fc" id="L43">            .orElseThrow(() -&gt; new ConcurrencyException(&quot;Concurrency factory must be present.&quot;));</span>
    
-<span class="fc" id="L36">        return nullCheck(factory.create(config), &quot;Concurrency could not be created.&quot;);</span>
+<span class="fc" id="L45">        return nullCheck(factory.create(config), &quot;Concurrency could not be created.&quot;);</span>
     }
     
     /**
@@ -42,15 +51,15 @@ public final class GlobalConcurrency {
      * @return the factory if found
      */
     public static Optional&lt;ConcurrencyFactory&gt; findConcurrencyFactory(Concurrency.Config config) {
-<span class="fc" id="L45">        return ofNullable(new ConcurrencyFactoryFinder(config).find());</span>
+<span class="fc" id="L54">        return new ConcurrencyFactoryFinder(config).find();</span>
     }
     
-<span class="fc" id="L48">    private GlobalConcurrency() {</span>
-<span class="fc" id="L49">        this.concurrency = createConcurrency(Concurrency.Config.DEFAULT);</span>
-<span class="fc" id="L50">        this.close = concurrency.open();</span>
-<span class="fc" id="L51">    }</span>
+<span class="fc" id="L57">    private GlobalConcurrency() {</span>
+<span class="fc" id="L58">        this.concurrency = createConcurrency(Concurrency.Config.DEFAULT);</span>
+<span class="fc" id="L59">        this.close = concurrency.open();</span>
+<span class="fc" id="L60">    }</span>
     
-<span class="fc" id="L53">    private static final GlobalConcurrency INSTANCE = new GlobalConcurrency();</span>
+<span class="fc" id="L62">    private static final GlobalConcurrency INSTANCE = new GlobalConcurrency();</span>
     
     private final Concurrency concurrency;
     @SuppressWarnings({&quot;FieldCanBeLocal&quot;, &quot;unused&quot;})

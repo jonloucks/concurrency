@@ -15,7 +15,11 @@
 <script type="text/javascript" src="../../../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
-<script type="text/javascript">var pathtoroot = "../../../../../../";
+<script type="text/javascript">var evenRowColor = "even-row-color";
+var oddRowColor = "odd-row-color";
+var tableTab = "table-tab";
+var activeTableTab = "active-table-tab";
+var pathtoroot = "../../../../../../";
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -48,7 +52,7 @@ loadScripts(document, 'script');</script>
 <li>Detail:&nbsp;</li>
 <li><a href="#field-detail">Field</a>&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method-detail">Method</a></li>
 </ul>
 </div>
 <div class="nav-list-search"><label for="search-input">SEARCH:</label>
@@ -120,6 +124,21 @@ extends io.github.jonloucks.contracts.api.AutoOpen</span></div>
 <li>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
+<div id="method-summary-table">
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button></div>
+<div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>&lt;T&gt;&nbsp;<a href="Waitable.html" title="interface in io.github.jonloucks.concurrency.api">Waitable</a>&lt;T&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#createWaitable(T)" class="member-name-link">createWaitable</a><wbr>(T&nbsp;initialValue)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Create a new Waitable with the given initial value</div>
+</div>
+</div>
+</div>
+</div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-io.github.jonloucks.contracts.api.AutoOpen">Methods inherited from interface&nbsp;io.github.jonloucks.contracts.api.AutoOpen</h3>
 <code>open</code></div>
@@ -139,6 +158,29 @@ extends io.github.jonloucks.contracts.api.AutoOpen</span></div>
 <h3>CONTRACT</h3>
 <div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type">io.github.jonloucks.contracts.api.Contract&lt;<a href="Concurrency.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a>&gt;</span>&nbsp;<span class="element-name">CONTRACT</span></div>
 <div class="block">Access the current Concurrency implementation</div>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<!-- ============ METHOD DETAIL ========== -->
+<li>
+<section class="method-details" id="method-detail">
+<h2>Method Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="createWaitable(T)">
+<h3 id="createWaitable(java.lang.Object)">createWaitable</h3>
+<div class="member-signature"><span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="Waitable.html" title="interface in io.github.jonloucks.concurrency.api">Waitable</a>&lt;T&gt;</span>&nbsp;<span class="element-name">createWaitable</span><wbr><span class="parameters">(T&nbsp;initialValue)</span></div>
+<div class="block">Create a new Waitable with the given initial value</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>T</code> - the type of waitable</dd>
+<dt>Parameters:</dt>
+<dd><code>initialValue</code> - (null is not allowed)</dd>
+<dt>Returns:</dt>
+<dd>the waitable</dd>
+</dl>
 </section>
 </li>
 </ul>

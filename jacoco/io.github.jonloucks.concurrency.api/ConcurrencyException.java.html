@@ -8,7 +8,7 @@ import static io.github.jonloucks.contracts.api.Checks.messageCheck;
  */
 public class ConcurrencyException extends RuntimeException {
     
-    private static final long serialVersionUID = 7311228400588901174L;
+    private static final long serialVersionUID = 1L;
     
     /**
      * Passthrough for {@link RuntimeException#RuntimeException(String)}

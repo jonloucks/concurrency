@@ -15,48 +15,43 @@ final class ConcurrencyFactoryFinder {
 <span class="fc" id="L15">        this.config = configCheck(config);</span>
 <span class="fc" id="L16">    }</span>
     
-    ConcurrencyFactory find() {
+    Optional&lt;ConcurrencyFactory&gt; find() {
 <span class="fc" id="L19">        return createByReflection()</span>
-<span class="fc" id="L20">            .or(this::createByServiceLoader)</span>
-<span class="fc" id="L21">            .orElseThrow(this::newNotFoundException);</span>
+<span class="fc" id="L20">            .or(this::createByServiceLoader);</span>
     }
     
     private Optional&lt;? extends ConcurrencyFactory&gt; createByServiceLoader() {
-<span class="fc bfc" id="L25" title="All 2 branches covered.">        if (config.useServiceLoader()) {</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if (config.useServiceLoader()) {</span>
             try {
-<span class="fc" id="L27">                return ServiceLoader.load(getServiceFactoryClass()).findFirst();</span>
-<span class="fc" id="L28">            } catch (Throwable ignored) {</span>
-<span class="fc" id="L29">                return Optional.empty();</span>
+<span class="fc" id="L26">                return ServiceLoader.load(getServiceFactoryClass()).findFirst();</span>
+<span class="fc" id="L27">            } catch (Throwable ignored) {</span>
+<span class="fc" id="L28">                return Optional.empty();</span>
             }
         }
-<span class="fc" id="L32">        return Optional.empty();</span>
+<span class="fc" id="L31">        return Optional.empty();</span>
     }
     
     private Class&lt;? extends ConcurrencyFactory&gt; getServiceFactoryClass() {
-<span class="fc" id="L36">        return nullCheck(config.serviceLoaderClass(), &quot;Concurrency Service Loader class must be present.&quot;);</span>
+<span class="fc" id="L35">        return nullCheck(config.serviceLoaderClass(), &quot;Concurrency Service Loader class must be present.&quot;);</span>
     }
     
     private Optional&lt;ConcurrencyFactory&gt; createByReflection() {
-<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (config.useReflection()) {</span>
-<span class="fc" id="L41">            return getReflectionClassName().map(this::createNewInstance);</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (config.useReflection()) {</span>
+<span class="fc" id="L40">            return getReflectionClassName().map(this::createNewInstance);</span>
         }
-<span class="fc" id="L43">        return Optional.empty();</span>
+<span class="fc" id="L42">        return Optional.empty();</span>
     }
     
     private ConcurrencyFactory createNewInstance(String className) {
         try {
-<span class="fc" id="L48">            return (ConcurrencyFactory)Class.forName(className).getConstructor().newInstance();</span>
-<span class="fc" id="L49">        } catch (Throwable thrown) {</span>
-<span class="fc" id="L50">            return null;</span>
+<span class="fc" id="L47">            return (ConcurrencyFactory)Class.forName(className).getConstructor().newInstance();</span>
+<span class="fc" id="L48">        } catch (Throwable thrown) {</span>
+<span class="fc" id="L49">            return null;</span>
         }
     }
 
     private Optional&lt;String&gt; getReflectionClassName() {
-<span class="fc bfc" id="L55" title="All 2 branches covered.">        return ofNullable(config.reflectionClassName()).filter(x -&gt; !x.isEmpty());</span>
-    }
-    
-    private ConcurrencyException newNotFoundException() {
-<span class="fc" id="L59">        return new ConcurrencyException(&quot;Unable to find Concurrency factory.&quot;);</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        return ofNullable(config.reflectionClassName()).filter(x -&gt; !x.isEmpty());</span>
     }
     
     private final Concurrency.Config config;

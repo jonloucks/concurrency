@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Internal.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">concurrency</a> &gt; <a href="index.source.html" class="el_package">io.github.jonloucks.concurrency.impl</a> &gt; <span class="el_source">Internal.java</span></div><h1>Internal.java</h1><pre class="source lang-java linenums">package io.github.jonloucks.concurrency.impl;
 
+import io.github.jonloucks.contracts.api.Contracts;
+import io.github.jonloucks.contracts.api.Promisor;
+import io.github.jonloucks.contracts.api.Promisors;
+
+import java.time.Duration;
+import java.util.function.Predicate;
+
+import static io.github.jonloucks.contracts.api.Checks.illegalCheck;
+import static io.github.jonloucks.contracts.api.Checks.nullCheck;
+
 final class Internal {
     
     /**
@@ -11,16 +21,31 @@ final class Internal {
         // Java modules protects agents invoking private methods.
         // There are unit tests that will fail if this constructor is not private
     }
-
-    interface ThrowingRunnable {
-        void run() throws Throwable;
+    
+    static &lt;T&gt; Predicate&lt;T&gt; predicateCheck(Predicate&lt;T&gt; predicate) {
+<span class="fc" id="L26">        return nullCheck(predicate, &quot;Predicate must be present.&quot;);</span>
     }
-    static void runWithIgnore(ThrowingRunnable runnable) {
+    
+    static Duration timeoutCheck(Duration timeout) {
+<span class="fc" id="L30">        final Duration validTimeout = nullCheck(timeout, &quot;Timeout must be present.&quot;);</span>
+<span class="fc" id="L31">        return illegalCheck(validTimeout, validTimeout.isNegative(), &quot;Timeout must not be negative.&quot;);</span>
+    }
+    
+    static &lt;T&gt; Promisor&lt;T&gt; lifeCycle(Contracts contracts, Promisor&lt;T&gt; promisor) {
+<span class="fc" id="L35">        final Promisors promisors = contracts.claim(Promisors.CONTRACT);</span>
+<span class="fc" id="L36">        return promisors.createLifeCyclePromisor(promisor);</span>
+    }
+    
+    @FunctionalInterface
+    interface ThrowingRunnable&lt;E extends Throwable&gt; {
+        void run() throws E;
+    }
+    
+    static &lt;E extends Throwable&gt; void runWithIgnore(ThrowingRunnable&lt;E&gt; runnable) {
         try {
-<span class="nc" id="L20">            runnable.run();</span>
-<span class="nc" id="L21">        } catch (Throwable ignore) {</span>
-        
-<span class="nc" id="L23">        }</span>
-<span class="nc" id="L24">    }</span>
+<span class="fc" id="L46">            runnable.run();</span>
+<span class="nc" id="L47">        } catch (Throwable ignored) {</span>
+<span class="fc" id="L48">        }</span>
+<span class="fc" id="L49">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

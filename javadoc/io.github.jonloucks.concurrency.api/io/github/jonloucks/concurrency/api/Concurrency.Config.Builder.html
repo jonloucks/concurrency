@@ -83,6 +83,7 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public static interface </span><span class="element-name type-name-label">Concurrency.Config.Builder</span><span class="extends-implements">
 extends <a href="Concurrency.Config.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config</a></span></div>
+<div class="block">The Concurrency configuration</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -106,7 +107,9 @@ extends <a href="Concurrency.Config.html" title="interface in io.github.jonlouck
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>static final io.github.jonloucks.contracts.api.Contract&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="Concurrency.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config.Builder</a>&gt;&gt;</code></div>
 <div class="col-second even-row-color"><code><a href="#FACTORY" class="member-name-link">FACTORY</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Concurrency Config Builder</div>
+</div>
 </div>
 <div class="inherited-list">
 <h3 id="fields-inherited-from-class-io.github.jonloucks.concurrency.api.Concurrency.Config">Fields inherited from interface&nbsp;io.github.jonloucks.concurrency.api.<a href="Concurrency.Config.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config</a></h3>
@@ -135,7 +138,9 @@ extends <a href="Concurrency.Config.html" title="interface in io.github.jonlouck
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="Concurrency.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config.Builder</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#shutdownTimeout(java.time.Duration)" class="member-name-link">shutdownTimeout</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;shutdownTimeout)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">How long to wait for shutdown to complete before timing out</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="Concurrency.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config.Builder</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#useReflection(boolean)" class="member-name-link">useReflection</a><wbr>(boolean&nbsp;useReflection)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
@@ -163,6 +168,7 @@ extends <a href="Concurrency.Config.html" title="interface in io.github.jonlouck
 <section class="detail" id="FACTORY">
 <h3>FACTORY</h3>
 <div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type">io.github.jonloucks.contracts.api.Contract&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="Concurrency.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config.Builder</a>&gt;&gt;</span>&nbsp;<span class="element-name">FACTORY</span></div>
+<div class="block">Concurrency Config Builder</div>
 </section>
 </li>
 </ul>
@@ -177,36 +183,63 @@ extends <a href="Concurrency.Config.html" title="interface in io.github.jonlouck
 <section class="detail" id="useReflection(boolean)">
 <h3>useReflection</h3>
 <div class="member-signature"><span class="return-type"><a href="Concurrency.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config.Builder</a></span>&nbsp;<span class="element-name">useReflection</span><wbr><span class="parameters">(boolean&nbsp;useReflection)</span></div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>if true, reflection might be used to locate the ConcurrencyFactory</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="useServiceLoader(boolean)">
 <h3>useServiceLoader</h3>
 <div class="member-signature"><span class="return-type"><a href="Concurrency.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config.Builder</a></span>&nbsp;<span class="element-name">useServiceLoader</span><wbr><span class="parameters">(boolean&nbsp;useServiceLoader)</span></div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>if true, the ServiceLoader might be used to locate the ConcurrencyFactory</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="contracts(io.github.jonloucks.contracts.api.Contracts)">
 <h3>contracts</h3>
 <div class="member-signature"><span class="return-type"><a href="Concurrency.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config.Builder</a></span>&nbsp;<span class="element-name">contracts</span><wbr><span class="parameters">(io.github.jonloucks.contracts.api.Contracts&nbsp;contracts)</span></div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the Contracts to be used</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="shutdownTimeout(java.time.Duration)">
 <h3>shutdownTimeout</h3>
 <div class="member-signature"><span class="return-type"><a href="Concurrency.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config.Builder</a></span>&nbsp;<span class="element-name">shutdownTimeout</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;shutdownTimeout)</span></div>
+<div class="block">How long to wait for shutdown to complete before timing out</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>shutdownTimeout</code> - the shutdown timeout</dd>
+<dt>Returns:</dt>
+<dd>the shutdown timeout</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="reflectionClassName(java.lang.String)">
 <h3>reflectionClassName</h3>
 <div class="member-signature"><span class="return-type"><a href="Concurrency.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config.Builder</a></span>&nbsp;<span class="element-name">reflectionClassName</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;reflectionClassName)</span></div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the class name to use if reflection is used to find the ContractsFactory</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="serviceLoaderClass(java.lang.Class)">
 <h3>serviceLoaderClass</h3>
 <div class="member-signature"><span class="return-type"><a href="Concurrency.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config.Builder</a></span>&nbsp;<span class="element-name">serviceLoaderClass</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="ConcurrencyFactory.html" title="interface in io.github.jonloucks.concurrency.api">ConcurrencyFactory</a>&gt;&nbsp;serviceLoaderClass)</span></div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the class name to load from the ServiceLoader to find the ContractsFactory</dd>
+</dl>
 </section>
 </li>
 </ul>

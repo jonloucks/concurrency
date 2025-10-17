@@ -2,46 +2,45 @@
 
 import io.github.jonloucks.concurrency.api.Concurrency;
 import io.github.jonloucks.concurrency.api.Idempotent;
+import io.github.jonloucks.concurrency.api.Waitable;
 import io.github.jonloucks.contracts.api.AutoClose;
 import io.github.jonloucks.contracts.api.Repository;
 
-import static java.util.Optional.ofNullable;
+import static io.github.jonloucks.contracts.api.Checks.configCheck;
+import static io.github.jonloucks.contracts.api.Checks.nullCheck;
 
 final class ConcurrencyImpl implements Concurrency {
     
     @Override
     public AutoClose open() {
-<span class="fc" id="L14">        return idempotent.transitionToOpened(this::realOpen);</span>
+<span class="fc" id="L16">        return idempotent.transitionToOpened(this::realOpen);</span>
     }
     
-<span class="fc" id="L17">    ConcurrencyImpl(Config config, Repository repository) {</span>
-//        this.config = configCheck(config);
-//        this.repository = nullCheck(repository, &quot;Repository must be present.&quot;);
-<span class="fc" id="L20">        this.closeRepository = repository.open();</span>
-<span class="fc" id="L21">        this.idempotent = config.contracts().claim(Idempotent.FACTORY).get();</span>
-<span class="fc" id="L22">    }</span>
+    @Override
+    public &lt;T&gt; Waitable&lt;T&gt; createWaitable(T initialValue) {
+<span class="fc" id="L21">        return new WaitableImpl&lt;&gt;(initialValue);</span>
+    }
+
+<span class="fc" id="L24">    ConcurrencyImpl(Config config, Repository repository, boolean autoOpen) {</span>
+<span class="fc" id="L25">        final Config validConfig = configCheck(config);</span>
+<span class="fc" id="L26">        final Repository validRepository = nullCheck(repository, &quot;Repository must be present.&quot;);</span>
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        this.closeRepository = autoOpen ? validRepository.open() : AutoClose.NONE;</span>
+<span class="fc" id="L28">        this.idempotent = validConfig.contracts().claim(Idempotent.FACTORY).get();</span>
+<span class="fc" id="L29">    }</span>
     
     private AutoClose realOpen() {
-<span class="fc" id="L25">        return this::close;</span>
+<span class="fc" id="L32">        return this::close;</span>
     }
 
     private void close() {
-<span class="fc" id="L29">        idempotent.transitionToClosed(this::realClose);</span>
-<span class="fc" id="L30">    }</span>
+<span class="fc" id="L36">        idempotent.transitionToClosed(this::realClose);</span>
+<span class="fc" id="L37">    }</span>
     
     private void realClose() {
-<span class="fc" id="L33">        ofNullable(closeRepository).ifPresent(close -&gt; {</span>
-//            repository = null;
-<span class="fc" id="L35">            closeRepository = null;</span>
-<span class="fc" id="L36">            close.close();</span>
-<span class="fc" id="L37">        });</span>
-<span class="fc" id="L38">    }</span>
-
-    @SuppressWarnings(&quot;FieldCanBeLocal&quot;)
-//    private final Config config;
+<span class="fc" id="L40">        closeRepository.close();</span>
+<span class="fc" id="L41">    }</span>
+    
+    private final AutoClose closeRepository;
     private final Idempotent idempotent;
-    @SuppressWarnings(&quot;unused&quot;)
-//    private Repository repository;
-    private AutoClose closeRepository;
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

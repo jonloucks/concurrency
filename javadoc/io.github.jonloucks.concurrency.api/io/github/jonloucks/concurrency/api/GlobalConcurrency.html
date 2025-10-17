@@ -96,14 +96,19 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Concurrency.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createConcurrency(io.github.jonloucks.concurrency.api.Concurrency.Config)" class="member-name-link">createConcurrency</a><wbr>(<a href="Concurrency.Config.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config</a>&nbsp;config)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="ConcurrencyFactory.html" title="interface in io.github.jonloucks.concurrency.api">ConcurrencyFactory</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#findConcurrencyFactory(io.github.jonloucks.concurrency.api.Concurrency.Config)" class="member-name-link">findConcurrencyFactory</a><wbr>(<a href="Concurrency.Config.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config</a>&nbsp;config)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T&gt;&nbsp;<a href="Waitable.html" title="interface in io.github.jonloucks.concurrency.api">Waitable</a>&lt;T&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createWaitable(T)" class="member-name-link">createWaitable</a><wbr>(T&nbsp;initialValue)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Create a new Waitable with the given initial value</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="ConcurrencyFactory.html" title="interface in io.github.jonloucks.concurrency.api">ConcurrencyFactory</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#findConcurrencyFactory(io.github.jonloucks.concurrency.api.Concurrency.Config)" class="member-name-link">findConcurrencyFactory</a><wbr>(<a href="Concurrency.Config.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config</a>&nbsp;config)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Finds the ConcurrencyFactory implementation</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Concurrency.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getInstance()" class="member-name-link">getInstance</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Concurrency.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getInstance()" class="member-name-link">getInstance</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Return the global instance of Contracts</div>
 </div>
 </div>
@@ -123,6 +128,21 @@ loadScripts(document, 'script');</script>
 <section class="method-details" id="method-detail">
 <h2>Method Details</h2>
 <ul class="member-list">
+<li>
+<section class="detail" id="createWaitable(T)">
+<h3 id="createWaitable(java.lang.Object)">createWaitable</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="Waitable.html" title="interface in io.github.jonloucks.concurrency.api">Waitable</a>&lt;T&gt;</span>&nbsp;<span class="element-name">createWaitable</span><wbr><span class="parameters">(T&nbsp;initialValue)</span></div>
+<div class="block">Create a new Waitable with the given initial value</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>T</code> - the type of waitable</dd>
+<dt>Parameters:</dt>
+<dd><code>initialValue</code> - (null is not allowed)</dd>
+<dt>Returns:</dt>
+<dd>the waitable</dd>
+</dl>
+</section>
+</li>
 <li>
 <section class="detail" id="getInstance()">
 <h3>getInstance</h3>

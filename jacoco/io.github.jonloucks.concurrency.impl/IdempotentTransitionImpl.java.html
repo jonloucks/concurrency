@@ -30,8 +30,8 @@ final class IdempotentTransitionImpl&lt;T&gt; implements Idempotent.Transition.B
     
     @Override
     public Builder&lt;T&gt; action(Runnable action) {
-<span class="pc bpc" id="L33" title="1 of 2 branches missed.">        if (null == action) {</span>
-<span class="nc" id="L34">            this.action = null;</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        if (null == action) {</span>
+<span class="fc" id="L34">            this.action = null;</span>
         }  else {
 <span class="fc" id="L36">            this.action = () -&gt; {</span>
 <span class="fc" id="L37">                action.run();</span>
