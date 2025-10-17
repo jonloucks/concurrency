@@ -6,7 +6,6 @@ import io.github.jonloucks.concurrency.api.*;
 import org.opentest4j.TestAbortedException;
 
 import java.util.ServiceLoader;
-import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -28,10 +27,6 @@ public final class Tools {
         });
     }
     
-    static String uniqueString() {
-        return UUID.randomUUID().toString();
-    }
-
     public static void withConcurrency(Consumer<Concurrency.Config.Builder> builderConsumer, BiConsumer<Contracts,Concurrency> block) {
         withContracts(contracts -> {
             final ConcurrencyFactory factory = getConcurrencyFactory();

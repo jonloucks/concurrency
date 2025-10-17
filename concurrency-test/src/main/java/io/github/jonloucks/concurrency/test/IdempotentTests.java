@@ -8,6 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static io.github.jonloucks.contracts.test.Tools.assertThrown;
 import static io.github.jonloucks.concurrency.test.Tools.*;
@@ -148,6 +149,20 @@ public interface IdempotentTests {
             );
             assertEquals("else", text);
             assertEquals(State.INITIAL, idempotent.getState());
+        });
+    }
+    
+    @Test
+    default void idempotent_transition_NullActions_Works() {
+        withConcurrencyInstalled(contracts -> {
+            final Idempotent idempotent = contracts.claim(Idempotent.FACTORY).get();
+            final String text = idempotent.transition(b -> b
+                .action((Runnable)null)
+                .action((Supplier<String>)null)
+                .goalState(State.OPENING)
+            );
+            assertEquals(State.OPENING, idempotent.getState());
+            assertNull(text);
         });
     }
 }

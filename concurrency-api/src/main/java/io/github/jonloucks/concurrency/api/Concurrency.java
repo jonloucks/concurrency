@@ -13,7 +13,9 @@ public interface Concurrency extends AutoOpen {
      * Access the current Concurrency implementation
      */
     Contract<Concurrency> CONTRACT = Contract.create(Concurrency.class);
-
+    
+    <T> Waitable<T> createWaitable(T initialValue);
+    
     /**
      * The configuration used to create a new Concurrency instance.
      */
@@ -61,20 +63,53 @@ public interface Concurrency extends AutoOpen {
         
         /**
          * How long to wait for logging to shut down before giving up
+         *
          * @return the timeout duration
          */
         default Duration shutdownTimeout() {
             return Duration.ofSeconds(60);
         }
         
+        /**
+         * The Concurrency configuration
+         */
         interface Builder extends Config {
+            
+            /**
+             * Concurrency Config Builder
+             */
             Contract<Supplier<Builder>> FACTORY = Contract.create("Concurrency Config Builder Factory");
             
+            /**
+             * @return if true, reflection might be used to locate the ConcurrencyFactory
+             */
             Builder useReflection(boolean useReflection);
+            
+            /**
+             * @return if true, the ServiceLoader might be used to locate the ConcurrencyFactory
+             */
             Builder useServiceLoader(boolean useServiceLoader);
+            
+            /**
+             * @return the Contracts to be used
+             */
             Builder contracts(Contracts contracts);
+            
+            /**
+             * How long to wait for shutdown to complete before timing out
+             * @param shutdownTimeout the shutdown timeout
+             * @return the shutdown timeout
+             */
             Builder shutdownTimeout(Duration shutdownTimeout);
+            
+            /**
+             * @return the class name to use if reflection is used to find the ContractsFactory
+             */
             Builder reflectionClassName(String reflectionClassName);
+            
+            /**
+             * @return the class name to load from the ServiceLoader to find the ContractsFactory
+             */
             Builder serviceLoaderClass(Class<? extends ConcurrencyFactory> serviceLoaderClass);
         }
     }
