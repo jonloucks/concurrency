@@ -11,6 +11,12 @@ import static io.github.jonloucks.contracts.api.Checks.nullCheck;
  */
 public final class GlobalConcurrency {
     
+    /**
+     * Create a new Waitable with the given initial value
+     * @param initialValue (null is not allowed)
+     * @return the waitable
+     * @param <T> the type of waitable
+     */
     public static <T> Waitable<T> createWaitable(T initialValue) {
         return INSTANCE.concurrency.createWaitable(initialValue);
     }

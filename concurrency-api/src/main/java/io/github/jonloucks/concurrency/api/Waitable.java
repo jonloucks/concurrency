@@ -6,6 +6,11 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+/**
+ * Provides mutable reference that allows other threads to wait until
+ * the value satisfies a given condition.
+ * @param <T> the type of references
+ */
 public interface Waitable<T> extends Supplier<T>, Consumer<T> {
     
     /**

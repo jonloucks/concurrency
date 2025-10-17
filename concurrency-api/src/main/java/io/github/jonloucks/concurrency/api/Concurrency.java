@@ -14,6 +14,12 @@ public interface Concurrency extends AutoOpen {
      */
     Contract<Concurrency> CONTRACT = Contract.create(Concurrency.class);
     
+    /**
+     * Create a new Waitable with the given initial value
+     * @param initialValue (null is not allowed)
+     * @return the waitable
+     * @param <T> the type of waitable
+     */
     <T> Waitable<T> createWaitable(T initialValue);
     
     /**
