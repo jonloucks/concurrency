@@ -26,7 +26,6 @@ publish(() -> "Hello World");
             .time()); // retain current time
 ```
 ```
-```
 // hidden heavy
             publish(this::someMethodToProduceTheMessage);
 ```
@@ -37,6 +36,5 @@ publish(() -> "Hello World");
 [Java Test Coverage](https://jonloucks.github.io/concurrency/jacoco/)
 
 ## Badges
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/11312/badge)](https://www.bestpractices.dev/projects/11312)
 [![Coverage Badge](https://raw.githubusercontent.com/jonloucks/concurrency/refs/heads/badges/main-coverage.svg)](https://jonloucks.github.io/concurrency/jacoco/)
 [![Javadoc Badge](https://raw.githubusercontent.com/jonloucks/concurrency/refs/heads/badges/main-javadoc.svg)](https://jonloucks.github.io/concurrency/javadoc/)
