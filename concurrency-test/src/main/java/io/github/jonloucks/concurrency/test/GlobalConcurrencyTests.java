@@ -1,9 +1,6 @@
 package io.github.jonloucks.concurrency.test;
 
-import io.github.jonloucks.concurrency.api.Concurrency;
-import io.github.jonloucks.concurrency.api.ConcurrencyException;
-import io.github.jonloucks.concurrency.api.ConcurrencyFactory;
-import io.github.jonloucks.concurrency.api.GlobalConcurrency;
+import io.github.jonloucks.concurrency.api.*;
 import io.github.jonloucks.contracts.api.GlobalContracts;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -85,6 +82,21 @@ public interface GlobalConcurrencyTests {
         assertInstantiateThrows(GlobalConcurrencyTestsTools.class);
     }
     
+    @Test
+    default void globalConcurrency_createWaitable_WithNullInitial_Throws() {
+        final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+            GlobalConcurrency.createWaitable(null);
+        });
+        assertThrown(thrown);
+    }
+    
+    @Test
+    default void globalConcurrency_createWaitable_Works() {
+        final Waitable<String> waitable = GlobalConcurrency.createWaitable("abc");
+
+        assertObject(waitable);
+    }
+    
     final class GlobalConcurrencyTestsTools {
         private GlobalConcurrencyTestsTools() {
             throw new AssertionError("Illegal constructor.");
@@ -139,12 +151,12 @@ public interface GlobalConcurrencyTests {
                     public boolean useServiceLoader() {
                         return true;
                     }
-                    
+
                     @Override
                     public boolean useReflection() {
                         return false;
                     }
-                    
+
                     @Override
                     public Class<? extends ConcurrencyFactory> serviceLoaderClass() {
                         return BadConcurrencyFactory.class;
@@ -155,12 +167,12 @@ public interface GlobalConcurrencyTests {
                     public boolean useServiceLoader() {
                         return false;
                     }
-                    
+
                     @Override
                     public boolean useReflection() {
                         return true;
                     }
-                    
+
                     @Override
                     public String reflectionClassName() {
                         return BadConcurrencyFactory.class.getName();
@@ -171,12 +183,12 @@ public interface GlobalConcurrencyTests {
                     public boolean useServiceLoader() {
                         return false;
                     }
-                    
+
                     @Override
                     public boolean useReflection() {
                         return true;
                     }
-                    
+
                     @Override
                     public String reflectionClassName() {
                         return "";

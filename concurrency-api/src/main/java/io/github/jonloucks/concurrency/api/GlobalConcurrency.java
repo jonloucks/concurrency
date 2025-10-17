@@ -5,12 +5,21 @@ import io.github.jonloucks.contracts.api.AutoClose;
 import java.util.Optional;
 
 import static io.github.jonloucks.contracts.api.Checks.nullCheck;
-import static java.util.Optional.ofNullable;
 
 /**
  * Globally shared Concurrency singleton
  */
 public final class GlobalConcurrency {
+    
+    /**
+     * Create a new Waitable with the given initial value
+     * @param initialValue (null is not allowed)
+     * @return the waitable
+     * @param <T> the type of waitable
+     */
+    public static <T> Waitable<T> createWaitable(T initialValue) {
+        return INSTANCE.concurrency.createWaitable(initialValue);
+    }
     
     /**
      * Return the global instance of Contracts
@@ -31,7 +40,7 @@ public final class GlobalConcurrency {
      */
     public static Concurrency createConcurrency(Concurrency.Config config) {
         final ConcurrencyFactory factory = findConcurrencyFactory(config)
-            .orElseThrow(() -> new IllegalArgumentException("Concurrency factory must be present."));
+            .orElseThrow(() -> new ConcurrencyException("Concurrency factory must be present."));
    
         return nullCheck(factory.create(config), "Concurrency could not be created.");
     }
@@ -42,7 +51,7 @@ public final class GlobalConcurrency {
      * @return the factory if found
      */
     public static Optional<ConcurrencyFactory> findConcurrencyFactory(Concurrency.Config config) {
-        return ofNullable(new ConcurrencyFactoryFinder(config).find());
+        return new ConcurrencyFactoryFinder(config).find();
     }
     
     private GlobalConcurrency() {

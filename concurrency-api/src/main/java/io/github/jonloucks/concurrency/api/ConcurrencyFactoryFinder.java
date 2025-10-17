@@ -15,10 +15,9 @@ final class ConcurrencyFactoryFinder {
         this.config = configCheck(config);
     }
     
-    ConcurrencyFactory find() {
+    Optional<ConcurrencyFactory> find() {
         return createByReflection()
-            .or(this::createByServiceLoader)
-            .orElseThrow(this::newNotFoundException);
+            .or(this::createByServiceLoader);
     }
     
     private Optional<? extends ConcurrencyFactory> createByServiceLoader() {
@@ -53,10 +52,6 @@ final class ConcurrencyFactoryFinder {
 
     private Optional<String> getReflectionClassName() {
         return ofNullable(config.reflectionClassName()).filter(x -> !x.isEmpty());
-    }
-    
-    private ConcurrencyException newNotFoundException() {
-        return new ConcurrencyException("Unable to find Concurrency factory.");
     }
     
     private final Concurrency.Config config;
