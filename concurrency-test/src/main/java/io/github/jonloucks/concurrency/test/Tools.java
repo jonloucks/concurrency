@@ -9,9 +9,8 @@ import java.util.ServiceLoader;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static io.github.jonloucks.contracts.test.Tools.sanitize;
-import static io.github.jonloucks.contracts.test.Tools.withContracts;
 import static io.github.jonloucks.concurrency.api.GlobalConcurrency.findConcurrencyFactory;
+import static io.github.jonloucks.contracts.test.Tools.*;
 
 @SuppressWarnings("CodeBlock2Expr")
 public final class Tools {
@@ -60,10 +59,6 @@ public final class Tools {
         });
     }
     
-    @SuppressWarnings("EmptyMethod")
-    public static void ignore(Object ignored) {
-    }
-
     /**
      * Utility class instantiation protection
      */

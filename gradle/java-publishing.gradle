@@ -49,7 +49,7 @@ publishing {
             from components.java
             pom {
                 name = 'Contracts'
-                description = 'Concurrency. A low impact and highly performant structured meta logging library for Java'
+                description = 'Java Concurrency Library, providing features not in the Java runtime'
                 url = 'https://github.com/jonloucks/concurrency'
                 licenses {
                     license {

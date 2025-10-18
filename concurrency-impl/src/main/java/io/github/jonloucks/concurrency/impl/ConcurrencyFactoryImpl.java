@@ -56,10 +56,10 @@ public final class ConcurrencyFactoryImpl implements ConcurrencyFactory {
         
         installCore(validConfig, validRepository);
         
-        final Promisor<Concurrency> metalogPromisor = lifeCycle(config.contracts(),
+        final Promisor<Concurrency> concurrencyPromisor = lifeCycle(config.contracts(),
             () -> new ConcurrencyImpl(validConfig, validRepository, false));
         
-        validRepository.keep(Concurrency.CONTRACT, metalogPromisor, ALWAYS);
+        validRepository.keep(Concurrency.CONTRACT, concurrencyPromisor, ALWAYS);
     }
   
     private Concurrency.Config enhancedConfigCheck(Concurrency.Config config) {
