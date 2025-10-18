@@ -1,33 +1,22 @@
 # concurrency
-Concurrency.  A low impact and highly performant structured meta logging library for Java.
-#### 1. Log messages are only generated if consumed
-#### 2. If consumed by multiple subscribers, the generation only occurs once.
-#### 3. Messages are based on CharSequence so everything does not have to be converted to a string
-#### 4. By default log messages are consumed on worker threads
-#### 5. Channels represent things like 'info', 'debug', etc
-#### 6. Opt-in sequencing keys to maintain order of messages and provide dedicated consumption thread
-###  7. Opt-out of worker threads and do processing on current thread.
+### Java Concurrency Library, providing features not in the Java runtime
+#### 1. Waitable, a thread safe generic reference, supporting multiple threads waiting for different conditions.
+#### 2. StateMachine, a generic state machine, supporting states, rules, triggers, and waiting for state changes.
+
+
+##### Waitable example:
 ```
-// light
-publish(() -> "Hello World");
-```
-```
-// heavy
-            publish( () -> {
-                StringBuilder builder = new StringBuilder();
-                builder.append(e.getMessage());
-                builder.append(System.lineSeparator());
-                builder.append(someCostlyOperation());
-                return builder;
-            }, 
-            b -> b  // Meta builder callback
-            .thrown(e) // retain exception
-            .thread() // retain current thread information
-            .time()); // retain current time
-```
-```
-// hidden heavy
-            publish(this::someMethodToProduceTheMessage);
+// Creating a Waitable
+Waitable<String> weather = GlobalConcurrency.createWaitable("Unknown");
+
+// Changing the value
+weather.accept("Sunny");
+
+// Waiting for a condition
+final Optional<String> match = weather.waitFor(s -> !s.contains("Rain"), Duration.ofSeconds(10));
+if (match.isPresent()) {
+    goForWalk();
+}
 ```
 
 ## Documentation and Reports
