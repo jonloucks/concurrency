@@ -1,18 +1,16 @@
 package io.github.jonloucks.concurrency.impl;
 
-
 import io.github.jonloucks.contracts.api.Contracts;
 import io.github.jonloucks.contracts.api.Promisor;
-import io.github.jonloucks.contracts.api.Promisors;
 import io.github.jonloucks.contracts.api.Repository;
 import io.github.jonloucks.concurrency.api.*;
 
 import java.util.function.Consumer;
 
-import static io.github.jonloucks.concurrency.impl.Internal.lifeCycle;
 import static io.github.jonloucks.contracts.api.BindStrategy.ALWAYS;
 import static io.github.jonloucks.contracts.api.BindStrategy.IF_NOT_BOUND;
 import static io.github.jonloucks.contracts.api.Checks.*;
+import static io.github.jonloucks.contracts.api.GlobalContracts.lifeCycle;
 
 /**
  * Creates Concurrency instances
@@ -56,8 +54,7 @@ public final class ConcurrencyFactoryImpl implements ConcurrencyFactory {
         
         installCore(validConfig, validRepository);
         
-        final Promisor<Concurrency> concurrencyPromisor = lifeCycle(config.contracts(),
-            () -> new ConcurrencyImpl(validConfig, validRepository, false));
+        final Promisor<Concurrency> concurrencyPromisor = lifeCycle(() -> new ConcurrencyImpl(validConfig, validRepository, false));
         
         validRepository.keep(Concurrency.CONTRACT, concurrencyPromisor, ALWAYS);
     }
@@ -74,14 +71,11 @@ public final class ConcurrencyFactoryImpl implements ConcurrencyFactory {
     }
     
     private void installCore(Concurrency.Config config, Repository repository) {
-        final Contracts contracts = contractsCheck(config.contracts());
-
         repository.require(Repository.FACTORY);
-        repository.require(Promisors.CONTRACT);
-        repository.require(Idempotent.FACTORY);
         
-        repository.keep(Idempotent.FACTORY, () -> IdempotentImpl::new, IF_NOT_BOUND);
+        repository.keep(WaitableFactory.CONTRACT, WaitableFactoryImpl::new, IF_NOT_BOUND);
+        repository.keep(StateMachineFactory.CONTRACT, StateMachineFactoryImpl::new, IF_NOT_BOUND);
         repository.keep(Concurrency.Config.Builder.FACTORY, () -> ConfigBuilderImpl::new, IF_NOT_BOUND);
-        repository.keep(ConcurrencyFactory.CONTRACT, lifeCycle(contracts,ConcurrencyFactoryImpl::new), IF_NOT_BOUND);
+        repository.keep(ConcurrencyFactory.CONTRACT, lifeCycle(ConcurrencyFactoryImpl::new), IF_NOT_BOUND);
     }
 }

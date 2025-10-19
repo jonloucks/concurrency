@@ -76,14 +76,9 @@ public interface GlobalConcurrencyTests {
         
         assertThrown(thrown);
     }
-    
+
     @Test
-    default void globalConcurrency_InternalCoverage() {
-        assertInstantiateThrows(GlobalConcurrencyTestsTools.class);
-    }
-    
-    @Test
-    default void globalConcurrency_createWaitable_WithNullInitial_Throws() {
+    default void globalConcurrency_createWaitable_WithNullInitialValue_Throws() {
         final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
             GlobalConcurrency.createWaitable(null);
         });
@@ -91,10 +86,52 @@ public interface GlobalConcurrencyTests {
     }
     
     @Test
-    default void globalConcurrency_createWaitable_Works() {
-        final Waitable<String> waitable = GlobalConcurrency.createWaitable("abc");
-
-        assertObject(waitable);
+    default void globalConcurrency_createWaitable_WithValidInitial_Works() {
+        final Waitable<String> stateMachine = GlobalConcurrency.createWaitable("hello");
+        assertObject(stateMachine);
+        assertEquals("hello", stateMachine.get());
+    }
+    
+    @Test
+    default void globalConcurrency_createStateMachine_WithNullInitialState_Throws() {
+        final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+            GlobalConcurrency.createStateMachine(null);
+        });
+        assertThrown(thrown);
+    }
+    
+    @Test
+    default void globalConcurrency_createStateMachine_WithValidInitial_Works() {
+        final StateMachine<String> stateMachine = GlobalConcurrency.createStateMachine("hello");
+        assertObject(stateMachine);
+        assertEquals("hello", stateMachine.getState());
+    }
+    
+    @Test
+    default void globalConcurrency_createStateMachine_WithNullEnumClass_Throws() {
+        final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+            GlobalConcurrency.createStateMachine(null, Thread.State.NEW);
+        });
+        assertThrown(thrown);
+    }
+    
+    @Test
+    default void globalConcurrency_createStateMachine_WithEnumClassAndNullInitialState_Throws() {
+        final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+            GlobalConcurrency.createStateMachine(Thread.State.class, null);
+        });
+    }
+    
+    @Test
+    default void globalConcurrency_createStateMachine_WithValidEnum_Works() {
+        final StateMachine<Thread.State> stateMachine = GlobalConcurrency.createStateMachine(Thread.State.class, Thread.State.RUNNABLE);
+        assertObject(stateMachine);
+        assertEquals(Thread.State.RUNNABLE, stateMachine.getState());
+    }
+    
+    @Test
+    default void globalConcurrency_InternalCoverage() {
+        assertInstantiateThrows(GlobalConcurrencyTestsTools.class);
     }
     
     final class GlobalConcurrencyTestsTools {

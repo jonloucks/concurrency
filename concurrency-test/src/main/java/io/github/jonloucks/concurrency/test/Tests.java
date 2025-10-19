@@ -12,6 +12,7 @@ public interface Tests extends
     ConcurrencyFactoryTests,
     IdempotentTests,
     InternalTests,
+    StateMachineTests,
     ToolsTests,
     WaitableTests
 {
