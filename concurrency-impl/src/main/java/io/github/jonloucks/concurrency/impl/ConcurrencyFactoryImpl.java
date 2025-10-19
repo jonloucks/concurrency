@@ -1,13 +1,11 @@
 package io.github.jonloucks.concurrency.impl;
 
-import io.github.jonloucks.contracts.api.Contracts;
 import io.github.jonloucks.contracts.api.Promisor;
 import io.github.jonloucks.contracts.api.Repository;
 import io.github.jonloucks.concurrency.api.*;
 
 import java.util.function.Consumer;
 
-import static io.github.jonloucks.contracts.api.BindStrategy.ALWAYS;
 import static io.github.jonloucks.contracts.api.BindStrategy.IF_NOT_BOUND;
 import static io.github.jonloucks.contracts.api.Checks.*;
 import static io.github.jonloucks.contracts.api.GlobalContracts.lifeCycle;
@@ -27,13 +25,13 @@ public final class ConcurrencyFactoryImpl implements ConcurrencyFactory {
     
     @Override
     public Concurrency create(Concurrency.Config config) {
-        final Concurrency.Config validConfig = enhancedConfigCheck(config);
+        final Concurrency.Config validConfig = configCheck(config);
         final Repository repository = validConfig.contracts().claim(Repository.FACTORY).get();
         
         installCore(validConfig, repository);
         
         final ConcurrencyImpl concurrency = new ConcurrencyImpl(validConfig, repository, true);
-        repository.keep(Concurrency.CONTRACT, () -> concurrency);
+        repository.keep(Concurrency.CONTRACT, () -> concurrency, IF_NOT_BOUND);
         return concurrency;
     }
     
@@ -49,25 +47,14 @@ public final class ConcurrencyFactoryImpl implements ConcurrencyFactory {
     
     @Override
     public void install(Concurrency.Config config, Repository repository) {
-        final Concurrency.Config validConfig = enhancedConfigCheck(config);
+        final Concurrency.Config validConfig = configCheck(config);
         final Repository validRepository = nullCheck(repository, "Repository must be present.");
         
         installCore(validConfig, validRepository);
         
         final Promisor<Concurrency> concurrencyPromisor = lifeCycle(() -> new ConcurrencyImpl(validConfig, validRepository, false));
         
-        validRepository.keep(Concurrency.CONTRACT, concurrencyPromisor, ALWAYS);
-    }
-  
-    private Concurrency.Config enhancedConfigCheck(Concurrency.Config config) {
-        final Concurrency.Config candidateConfig = configCheck(config);
-        final Contracts contracts = contractsCheck(candidateConfig.contracts());
-        
-        if (contracts.isBound(Concurrency.CONTRACT)) {
-            throw new ConcurrencyException("Concurrency is already bound.");
-        }
-        
-        return candidateConfig;
+        validRepository.keep(Concurrency.CONTRACT, concurrencyPromisor, IF_NOT_BOUND);
     }
     
     private void installCore(Concurrency.Config config, Repository repository) {

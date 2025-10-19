@@ -7,5 +7,7 @@ module io.github.jonloucks.concurrency.impl {
     
     exports io.github.jonloucks.concurrency.impl;
     
+    opens io.github.jonloucks.concurrency.impl to io.github.jonloucks.concurrency.api;
+    
     provides io.github.jonloucks.concurrency.api.ConcurrencyFactory with io.github.jonloucks.concurrency.impl.ConcurrencyFactoryImpl;
 }
