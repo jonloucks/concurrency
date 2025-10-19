@@ -25,7 +25,7 @@ public interface StateMachineFactory {
      * @param enumClass the enumeration class
      * @param initialState the initial state
      * @return the new StateMachine
-     * @param &lt;T&gt;
+     * @param &lt;T&gt; the type of state
      */
     default &lt;T extends Enum&lt;T&gt;&gt; StateMachine&lt;T&gt; create(Class&lt;T&gt; enumClass, T initialState) {
 <span class="fc" id="L31">        final Class&lt;T&gt; validEnumClass = nullCheck(enumClass, &quot;Enum class must be present.&quot;);</span>
