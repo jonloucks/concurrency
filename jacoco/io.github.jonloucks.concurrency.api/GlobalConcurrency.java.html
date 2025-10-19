@@ -22,11 +22,31 @@ public final class GlobalConcurrency {
     }
     
     /**
+     * Create a new StateMachine with the given initial state
+     * @param initialState the initial state
+     * @return the new StateMachine
+     * @param &lt;T&gt; the type of each state
+     */
+    public static &lt;T&gt; StateMachine&lt;T&gt; createStateMachine(T initialState) {
+<span class="fc" id="L31">        return INSTANCE.concurrency.createStateMachine(initialState);</span>
+    }
+    
+    /**
+     * Create a new StateMachine with the given initial state
+     * @param initialState the initial state
+     * @return the new StateMachine
+     * @param &lt;T&gt; the type of each state
+     */
+    public static &lt;T extends Enum&lt;T&gt;&gt; StateMachine&lt;T&gt; createStateMachine(Class&lt;T&gt; enumClass, T initialState) {
+<span class="fc" id="L41">        return INSTANCE.concurrency.createStateMachine(enumClass, initialState);</span>
+    }
+    
+    /**
      * Return the global instance of Contracts
      * @return the instance
      */
     public static Concurrency getInstance() {
-<span class="fc" id="L29">        return INSTANCE.concurrency;</span>
+<span class="fc" id="L49">        return INSTANCE.concurrency;</span>
     }
     
     /**
@@ -39,10 +59,10 @@ public final class GlobalConcurrency {
      * &lt;/p&gt;
      */
     public static Concurrency createConcurrency(Concurrency.Config config) {
-<span class="fc" id="L42">        final ConcurrencyFactory factory = findConcurrencyFactory(config)</span>
-<span class="fc" id="L43">            .orElseThrow(() -&gt; new ConcurrencyException(&quot;Concurrency factory must be present.&quot;));</span>
+<span class="fc" id="L62">        final ConcurrencyFactory factory = findConcurrencyFactory(config)</span>
+<span class="fc" id="L63">            .orElseThrow(() -&gt; new ConcurrencyException(&quot;Concurrency factory must be present.&quot;));</span>
    
-<span class="fc" id="L45">        return nullCheck(factory.create(config), &quot;Concurrency could not be created.&quot;);</span>
+<span class="fc" id="L65">        return nullCheck(factory.create(config), &quot;Concurrency could not be created.&quot;);</span>
     }
     
     /**
@@ -51,15 +71,15 @@ public final class GlobalConcurrency {
      * @return the factory if found
      */
     public static Optional&lt;ConcurrencyFactory&gt; findConcurrencyFactory(Concurrency.Config config) {
-<span class="fc" id="L54">        return new ConcurrencyFactoryFinder(config).find();</span>
+<span class="fc" id="L74">        return new ConcurrencyFactoryFinder(config).find();</span>
     }
     
-<span class="fc" id="L57">    private GlobalConcurrency() {</span>
-<span class="fc" id="L58">        this.concurrency = createConcurrency(Concurrency.Config.DEFAULT);</span>
-<span class="fc" id="L59">        this.close = concurrency.open();</span>
-<span class="fc" id="L60">    }</span>
+<span class="fc" id="L77">    private GlobalConcurrency() {</span>
+<span class="fc" id="L78">        this.concurrency = createConcurrency(Concurrency.Config.DEFAULT);</span>
+<span class="fc" id="L79">        this.close = concurrency.open();</span>
+<span class="fc" id="L80">    }</span>
     
-<span class="fc" id="L62">    private static final GlobalConcurrency INSTANCE = new GlobalConcurrency();</span>
+<span class="fc" id="L82">    private static final GlobalConcurrency INSTANCE = new GlobalConcurrency();</span>
     
     private final Concurrency concurrency;
     @SuppressWarnings({&quot;FieldCanBeLocal&quot;, &quot;unused&quot;})

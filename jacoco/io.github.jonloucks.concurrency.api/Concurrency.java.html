@@ -23,6 +23,23 @@ public interface Concurrency extends AutoOpen {
     &lt;T&gt; Waitable&lt;T&gt; createWaitable(T initialValue);
     
     /**
+     * Create a new StateMachine with the given initial state
+     * @param initialState the initial state
+     * @return the new StateMachine
+     * @param &lt;T&gt; the type of each state
+     */
+    &lt;T&gt; StateMachine&lt;T&gt; createStateMachine(T initialState);
+    
+    /**
+     *
+     * @param enumClass the Enum class
+     * @param initialState the initial state
+     * @return the new StateMachine
+     * @param &lt;T&gt; the type of each state
+     */
+    &lt;T extends Enum&lt;T&gt;&gt; StateMachine&lt;T&gt; createStateMachine(Class&lt;T&gt; enumClass, T initialState);
+    
+    /**
      * The configuration used to create a new Concurrency instance.
      */
     interface Config {
@@ -30,41 +47,41 @@ public interface Concurrency extends AutoOpen {
         /**
          * The default configuration used when creating a new Concurrency instance
          */
-<span class="fc" id="L33">        Config DEFAULT = new Config() {};</span>
+<span class="fc" id="L50">        Config DEFAULT = new Config() {};</span>
         
         /**
          * @return if true, reflection might be used to locate the ConcurrencyFactory
          */
         default boolean useReflection() {
-<span class="fc" id="L39">            return true;</span>
+<span class="fc" id="L56">            return true;</span>
         }
         
         /**
          * @return the class name to use if reflection is used to find the ConcurrencyFactory
          */
         default String reflectionClassName() {
-<span class="fc" id="L46">            return &quot;io.github.jonloucks.concurrency.impl.ConcurrencyFactoryImpl&quot;;</span>
+<span class="fc" id="L63">            return &quot;io.github.jonloucks.concurrency.impl.ConcurrencyFactoryImpl&quot;;</span>
         }
         
         /**
          * @return if true, the ServiceLoader might be used to locate the ConcurrencyFactory
          */
         default boolean useServiceLoader() {
-<span class="fc" id="L53">            return true;</span>
+<span class="fc" id="L70">            return true;</span>
         }
         
         /**
          * @return the class name to load from the ServiceLoader to find the ConcurrencyFactory
          */
         default Class&lt;? extends ConcurrencyFactory&gt; serviceLoaderClass() {
-<span class="fc" id="L60">            return ConcurrencyFactory.class;</span>
+<span class="fc" id="L77">            return ConcurrencyFactory.class;</span>
         }
         
         /**
          * @return the contracts, some use case have their own Contracts instance.
          */
         default Contracts contracts() {
-<span class="fc" id="L67">            return GlobalContracts.getInstance();</span>
+<span class="fc" id="L84">            return GlobalContracts.getInstance();</span>
         }
         
         /**
@@ -73,7 +90,7 @@ public interface Concurrency extends AutoOpen {
          * @return the timeout duration
          */
         default Duration shutdownTimeout() {
-<span class="fc" id="L76">            return Duration.ofSeconds(60);</span>
+<span class="fc" id="L93">            return Duration.ofSeconds(60);</span>
         }
         
         /**
@@ -84,7 +101,7 @@ public interface Concurrency extends AutoOpen {
             /**
              * Concurrency Config Builder
              */
-<span class="fc" id="L87">            Contract&lt;Supplier&lt;Builder&gt;&gt; FACTORY = Contract.create(&quot;Concurrency Config Builder Factory&quot;);</span>
+<span class="fc" id="L104">            Contract&lt;Supplier&lt;Builder&gt;&gt; FACTORY = Contract.create(&quot;Concurrency Config Builder Factory&quot;);</span>
             
             /**
              * @return if true, reflection might be used to locate the ConcurrencyFactory

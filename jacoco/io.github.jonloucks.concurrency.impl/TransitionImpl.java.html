@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransitionImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">concurrency</a> &gt; <a href="index.source.html" class="el_package">io.github.jonloucks.concurrency.impl</a> &gt; <span class="el_source">TransitionImpl.java</span></div><h1>TransitionImpl.java</h1><pre class="source lang-java linenums">package io.github.jonloucks.concurrency.impl;
+
+
+import io.github.jonloucks.concurrency.api.Transition.Builder;
+
+import java.util.Optional;
+import java.util.function.Supplier;
+
+import static java.util.Optional.ofNullable;
+
+final class TransitionImpl&lt;B extends Builder&lt;B,S,R&gt;,S,R&gt; implements Builder&lt;B,S,R&gt; {
+    
+    @Override
+    public TransitionImpl&lt;B, S, R&gt; event(String name) {
+<span class="fc" id="L15">        this.event = name;</span>
+<span class="fc" id="L16">        return this;</span>
+    }
+    
+    @Override
+    public TransitionImpl&lt;B, S, R&gt; goalState(S goalState) {
+<span class="fc" id="L21">        this.goalState = goalState;</span>
+<span class="fc" id="L22">        return this;</span>
+    }
+
+    @Override
+    public TransitionImpl&lt;B, S, R&gt; action(Supplier&lt;R&gt; action) {
+<span class="fc" id="L27">        this.action = action;</span>
+<span class="fc" id="L28">        return this;</span>
+    }
+    
+    @Override
+    public TransitionImpl&lt;B, S, R&gt; action(Runnable action) {
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">        if (null == action) {</span>
+<span class="nc" id="L34">            this.action = null;</span>
+        }  else {
+<span class="fc" id="L36">            this.action = () -&gt; {</span>
+<span class="fc" id="L37">                action.run();</span>
+<span class="fc" id="L38">                return null;</span>
+            };
+        }
+<span class="fc" id="L41">        return this;</span>
+    }
+
+    @Override
+    public TransitionImpl&lt;B, S, R&gt; errorState(S state) {
+<span class="fc" id="L46">        this.errorState = state;</span>
+<span class="fc" id="L47">        return this;</span>
+    }
+    
+    @Override
+    public Builder&lt;B, S, R&gt; orElse(Supplier&lt;R&gt; orElse) {
+<span class="fc" id="L52">        this.orElse = orElse;</span>
+<span class="fc" id="L53">        return this;</span>
+    }
+    
+    @Override
+    public Builder&lt;B, S, R&gt; rethrow(boolean rethrow) {
+<span class="fc" id="L58">        this.rethrow = rethrow;</span>
+<span class="fc" id="L59">        return this;</span>
+    }
+    
+    @Override
+    public Optional&lt;String&gt; event() {
+<span class="fc" id="L64">        return ofNullable(event);</span>
+    }
+    
+    @Override
+    public S goalState() {
+<span class="fc" id="L69">        return goalState;</span>
+    }
+    
+    @Override
+    public Optional&lt;S&gt; errorState() {
+<span class="fc" id="L74">        return ofNullable(errorState);</span>
+    }
+    
+    @Override
+    public boolean rethrow() {
+<span class="fc" id="L79">        return rethrow;</span>
+    }
+    
+    @Override
+    public Optional&lt;Supplier&lt;R&gt;&gt; orElse() {
+<span class="fc" id="L84">        return ofNullable(orElse);</span>
+    }
+    
+    @Override
+    public Optional&lt;Supplier&lt;R&gt;&gt; action() {
+<span class="fc" id="L89">        return ofNullable(action);</span>
+    }
+
+<span class="fc" id="L92">    TransitionImpl() {</span>
+<span class="fc" id="L93">    }</span>
+    
+    private S goalState;
+    private Supplier&lt;R&gt; action;
+    private S errorState;
+    private String event;
+    private Supplier&lt;R&gt; orElse;
+<span class="fc" id="L100">    private boolean rethrow = true;</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
