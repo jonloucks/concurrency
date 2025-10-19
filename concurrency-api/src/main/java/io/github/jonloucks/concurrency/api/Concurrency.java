@@ -23,6 +23,23 @@ public interface Concurrency extends AutoOpen {
     <T> Waitable<T> createWaitable(T initialValue);
     
     /**
+     * Create a new StateMachine with the given initial state
+     * @param initialState the initial state
+     * @return the new StateMachine
+     * @param <T> the type of each state
+     */
+    <T> StateMachine<T> createStateMachine(T initialState);
+    
+    /**
+     *
+     * @param enumClass the Enum class
+     * @param initialState the initial state
+     * @return the new StateMachine
+     * @param <T> the type of each state
+     */
+    <T extends Enum<T>> StateMachine<T> createStateMachine(Class<T> enumClass, T initialState);
+    
+    /**
      * The configuration used to create a new Concurrency instance.
      */
     interface Config {

@@ -1,9 +1,5 @@
 package io.github.jonloucks.concurrency.impl;
 
-import io.github.jonloucks.contracts.api.Contracts;
-import io.github.jonloucks.contracts.api.Promisor;
-import io.github.jonloucks.contracts.api.Promisors;
-
 import java.time.Duration;
 import java.util.function.Predicate;
 
@@ -22,6 +18,14 @@ final class Internal {
         // There are unit tests that will fail if this constructor is not private
     }
     
+    static <T> T stateCheck(T state) {
+        return nullCheck(state, "State must be present.");
+    }
+    
+    static String eventCheck(String event) {
+        return nullCheck(event, "Event must be present.");
+    }
+    
     static <T> Predicate<T> predicateCheck(Predicate<T> predicate) {
         return nullCheck(predicate, "Predicate must be present.");
     }
@@ -31,11 +35,10 @@ final class Internal {
         return illegalCheck(validTimeout, validTimeout.isNegative(), "Timeout must not be negative.");
     }
     
-    static <T> Promisor<T> lifeCycle(Contracts contracts, Promisor<T> promisor) {
-        final Promisors promisors = contracts.claim(Promisors.CONTRACT);
-        return promisors.createLifeCyclePromisor(promisor);
+    static <T> T transitionCheck(T transition) {
+        return nullCheck(transition, "Transition must be present.");
     }
-    
+ 
     @FunctionalInterface
     interface ThrowingRunnable<E extends Throwable> {
         void run() throws E;

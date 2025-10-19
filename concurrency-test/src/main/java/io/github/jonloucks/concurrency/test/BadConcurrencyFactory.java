@@ -30,6 +30,7 @@ final class BadConcurrencyFactory implements ConcurrencyFactory {
         throw new UnsupportedOperationException("Not supported ever.");
     }
     
+    // constructor is purposely not public
     BadConcurrencyFactory() {
     }
 }

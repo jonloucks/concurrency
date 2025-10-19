@@ -22,6 +22,26 @@ public final class GlobalConcurrency {
     }
     
     /**
+     * Create a new StateMachine with the given initial state
+     * @param initialState the initial state
+     * @return the new StateMachine
+     * @param <T> the type of each state
+     */
+    public static <T> StateMachine<T> createStateMachine(T initialState) {
+        return INSTANCE.concurrency.createStateMachine(initialState);
+    }
+    
+    /**
+     * Create a new StateMachine with the given initial state
+     * @param initialState the initial state
+     * @return the new StateMachine
+     * @param <T> the type of each state
+     */
+    public static <T extends Enum<T>> StateMachine<T> createStateMachine(Class<T> enumClass, T initialState) {
+        return INSTANCE.concurrency.createStateMachine(enumClass, initialState);
+    }
+    
+    /**
      * Return the global instance of Contracts
      * @return the instance
      */
