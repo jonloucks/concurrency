@@ -4,12 +4,12 @@ import io.github.jonloucks.contracts.api.AutoClose;
 import io.github.jonloucks.contracts.api.Contracts;
 import io.github.jonloucks.contracts.api.Repository;
 import io.github.jonloucks.concurrency.api.Concurrency;
-import io.github.jonloucks.concurrency.api.ConcurrencyException;
 import io.github.jonloucks.concurrency.api.ConcurrencyFactory;
 import org.junit.jupiter.api.Test;
 
 import static io.github.jonloucks.contracts.test.Tools.*;
 import static io.github.jonloucks.concurrency.test.Tools.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SuppressWarnings("CodeBlock2Expr")
@@ -55,7 +55,7 @@ public interface ConcurrencyFactoryTests {
     }
     
     @Test
-    default void concurrencyFactory_install_AlreadyBound_Throws() {
+    default void concurrencyFactory_install_AlreadyBound_DoesNotThrow   () {
         withConcurrency(b -> {}, (contracts, concurrency)-> {
             final Concurrency.Config config = new Concurrency.Config() {
                 @Override
@@ -67,11 +67,9 @@ public interface ConcurrencyFactoryTests {
             final Repository repository = contracts.claim(Repository.FACTORY).get();
             final ConcurrencyFactory concurrencyFactory = getConcurrencyFactory(config);
             
-            final ConcurrencyException thrown = assertThrows(ConcurrencyException.class, () -> {
+            assertDoesNotThrow(() -> {
                 concurrencyFactory.install(config, repository);
             });
-            
-            assertThrown(thrown);
         });
     }
     

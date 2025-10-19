@@ -120,6 +120,8 @@ public interface GlobalConcurrencyTests {
         final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
             GlobalConcurrency.createStateMachine(Thread.State.class, null);
         });
+        
+        assertThrown(thrown);
     }
     
     @Test
