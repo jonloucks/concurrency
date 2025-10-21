@@ -1,5 +1,9 @@
 package io.github.jonloucks.concurrency.impl;
 
+import io.github.jonloucks.concurrency.api.ConcurrencyException;
+import io.github.jonloucks.concurrency.api.StateMachine;
+
+import java.io.IOException;
 import java.time.Duration;
 import java.util.function.Predicate;
 
@@ -19,11 +23,15 @@ final class Internal {
     }
     
     static <T> T stateCheck(T state) {
-        return nullCheck(state, "State must be present.");
+        return nullCheck(state, "Rule must be present.");
     }
     
     static String eventCheck(String event) {
         return nullCheck(event, "Event must be present.");
+    }
+    
+    static <T> StateMachine.Rule<T> ruleCheck(StateMachine.Rule<T> rule) {
+        return nullCheck(rule, "Rule must be present.");
     }
     
     static <T> Predicate<T> predicateCheck(Predicate<T> predicate) {
@@ -35,10 +43,30 @@ final class Internal {
         return illegalCheck(validTimeout, validTimeout.isNegative(), "Timeout must not be negative.");
     }
     
-    static <T> T transitionCheck(T transition) {
-        return nullCheck(transition, "Transition must be present.");
+    static void throwUnchecked(Throwable thrown, String message) throws Error, ConcurrencyException, RuntimeException {
+        if (null == thrown) {
+            return;
+        } else if (thrown instanceof Error) {
+            throw (Error) thrown;
+        } else if (thrown instanceof RuntimeException) {
+            throw (RuntimeException) thrown;
+        }
+        throw new ConcurrencyException(message, thrown);
     }
- 
+    
+    static void validate() {
+        validateUnchecked(new Error(), "Some error.");
+        validateUnchecked(new IOException(), "Some IO error.");
+        validateUnchecked(new ConcurrencyException("Hello."), "Some concurrency error.");
+        validateUnchecked(null, "Some concurrency error.");
+    }
+    
+    private static void validateUnchecked(Throwable thrown, String message) throws Error, ConcurrencyException {
+        runWithIgnore( () -> {
+            throwUnchecked(thrown, message);
+        });
+    }
+    
     @FunctionalInterface
     interface ThrowingRunnable<E extends Throwable> {
         void run() throws E;

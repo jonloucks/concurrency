@@ -3,6 +3,7 @@ package io.github.jonloucks.concurrency.api;
 import io.github.jonloucks.contracts.api.*;
 
 import java.time.Duration;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -16,28 +17,44 @@ public interface Concurrency extends AutoOpen {
     
     /**
      * Create a new Waitable with the given initial value
+     *
      * @param initialValue (null is not allowed)
      * @return the waitable
      * @param <T> the type of waitable
+     * @throws IllegalArgumentException if initialState is null
      */
     <T> Waitable<T> createWaitable(T initialValue);
     
     /**
-     * Create a new StateMachine with the given initial state
+     * Create a new StateMachine
+     *
      * @param initialState the initial state
      * @return the new StateMachine
      * @param <T> the type of each state
+     * @throws IllegalArgumentException if initialState is null
      */
     <T> StateMachine<T> createStateMachine(T initialState);
     
     /**
+     * Create a new StateMachine
      *
-     * @param enumClass the Enum class
+     * @param enumClass the enumeration class
      * @param initialState the initial state
      * @return the new StateMachine
-     * @param <T> the type of each state
+     * @param <T> the type of state
+     * @throws IllegalArgumentException if enumClass is null or initialState is null
      */
     <T extends Enum<T>> StateMachine<T> createStateMachine(Class<T> enumClass, T initialState);
+    
+    /**
+     * Create a new StateMachine by configuration callback
+     *
+     * @param builderConsumer responsible for building the configuration
+     * @return the new StateMachine
+     * @param <T> the type of each state
+     * @throws IllegalArgumentException if builderConsumer is null or resulting configuration is invalid
+     */
+    <T> StateMachine<T> createStateMachine(Consumer<StateMachine.Config.Builder<T>> builderConsumer);
     
     /**
      * The configuration used to create a new Concurrency instance.
@@ -104,34 +121,38 @@ public interface Concurrency extends AutoOpen {
             Contract<Supplier<Builder>> FACTORY = Contract.create("Concurrency Config Builder Factory");
             
             /**
-             * @return if true, reflection might be used to locate the ConcurrencyFactory
+             * @param useReflection enables or disables locating ConcurrencyFactory implementation by reflection
+             * @return this builder
              */
             Builder useReflection(boolean useReflection);
             
             /**
-             * @return if true, the ServiceLoader might be used to locate the ConcurrencyFactory
+             * @param useServiceLoader the ServiceLoader might be used to locate the ConcurrencyFactory
+             * @return this builder
              */
             Builder useServiceLoader(boolean useServiceLoader);
             
             /**
-             * @return the Contracts to be used
+             * @param contracts the Contracts to use
+             * @return this builder
              */
             Builder contracts(Contracts contracts);
             
             /**
-             * How long to wait for shutdown to complete before timing out
-             * @param shutdownTimeout the shutdown timeout
-             * @return the shutdown timeout
+             * @param shutdownTimeout how long to wait for shutdown to complete before timing out
+             * @return this builder
              */
             Builder shutdownTimeout(Duration shutdownTimeout);
             
             /**
-             * @return the class name to use if reflection is used to find the ContractsFactory
+             * @param reflectionClassName the class name to use if reflection is used to find the ContractsFactory
+             * @return this builder
              */
             Builder reflectionClassName(String reflectionClassName);
             
             /**
-             * @return the class name to load from the ServiceLoader to find the ContractsFactory
+             * @param serviceLoaderClass the class name to load from the ServiceLoader to find the ContractsFactory
+             * @return this builder
              */
             Builder serviceLoaderClass(Class<? extends ConcurrencyFactory> serviceLoaderClass);
         }

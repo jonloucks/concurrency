@@ -1,18 +1,16 @@
 package io.github.jonloucks.concurrency.impl;
 
+import io.github.jonloucks.concurrency.api.ConcurrencyException;
 import io.github.jonloucks.concurrency.api.StateMachine;
-import io.github.jonloucks.concurrency.api.Transition;
-import io.github.jonloucks.concurrency.api.TransitionAware;
 import io.github.jonloucks.concurrency.api.Waitable;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static io.github.jonloucks.concurrency.impl.Internal.*;
 import static io.github.jonloucks.contracts.api.Checks.*;
+import static java.util.Optional.ofNullable;
 
 final class StateMachineImpl<S> implements StateMachine<S> {
     
@@ -32,86 +30,121 @@ final class StateMachineImpl<S> implements StateMachine<S> {
     
     @Override
     public <B extends Transition.Builder<B, S, R>, R> R transition(Consumer<Transition.Builder<B, S, R>> builderConsumer) {
-        final Transition.Builder<B,S,R> builder = new TransitionImpl<>();
+        final TransitionBuilderImpl<B,S,R> builder = new TransitionBuilderImpl<>();
         builderConsumerCheck(builderConsumer).accept(builder);
         return transition(builder);
     }
     
     @Override
     public <R> R transition(Transition<S, R> transition) {
-        final Transition<S,R> validTransition = transitionCheck(transition);
-        final S goalState = getGoalState(validTransition);
-        final String event = getEvent(validTransition);
-        
-        if (isTransitionAllowed(event, goalState)) {
+        final Transition<S,R> t = transitionCheck(transition);
+        if (isTransitionAllowed(t.getEvent(), t.getSuccessState())) {
             try {
-                final R r = getValue(validTransition.action());
-                setState(event, goalState);
-                return r;
+                return handleSuccess(t);
             } catch (Throwable thrown) {
-                if (validTransition.errorState().isPresent()) {
-                    setState(event, validTransition.errorState().get());
-                }
-                if (transition.rethrow()) {
-                    throw thrown;
-                }
+                return handleError(t, thrown);
             }
+        } else {
+            return handleDenied(t);
         }
-        return getValue(validTransition.orElse());
-    }
-    
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private static <X> X getValue(Optional<Supplier<X>> optionalSupplier) {
-        return optionalSupplier.map(Supplier::get).orElse(null);
-    }
-    
-    @Override
-    public void addState(S state) {
-        stateSet.add(stateCheck(state));
     }
     
     @Override
     public boolean hasState(S state) {
-        return stateSet.contains(stateCheck(state));
+        return stateToRulesLookup.containsKey(stateCheck(state));
     }
     
     @Override
     public boolean isTransitionAllowed(String event, S state) {
-        final String validEvent = eventCheck(event);
-        final S validState = stateCheck(state);
-        final S currentState = getState();
-        if (hasState(validState) && !currentState.equals(validState)) {
-            if (state instanceof TransitionAware) {
-                return ((TransitionAware)currentState).canTransitionTo(validEvent, validState);
+        final String validEvent = Internal.eventCheck(event);
+        final S toState = stateCheck(state);
+        final S fromState = getState();
+        if (hasState(toState) && !fromState.equals(toState)) {
+            final Set<Rule<S>> rules = stateToRulesLookup.get(fromState);
+            if (ofNullable(rules).isPresent() && !rules.isEmpty()) {
+                return rules.stream().allMatch(r -> r.canTransition(validEvent, toState));
             }
             return true;
         }
         return false;
     }
     
-    StateMachineImpl(S initialState) {
-        final S validState = stateCheck(initialState);
-        this.currentState = new WaitableImpl<>(validState);
-        stateSet.add(validState);
+    StateMachineImpl(Config<S> config) {
+        final Config<S> validConfig = configCheck(config);
+        final S validInitialState = validConfig.getInitial().orElseThrow(this::getInitialStateNotPresentException);
+        this.currentState = new WaitableImpl<>(validInitialState);
+        addStateAndRules(validInitialState, Collections.emptyList() );
+        validConfig.getStates().forEach(state -> addStateAndRules(state, validConfig.getStateRules(state)));
     }
     
-    private <R> S getGoalState(Transition<S, R> transition) {
-        return existsCheck(transition.goalState());
+    private <R> Transition<S,R> transitionCheck(Transition<S,R> transition) {
+        final Transition<S,R> validTransition = nullCheck(transition, "Transition must be present.");
+        
+        existsCheck(validTransition.getSuccessState());
+        ofNullable(transition.getEvent()).orElseThrow(this::getEventNotPresentException);
+        
+        return validTransition;
     }
     
-    private <R> String getEvent(Transition<S, R> transition) {
-        return transition.event().orElseThrow(this::getEventNotPresentException);
+    private <R> R handleSuccess(Transition<S, R> t) {
+        final R value = orNull(t.getSuccessValue());
+        setState(t.getEvent(), t.getSuccessState());
+        return value;
     }
     
-    S existsCheck(S state) {
+    private <R> R handleDenied(Transition<S, R> transition) {
+        setOptionalState(transition.getFailedState(), transition.getEvent());
+        if (transition.getFailedValue().isPresent()) {
+            return transition.getFailedValue().get().get();
+        }
+        throw new ConcurrencyException("Illegal state transition from " + getState() +
+            " to " + transition.getSuccessState() + ".");
+    }
+    
+    private <R> R handleError(Transition<S, R> t, Throwable thrown) throws Error, ConcurrencyException, RuntimeException {
+        setOptionalState(t.getErrorState(), t.getEvent());
+        if (t.getErrorValue().isPresent()) {
+            return t.getErrorValue().get().get();
+        } else {
+            throwUnchecked(thrown, "State machine error.");
+            return null;
+        }
+    }
+    
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private static <X> X orNull(Optional<Supplier<X>> optional) {
+        return optional.map(Supplier::get).orElse(null);
+    }
+    
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private <R> void setOptionalState(Optional<S> optional, String event) {
+        optional.ifPresent(s -> setState(event, s));
+    }
+    
+    private S existsCheck(S state) {
         final S validState = stateCheck(state);
-        return illegalCheck(validState, !hasState(validState), "State does not exist.");
+        return illegalCheck(validState, !hasState(validState), "Rule does not exist.");
+    }
+    
+    private IllegalArgumentException getInitialStateNotPresentException() {
+        return new IllegalArgumentException("Initial state must be present.");
     }
     
     private IllegalArgumentException getEventNotPresentException() {
         return new IllegalArgumentException("Event must be present.");
     }
     
-    private final Set<S> stateSet = new HashSet<>();
+    private void addStateAndRules(S state, List<Rule<S>> rules) {
+        final S validState = stateCheck(state);
+        final List<Rule<S>> validRules = nullCheck(rules, "Rules must be present.");
+        final Set<Rule<S>> knownRules = stateToRulesLookup(validState);
+        validRules.forEach(rule -> knownRules.add(ruleCheck(rule)));
+    }
+    
+    private Set<Rule<S>> stateToRulesLookup(S state) {
+        return stateToRulesLookup.computeIfAbsent(state, k -> new HashSet<>());
+    }
+    
+    private final HashMap<S, Set<Rule<S>>> stateToRulesLookup = new HashMap<>();
     private final Waitable<S> currentState;
 }
