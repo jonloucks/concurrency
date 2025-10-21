@@ -8,6 +8,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import java.util.function.Consumer;
+
 import static io.github.jonloucks.concurrency.test.Tools.withConcurrency;
 import static io.github.jonloucks.contracts.test.Tools.assertObject;
 import static io.github.jonloucks.contracts.test.Tools.assertThrown;
@@ -78,6 +80,16 @@ public interface ConcurrencyTests {
     default void concurrency_createStateMachine_WithEnumClassAndNullInitialState_Throws() {
         withConcurrency((contracts, concurrency) -> {
             final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+                concurrency.createStateMachine((Consumer<StateMachine.Config.Builder<String>>)null);
+            });
+            assertThrown(thrown);
+        });
+    }
+    
+    @Test
+    default void concurrency_createStateMachine_WithNullBuilderConsumer_Throws() {
+        withConcurrency((contracts, concurrency) -> {
+            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
                 concurrency.createStateMachine(Thread.State.class, null);
             });
             assertThrown(thrown);
@@ -88,6 +100,17 @@ public interface ConcurrencyTests {
     default void concurrency_createStateMachine_WithValidEnum_Works() {
         withConcurrency((contracts, concurrency) -> {
             final StateMachine<Thread.State> stateMachine = concurrency.createStateMachine(Thread.State.class, Thread.State.RUNNABLE);
+            assertObject(stateMachine);
+            assertEquals(Thread.State.RUNNABLE, stateMachine.getState());
+        });
+    }
+    
+    @Test
+    default void concurrency_createStateMachine_WithValidBuilderConsumer_Works() {
+        withConcurrency((contracts, concurrency) -> {
+            final StateMachine<Thread.State> stateMachine = concurrency.createStateMachine(b ->
+                b.initial(Thread.State.RUNNABLE)
+            );
             assertObject(stateMachine);
             assertEquals(Thread.State.RUNNABLE, stateMachine.getState());
         });

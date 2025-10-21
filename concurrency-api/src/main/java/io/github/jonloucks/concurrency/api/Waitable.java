@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 /**
  * Provides mutable reference that allows other threads to wait until
  * the value satisfies a given condition.
+ *
  * @param <T> the type of references
  */
 public interface Waitable<T> extends Supplier<T>, Consumer<T> {
@@ -21,42 +22,57 @@ public interface Waitable<T> extends Supplier<T>, Consumer<T> {
     
     /**
      * Gets the current value if it matches the current value
+     *
      * @param predicate the predicate
      * @return optionally get the current value if it matches
+     * @throws IllegalArgumentException if predicate is null or if value is null
      */
     Optional<T> getIf(Predicate<T> predicate);
     
     /**
-     * Change the current value
+     * Assign a new value
+     *
      * @param value the new value
+     *  @throws IllegalArgumentException if value is null
      */
     @Override
     void accept(T value);
     
     /**
+     * Assign a new value if conditions are satisfied
      *
      * @param predicate the predicate to test if a value should be replaced
      * @param value the new value
      * @return if accepted the value replaced.
+     * @throws IllegalArgumentException if predicate is null or if value is null
      */
     Optional<T> acceptIf(Predicate<T> predicate, T value);
     
-    void shutdown();
-    
     /**
      * Waits forever for a value to match the predicate
+     *
      * @param predicate the predicate to test if the value satisfies the stop waiting condition
      * @return optionally the value if
+     * @throws IllegalArgumentException if predicate is null
      */
     Optional<T> waitFor(Predicate<T> predicate);
     
     /**
      * Waits for given timeout for a value to match the predicate
+     *
      * @param predicate the predicate to test if the value satisfies the stop waiting condition
      * @param timeout the time to wait for the value to satisfy the predicate
      * @return optionally the value if
+     * @throws IllegalArgumentException if predicate is null, duration is null, or duration is negative
      */
     Optional<T> waitFor(Predicate<T> predicate, Duration timeout);
+    
+    /**
+     * Aborts all waiting threads.
+     * All subsequent wait related calls will return immediately.
+     * Shutdown is permanent
+     */
+    void shutdown();
 }
 
 

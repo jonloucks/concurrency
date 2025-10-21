@@ -13,9 +13,11 @@ public interface WaitableFactory {
     
     /**
      * Create a new Waitable with the given initial value
+     *
      * @param initialValue (null is not allowed)
      * @return the waitable
      * @param <T> the type of waitable
+     * @throws IllegalArgumentException if initialValue is null
      */
     <T> Waitable<T> create(T initialValue);
 }

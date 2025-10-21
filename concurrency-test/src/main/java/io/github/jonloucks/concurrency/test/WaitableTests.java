@@ -7,6 +7,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.Duration;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -176,9 +177,15 @@ public interface WaitableTests {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             
-            final Optional<String> optionalValue = waitable.waitFor(MODIFIED::equals, Duration.ofMillis(20));
+            final Thread thread = new Thread(() -> {
+                for (int n = 0; n < 1_000; n++) {
+                    waitable.accept(UUID.randomUUID().toString());
+                }
+            });
+            thread.start();
+            
+            final Optional<String> optionalValue = waitable.waitFor(MODIFIED::equals, Duration.ofMillis(100));
             assertFalse(optionalValue.isPresent());
-            assertEquals(INITIAL, waitable.get());
         });
     }
     

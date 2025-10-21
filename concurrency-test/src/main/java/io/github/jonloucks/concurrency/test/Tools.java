@@ -5,12 +5,16 @@ import io.github.jonloucks.contracts.api.Contracts;
 import io.github.jonloucks.concurrency.api.*;
 import org.opentest4j.TestAbortedException;
 
+import java.util.List;
 import java.util.ServiceLoader;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static io.github.jonloucks.concurrency.api.GlobalConcurrency.findConcurrencyFactory;
 import static io.github.jonloucks.contracts.test.Tools.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @SuppressWarnings("CodeBlock2Expr")
 public final class Tools {
@@ -57,6 +61,21 @@ public final class Tools {
         withConcurrency(b -> {}, (contracts, concurrency) -> {
             block.accept(contracts);
         });
+    }
+    
+    public static <T extends Enum<T>& StateMachine.Rule<T>> void assertTransitions(Class<T> type, T from, List<T> allowList) {
+        for (T to : type.getEnumConstants()) {
+            if (allowList.contains(to)) {
+                assertTrue(from.canTransition("unnamed", to), "Expected transition to " + to);
+            } else {
+                assertFalse(from.canTransition("unnamed", to), "Unexpected transition to " + to);
+            }
+        }
+    }
+    
+    public static StateMachineFactory assumeStateMachineFactory(Contracts contracts) {
+        assumeTrue(contracts.isBound(StateMachineFactory.CONTRACT), "StateMachineFactory is assumed");
+        return contracts.claim(StateMachineFactory.CONTRACT);
     }
     
     /**

@@ -15,5 +15,6 @@ public final class Stub {
      */
     public static void validate() {
         io.github.jonloucks.contracts.api.Checks.validateContracts(GlobalContracts.getInstance());
+        Internal.validate();
     }
 }

@@ -5,6 +5,8 @@ import io.github.jonloucks.contracts.api.AutoClose;
 import io.github.jonloucks.contracts.api.AutoOpen;
 import io.github.jonloucks.contracts.api.Repository;
 
+import java.util.function.Consumer;
+
 import static io.github.jonloucks.contracts.api.Checks.configCheck;
 import static io.github.jonloucks.contracts.api.Checks.nullCheck;
 
@@ -14,9 +16,9 @@ final class ConcurrencyImpl implements Concurrency {
     public AutoClose open() {
         return stateMachine.transition(b -> b
             .event("open")
-            .goalState(Idempotent.OPENED)
-            .action(this::realOpen)
-       .orElse(AutoOpen.NONE::open));
+            .successState(Idempotent.OPENED)
+            .successValue(this::realOpen)
+       .failedValue(AutoOpen.NONE::open));
     }
     
     @Override
@@ -26,21 +28,26 @@ final class ConcurrencyImpl implements Concurrency {
     
     @Override
     public <T> StateMachine<T> createStateMachine(T initialState) {
-        return stateMachineFactory.create(initialState);
+        return stateMachineFactory.create(b -> b.initial(initialState));
     }
     
     @Override
     public <T extends Enum<T>> StateMachine<T> createStateMachine(Class<T> enumClass, T initialState) {
         return stateMachineFactory.create(enumClass, initialState);
     }
-
+    
+    @Override
+    public <T> StateMachine<T> createStateMachine(Consumer<StateMachine.Config.Builder<T>> builderConsumer) {
+        return stateMachineFactory.create(builderConsumer);
+    }
+    
     ConcurrencyImpl(Config config, Repository repository, boolean autoOpen) {
         final Config validConfig = configCheck(config);
         final Repository validRepository = nullCheck(repository, "Repository must be present.");
         this.closeRepository = autoOpen ? validRepository.open() : AutoClose.NONE;
         this.waitableFactory = validConfig.contracts().claim(WaitableFactory.CONTRACT);
         this.stateMachineFactory = validConfig.contracts().claim(StateMachineFactory.CONTRACT);
-        this.stateMachine = stateMachineFactory.create(Idempotent.class, Idempotent.NEW);
+        this.stateMachine = createStateMachine(Idempotent.class, Idempotent.OPENABLE);
     }
     
     private AutoClose realOpen() {
@@ -50,8 +57,8 @@ final class ConcurrencyImpl implements Concurrency {
     private void close() {
         stateMachine.transition(b -> b
             .event("close")
-            .goalState(Idempotent.CLOSED)
-            .action(this::realClose));
+            .successState(Idempotent.CLOSED)
+            .successValue(this::realClose));
     }
     
     private void realClose() {
