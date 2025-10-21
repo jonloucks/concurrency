@@ -92,18 +92,23 @@ loadScripts(document, 'script');</script>
 </ul>
 </li>
 <li class="circle">io.github.jonloucks.concurrency.api.<a href="StateMachine.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a>&lt;T&gt;</li>
+<li class="circle">io.github.jonloucks.concurrency.api.<a href="StateMachine.Config.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Config</a>&lt;T&gt;
+<ul>
+<li class="circle">io.github.jonloucks.concurrency.api.<a href="StateMachine.Config.Builder.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Config.Builder</a>&lt;T&gt;</li>
+</ul>
+</li>
+<li class="circle">io.github.jonloucks.concurrency.api.<a href="StateMachine.Rule.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Rule</a>&lt;T&gt;</li>
+<li class="circle">io.github.jonloucks.concurrency.api.<a href="StateMachine.Transition.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition</a>&lt;S,<wbr>R&gt;
+<ul>
+<li class="circle">io.github.jonloucks.concurrency.api.<a href="StateMachine.Transition.Builder.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition.Builder</a>&lt;B,<wbr>S,<wbr>R&gt;</li>
+</ul>
+</li>
 <li class="circle">io.github.jonloucks.concurrency.api.<a href="StateMachineFactory.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">StateMachineFactory</a></li>
 <li class="circle">java.util.function.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" class="type-name-link external-link" title="class or interface in java.util.function">Supplier</a>&lt;T&gt;
 <ul>
 <li class="circle">io.github.jonloucks.concurrency.api.<a href="Waitable.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">Waitable</a>&lt;T&gt; (also extends java.util.function.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;T&gt;)</li>
 </ul>
 </li>
-<li class="circle">io.github.jonloucks.concurrency.api.<a href="Transition.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">Transition</a>&lt;S,<wbr>R&gt;
-<ul>
-<li class="circle">io.github.jonloucks.concurrency.api.<a href="Transition.Builder.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">Transition.Builder</a>&lt;B,<wbr>S,<wbr>R&gt;</li>
-</ul>
-</li>
-<li class="circle">io.github.jonloucks.concurrency.api.<a href="TransitionAware.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">TransitionAware</a></li>
 <li class="circle">io.github.jonloucks.concurrency.api.<a href="WaitableFactory.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">WaitableFactory</a></li>
 </ul>
 </section>
@@ -114,7 +119,7 @@ loadScripts(document, 'script');</script>
 <ul>
 <li class="circle">java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Enum.html" class="type-name-link external-link" title="class or interface in java.lang">Enum</a>&lt;E&gt; (implements java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Comparable.html" title="class or interface in java.lang" class="external-link">Comparable</a>&lt;T&gt;, java.lang.constant.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/constant/Constable.html" title="class or interface in java.lang.constant" class="external-link">Constable</a>, java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)
 <ul>
-<li class="circle">io.github.jonloucks.concurrency.api.<a href="Idempotent.html" class="type-name-link" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a> (implements io.github.jonloucks.concurrency.api.<a href="TransitionAware.html" title="interface in io.github.jonloucks.concurrency.api">TransitionAware</a>)</li>
+<li class="circle">io.github.jonloucks.concurrency.api.<a href="Idempotent.html" class="type-name-link" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a> (implements io.github.jonloucks.concurrency.api.<a href="StateMachine.Rule.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Rule</a>&lt;T&gt;)</li>
 </ul>
 </li>
 </ul>

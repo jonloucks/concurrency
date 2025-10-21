@@ -95,17 +95,19 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Concurrency.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createConcurrency(io.github.jonloucks.concurrency.api.Concurrency.Config)" class="member-name-link">createConcurrency</a><wbr>(<a href="Concurrency.Config.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config</a>&nbsp;config)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Create a new Concurrency instance for customized deployments.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Enum.html" title="class or interface in java.lang" class="external-link">Enum</a>&lt;T&gt;&gt;<br><a href="StateMachine.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a>&lt;T&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createStateMachine(java.lang.Class,T)" class="member-name-link">createStateMachine</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;enumClass,
  T&nbsp;initialState)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Create a new StateMachine with the given initial state</div>
+<div class="block">Create a new StateMachine</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T&gt;&nbsp;<a href="StateMachine.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a>&lt;T&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createStateMachine(T)" class="member-name-link">createStateMachine</a><wbr>(T&nbsp;initialState)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Create a new StateMachine with the given initial state</div>
+<div class="block">Create a new StateMachine</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T&gt;&nbsp;<a href="Waitable.html" title="interface in io.github.jonloucks.concurrency.api">Waitable</a>&lt;T&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createWaitable(T)" class="member-name-link">createWaitable</a><wbr>(T&nbsp;initialValue)</code></div>
@@ -151,6 +153,8 @@ loadScripts(document, 'script');</script>
 <dd><code>initialValue</code> - (null is not allowed)</dd>
 <dt>Returns:</dt>
 <dd>the waitable</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if initialValue is null</dd>
 </dl>
 </section>
 </li>
@@ -158,7 +162,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="createStateMachine(T)">
 <h3 id="createStateMachine(java.lang.Object)">createStateMachine</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="StateMachine.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a>&lt;T&gt;</span>&nbsp;<span class="element-name">createStateMachine</span><wbr><span class="parameters">(T&nbsp;initialState)</span></div>
-<div class="block">Create a new StateMachine with the given initial state</div>
+<div class="block">Create a new StateMachine</div>
 <dl class="notes">
 <dt>Type Parameters:</dt>
 <dd><code>T</code> - the type of each state</dd>
@@ -166,6 +170,8 @@ loadScripts(document, 'script');</script>
 <dd><code>initialState</code> - the initial state</dd>
 <dt>Returns:</dt>
 <dd>the new StateMachine</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if initialState is null</dd>
 </dl>
 </section>
 </li>
@@ -174,14 +180,17 @@ loadScripts(document, 'script');</script>
 <h3 id="createStateMachine(java.lang.Class,java.lang.Enum)">createStateMachine</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Enum.html" title="class or interface in java.lang" class="external-link">Enum</a>&lt;T&gt;&gt;</span>&nbsp;<span class="return-type"><a href="StateMachine.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a>&lt;T&gt;</span>&nbsp;<span class="element-name">createStateMachine</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;enumClass,
  T&nbsp;initialState)</span></div>
-<div class="block">Create a new StateMachine with the given initial state</div>
+<div class="block">Create a new StateMachine</div>
 <dl class="notes">
 <dt>Type Parameters:</dt>
-<dd><code>T</code> - the type of each state</dd>
+<dd><code>T</code> - the type of state</dd>
 <dt>Parameters:</dt>
+<dd><code>enumClass</code> - the enumeration class</dd>
 <dd><code>initialState</code> - the initial state</dd>
 <dt>Returns:</dt>
 <dd>the new StateMachine</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if enumClass is null or initialState is null</dd>
 </dl>
 </section>
 </li>
@@ -200,11 +209,16 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="createConcurrency(io.github.jonloucks.concurrency.api.Concurrency.Config)">
 <h3>createConcurrency</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Concurrency.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a></span>&nbsp;<span class="element-name">createConcurrency</span><wbr><span class="parameters">(<a href="Concurrency.Config.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config</a>&nbsp;config)</span></div>
+<div class="block">Create a new Concurrency instance for customized deployments.
+ Note: GlobalConcurrency has everything feature, this api
+ allows creation of more than once instance of Concurrency.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>config</code> - the Concurrency configuration</dd>
 <dt>Returns:</dt>
 <dd>the new Concurrency</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if config is null or invalid</dd>
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list-long">
@@ -227,6 +241,8 @@ loadScripts(document, 'script');</script>
 <dd><code>config</code> - the configuration used to find the factory</dd>
 <dt>Returns:</dt>
 <dd>the factory if found</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if config is null or invalid</dd>
 </dl>
 </section>
 </li>

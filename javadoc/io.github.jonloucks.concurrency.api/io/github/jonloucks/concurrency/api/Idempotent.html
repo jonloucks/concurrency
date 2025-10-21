@@ -79,12 +79,12 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="TransitionAware.html" title="interface in io.github.jonloucks.concurrency.api">TransitionAware</a></code>, <code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></code>, <code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Comparable.html" title="class or interface in java.lang" class="external-link">Comparable</a>&lt;<a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a>&gt;</code>, <code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/constant/Constable.html" title="class or interface in java.lang.constant" class="external-link">Constable</a></code></dd>
+<dd><code><a href="StateMachine.Rule.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Rule</a>&lt;<a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a>&gt;</code>, <code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></code>, <code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Comparable.html" title="class or interface in java.lang" class="external-link">Comparable</a>&lt;<a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a>&gt;</code>, <code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/constant/Constable.html" title="class or interface in java.lang.constant" class="external-link">Constable</a></code></dd>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public enum </span><span class="element-name type-name-label">Idempotent</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Enum.html" title="class or interface in java.lang" class="external-link">Enum</a>&lt;<a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a>&gt;
-implements <a href="TransitionAware.html" title="interface in io.github.jonloucks.concurrency.api">TransitionAware</a></span></div>
+implements <a href="StateMachine.Rule.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Rule</a>&lt;<a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a>&gt;</span></div>
 <div class="block">Idempotent state machine states</div>
 </section>
 <section class="summary">
@@ -107,17 +107,32 @@ implements <a href="TransitionAware.html" title="interface in io.github.jonlouck
 <div class="table-header col-first">Enum Constant</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="#CLOSED" class="member-name-link">CLOSED</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">A state that all new actions are invalid
+ Implementations can decide to ignore or throw exception, but never be processed.</div>
+</div>
 <div class="col-first odd-row-color"><code><a href="#CLOSING" class="member-name-link">CLOSING</a></code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">A state of closing or shutting down.</div>
+</div>
 <div class="col-first even-row-color"><code><a href="#DESTROYED" class="member-name-link">DESTROYED</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="#NEW" class="member-name-link">NEW</a></code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Represents a permanent end state.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="#OPENABLE" class="member-name-link">OPENABLE</a></code></div>
+<div class="col-last odd-row-color">
+<div class="block">Initial state
+ OPENABLE can transition to OPENED, OPENING, CLOSED, or DESTROYED.</div>
+</div>
 <div class="col-first even-row-color"><code><a href="#OPENED" class="member-name-link">OPENED</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Resource, service is open to actions
+ OPEN can transition to CLOSING or CLOSED.</div>
+</div>
 <div class="col-first odd-row-color"><code><a href="#OPENING" class="member-name-link">OPENING</a></code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">For use cases where the open can take some time or reentrancy calls while initializing.</div>
+</div>
 </div>
 </section>
 </li>
@@ -133,24 +148,43 @@ implements <a href="TransitionAware.html" title="interface in io.github.jonlouck
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#canTransitionTo(java.lang.String,java.lang.Object)" class="member-name-link">canTransitionTo</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;candidate)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#canTransition(java.lang.String,io.github.jonloucks.concurrency.api.Idempotent)" class="member-name-link">canTransition</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event,
+ <a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a>&nbsp;goal)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Determine if 'this' state can transition to the candidateState.</div>
+<div class="block">Determine if 'this' state can transition to the target</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isRejecting()" class="member-name-link">isRejecting</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#valueOf(java.lang.String)" class="member-name-link">valueOf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="StateMachine.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a>&lt;<a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createStateMachine(io.github.jonloucks.contracts.api.Contracts)" class="member-name-link">createStateMachine</a><wbr>(io.github.jonloucks.contracts.api.Contracts&nbsp;contracts)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Create a StateMachine for Idempotency</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isRejecting()" class="member-name-link">isRejecting</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Determines if new requests/action should be rejected</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#valueOf(java.lang.String)" class="member-name-link">valueOf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Returns the enum constant of this class with the specified name.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a>[]</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#values()" class="member-name-link">values</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a>[]</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#values()" class="member-name-link">values</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Returns an array containing the constants of this enum class, in
 the order they are declared.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#withClose(io.github.jonloucks.concurrency.api.StateMachine,io.github.jonloucks.contracts.api.AutoClose)" class="member-name-link">withClose</a><wbr>(<a href="StateMachine.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a>&lt;<a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a>&gt;&nbsp;machine,
+ io.github.jonloucks.contracts.api.AutoClose&nbsp;close)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Assist with an idempotent close</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static io.github.jonloucks.contracts.api.AutoClose</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#withOpen(io.github.jonloucks.concurrency.api.StateMachine,io.github.jonloucks.contracts.api.AutoOpen)" class="member-name-link">withOpen</a><wbr>(<a href="StateMachine.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a>&lt;<a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a>&gt;&nbsp;machine,
+ io.github.jonloucks.contracts.api.AutoOpen&nbsp;open)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Assist with an idempotent close</div>
 </div>
 </div>
 </div>
@@ -173,39 +207,56 @@ the order they are declared.</div>
 <h2>Enum Constant Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="NEW">
-<h3>NEW</h3>
-<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></span>&nbsp;<span class="element-name">NEW</span></div>
+<section class="detail" id="OPENABLE">
+<h3>OPENABLE</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></span>&nbsp;<span class="element-name">OPENABLE</span></div>
+<div class="block">Initial state
+ OPENABLE can transition to OPENED, OPENING, CLOSED, or DESTROYED.</div>
 </section>
 </li>
 <li>
 <section class="detail" id="OPENING">
 <h3>OPENING</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></span>&nbsp;<span class="element-name">OPENING</span></div>
+<div class="block">For use cases where the open can take some time or reentrancy calls while initializing.
+ Transitioning to OPENING and then OPENED will allow requests to not be rejected.
+ OPENING can transition to OPENED, CLOSED, OPENABLE, DESTROYED.</div>
 </section>
 </li>
 <li>
 <section class="detail" id="OPENED">
 <h3>OPENED</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></span>&nbsp;<span class="element-name">OPENED</span></div>
+<div class="block">Resource, service is open to actions
+ OPEN can transition to CLOSING or CLOSED.</div>
 </section>
 </li>
 <li>
 <section class="detail" id="CLOSING">
 <h3>CLOSING</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></span>&nbsp;<span class="element-name">CLOSING</span></div>
+<div class="block">A state of closing or shutting down.
+ Note: isRejecting returns false during while close, but implementation can decide
+ if a new action will be processed.
+ CLOSING can transition to CLOSED or DESTROYED</div>
 </section>
 </li>
 <li>
 <section class="detail" id="CLOSED">
 <h3>CLOSED</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></span>&nbsp;<span class="element-name">CLOSED</span></div>
+<div class="block">A state that all new actions are invalid
+ Implementations can decide to ignore or throw exception, but never be processed.
+ CLOSED can transition to OPENABLE or DESTROYED</div>
 </section>
 </li>
 <li>
 <section class="detail" id="DESTROYED">
 <h3>DESTROYED</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></span>&nbsp;<span class="element-name">DESTROYED</span></div>
+<div class="block">Represents a permanent end state.
+ Implementations can decide to ignore or throw exception, but never be processed.
+ DESTROYED can not transition</div>
 </section>
 </li>
 </ul>
@@ -248,18 +299,18 @@ not permitted.)</div>
 </section>
 </li>
 <li>
-<section class="detail" id="canTransitionTo(java.lang.String,java.lang.Object)">
-<h3>canTransitionTo</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">canTransitionTo</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;candidate)</span></div>
-<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="TransitionAware.html#canTransitionTo(java.lang.String,java.lang.Object)">TransitionAware</a></code></span></div>
-<div class="block">Determine if 'this' state can transition to the candidateState.</div>
+<section class="detail" id="canTransition(java.lang.String,io.github.jonloucks.concurrency.api.Idempotent)">
+<h3>canTransition</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">canTransition</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event,
+ <a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a>&nbsp;goal)</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="StateMachine.Rule.html#canTransition(java.lang.String,T)">StateMachine.Rule</a></code></span></div>
+<div class="block">Determine if 'this' state can transition to the target</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="TransitionAware.html#canTransitionTo(java.lang.String,java.lang.Object)">canTransitionTo</a></code>&nbsp;in interface&nbsp;<code><a href="TransitionAware.html" title="interface in io.github.jonloucks.concurrency.api">TransitionAware</a></code></dd>
+<dd><code><a href="StateMachine.Rule.html#canTransition(java.lang.String,T)">canTransition</a></code>&nbsp;in interface&nbsp;<code><a href="StateMachine.Rule.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Rule</a>&lt;<a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a>&gt;</code></dd>
 <dt>Parameters:</dt>
 <dd><code>event</code> - the event name</dd>
-<dd><code>candidate</code> - the candidate state</dd>
+<dd><code>goal</code> - the goal state</dd>
 <dt>Returns:</dt>
 <dd>true if the transition is valid</dd>
 </dl>
@@ -269,6 +320,56 @@ not permitted.)</div>
 <section class="detail" id="isRejecting()">
 <h3>isRejecting</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isRejecting</span>()</div>
+<div class="block">Determines if new requests/action should be rejected</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>true if requests should be rejected.
+ How they are rejected is an implementation decision.
+ A request could be ignored, cause an exception, or be processed differently</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="createStateMachine(io.github.jonloucks.contracts.api.Contracts)">
+<h3>createStateMachine</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="StateMachine.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a>&lt;<a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a>&gt;</span>&nbsp;<span class="element-name">createStateMachine</span><wbr><span class="parameters">(io.github.jonloucks.contracts.api.Contracts&nbsp;contracts)</span></div>
+<div class="block">Create a StateMachine for Idempotency</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>contracts</code> - the contracts for getting dependencies</dd>
+<dt>Returns:</dt>
+<dd>the new StateMachine</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if contracts is null</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="withClose(io.github.jonloucks.concurrency.api.StateMachine,io.github.jonloucks.contracts.api.AutoClose)">
+<h3>withClose</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">withClose</span><wbr><span class="parameters">(<a href="StateMachine.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a>&lt;<a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a>&gt;&nbsp;machine,
+ io.github.jonloucks.contracts.api.AutoClose&nbsp;close)</span></div>
+<div class="block">Assist with an idempotent close</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>machine</code> - the StateMachine</dd>
+<dd><code>close</code> - the close</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="withOpen(io.github.jonloucks.concurrency.api.StateMachine,io.github.jonloucks.contracts.api.AutoOpen)">
+<h3>withOpen</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">io.github.jonloucks.contracts.api.AutoClose</span>&nbsp;<span class="element-name">withOpen</span><wbr><span class="parameters">(<a href="StateMachine.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a>&lt;<a href="Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a>&gt;&nbsp;machine,
+ io.github.jonloucks.contracts.api.AutoOpen&nbsp;open)</span></div>
+<div class="block">Assist with an idempotent close</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>machine</code> - the state machine</dd>
+<dd><code>open</code> - the open</dd>
+<dt>Returns:</dt>
+<dd>the AutoClose</dd>
+</dl>
 </section>
 </li>
 </ul>

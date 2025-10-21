@@ -103,23 +103,31 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab1"><a href="StateMachine.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a>&lt;T&gt;</div>
 <div class="col-last odd-row-color class-summary class-summary-tab1">
-<div class="block">State machine, containing a set of sets that can be transitioned to by events/actions</div>
+<div class="block">State machine.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab1"><a href="StateMachineFactory.html" title="interface in io.github.jonloucks.concurrency.api">StateMachineFactory</a></div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="StateMachine.Config.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Config</a>&lt;T&gt;</div>
 <div class="col-last even-row-color class-summary class-summary-tab1">
-<div class="block">State machine, containing a set of sets that can be transitioned to by events/actions</div>
+<div class="block">StateMachine configuration</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="Transition.html" title="interface in io.github.jonloucks.concurrency.api">Transition</a>&lt;S,<wbr>R&gt;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="StateMachine.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Config.Builder</a>&lt;T&gt;</div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">
+<div class="block">The Builder for a State Machine</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="StateMachine.Rule.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Rule</a>&lt;T&gt;</div>
+<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="block">Opt-in interface a state type can implement to assist in determining the valid transitions</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="StateMachine.Transition.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition</a>&lt;S,<wbr>R&gt;</div>
 <div class="col-last odd-row-color class-summary class-summary-tab1">
 <div class="block">Defines how a transition between states will be done</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab1"><a href="Transition.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Transition.Builder</a>&lt;B extends <a href="Transition.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Transition.Builder</a>&lt;B,<wbr>S,<wbr>R&gt;,<wbr>S,<wbr>R&gt;</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="StateMachine.Transition.Builder.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition.Builder</a>&lt;B extends <a href="StateMachine.Transition.Builder.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition.Builder</a>&lt;B,<wbr>S,<wbr>R&gt;,<wbr>S,<wbr>R&gt;</div>
 <div class="col-last even-row-color class-summary class-summary-tab1">
 <div class="block">Responsible for building a Transition</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="TransitionAware.html" title="interface in io.github.jonloucks.concurrency.api">TransitionAware</a></div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="StateMachineFactory.html" title="interface in io.github.jonloucks.concurrency.api">StateMachineFactory</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab1">
-<div class="block">Opt-in interface a state type can implement to assist in determining the valid transitions</div>
+<div class="block">Rule machine, containing a set of sets that can be transitioned to by events/actions</div>
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab1"><a href="Waitable.html" title="interface in io.github.jonloucks.concurrency.api">Waitable</a>&lt;T&gt;</div>
 <div class="col-last even-row-color class-summary class-summary-tab1">

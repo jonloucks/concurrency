@@ -13,32 +13,39 @@ public final class GlobalConcurrency {
     
     /**
      * Create a new Waitable with the given initial value
+     *
      * @param initialValue (null is not allowed)
      * @return the waitable
      * @param &lt;T&gt; the type of waitable
+     * @throws IllegalArgumentException if initialValue is null
      */
     public static &lt;T&gt; Waitable&lt;T&gt; createWaitable(T initialValue) {
-<span class="fc" id="L21">        return INSTANCE.concurrency.createWaitable(initialValue);</span>
+<span class="fc" id="L23">        return INSTANCE.concurrency.createWaitable(initialValue);</span>
     }
     
     /**
-     * Create a new StateMachine with the given initial state
+     * Create a new StateMachine
+     *
      * @param initialState the initial state
      * @return the new StateMachine
      * @param &lt;T&gt; the type of each state
+     * @throws IllegalArgumentException if initialState is null
      */
     public static &lt;T&gt; StateMachine&lt;T&gt; createStateMachine(T initialState) {
-<span class="fc" id="L31">        return INSTANCE.concurrency.createStateMachine(initialState);</span>
+<span class="fc" id="L35">        return INSTANCE.concurrency.createStateMachine(initialState);</span>
     }
     
     /**
-     * Create a new StateMachine with the given initial state
+     * Create a new StateMachine
+     *
+     * @param enumClass the enumeration class
      * @param initialState the initial state
      * @return the new StateMachine
-     * @param &lt;T&gt; the type of each state
+     * @param &lt;T&gt; the type of state
+     * @throws IllegalArgumentException if enumClass is null or initialState is null
      */
     public static &lt;T extends Enum&lt;T&gt;&gt; StateMachine&lt;T&gt; createStateMachine(Class&lt;T&gt; enumClass, T initialState) {
-<span class="fc" id="L41">        return INSTANCE.concurrency.createStateMachine(enumClass, initialState);</span>
+<span class="fc" id="L48">        return INSTANCE.concurrency.createStateMachine(enumClass, initialState);</span>
     }
     
     /**
@@ -46,10 +53,14 @@ public final class GlobalConcurrency {
      * @return the instance
      */
     public static Concurrency getInstance() {
-<span class="fc" id="L49">        return INSTANCE.concurrency;</span>
+<span class="fc" id="L56">        return INSTANCE.concurrency;</span>
     }
     
     /**
+     * Create a new Concurrency instance for customized deployments.
+     * Note: GlobalConcurrency has everything feature, this api
+     * allows creation of more than once instance of Concurrency.
+     *
      * @param config the Concurrency configuration
      * @return the new Concurrency
      * @see ConcurrencyFactory#create(Concurrency.Config)
@@ -57,29 +68,32 @@ public final class GlobalConcurrency {
      * &lt;p&gt;
      * Caller is responsible for invoking open() before use and close when no longer needed
      * &lt;/p&gt;
+     * @throws IllegalArgumentException if config is null or invalid
      */
     public static Concurrency createConcurrency(Concurrency.Config config) {
-<span class="fc" id="L62">        final ConcurrencyFactory factory = findConcurrencyFactory(config)</span>
-<span class="fc" id="L63">            .orElseThrow(() -&gt; new ConcurrencyException(&quot;Concurrency factory must be present.&quot;));</span>
+<span class="fc" id="L74">        final ConcurrencyFactory factory = findConcurrencyFactory(config)</span>
+<span class="fc" id="L75">            .orElseThrow(() -&gt; new ConcurrencyException(&quot;Concurrency factory must be present.&quot;));</span>
    
-<span class="fc" id="L65">        return nullCheck(factory.create(config), &quot;Concurrency could not be created.&quot;);</span>
+<span class="fc" id="L77">        return nullCheck(factory.create(config), &quot;Concurrency could not be created.&quot;);</span>
     }
     
     /**
      * Finds the ConcurrencyFactory implementation
+     *
      * @param config the configuration used to find the factory
      * @return the factory if found
+     * @throws IllegalArgumentException if config is null or invalid
      */
     public static Optional&lt;ConcurrencyFactory&gt; findConcurrencyFactory(Concurrency.Config config) {
-<span class="fc" id="L74">        return new ConcurrencyFactoryFinder(config).find();</span>
+<span class="fc" id="L88">        return new ConcurrencyFactoryFinder(config).find();</span>
     }
     
-<span class="fc" id="L77">    private GlobalConcurrency() {</span>
-<span class="fc" id="L78">        this.concurrency = createConcurrency(Concurrency.Config.DEFAULT);</span>
-<span class="fc" id="L79">        this.close = concurrency.open();</span>
-<span class="fc" id="L80">    }</span>
+<span class="fc" id="L91">    private GlobalConcurrency() {</span>
+<span class="fc" id="L92">        this.concurrency = createConcurrency(Concurrency.Config.DEFAULT);</span>
+<span class="fc" id="L93">        this.close = concurrency.open();</span>
+<span class="fc" id="L94">    }</span>
     
-<span class="fc" id="L82">    private static final GlobalConcurrency INSTANCE = new GlobalConcurrency();</span>
+<span class="fc" id="L96">    private static final GlobalConcurrency INSTANCE = new GlobalConcurrency();</span>
     
     private final Concurrency concurrency;
     @SuppressWarnings({&quot;FieldCanBeLocal&quot;, &quot;unused&quot;})

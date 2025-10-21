@@ -24,21 +24,26 @@ public interface ConcurrencyFactory {
      * &lt;/p&gt;
      * @param config the Concurrency configuration for the new instance
      * @return the new Concurrency instance
+     * @throws IllegalArgumentException if config is null or when configuration is invalid
      */
     Concurrency create(Concurrency.Config config);
     
     /**
      * Create a new instance of Concurrency
+     *
      * @param builderConsumer the config builder consumer callback
      * @return the new Concurrency instance
+     * @throws IllegalArgumentException if builderConsumer is null or when configuration is invalid
      */
     Concurrency create(Consumer&lt;Concurrency.Config.Builder&gt; builderConsumer);
     
     /**
      * Install all the requirements and promises to the given Contracts Repository.
      * Include Concurrency#CONTRACT which will private a unique
+     *
      * @param config the Concurrency config
      * @param repository the repository to add requirements and promises to
+     * @throws IllegalArgumentException if config is null, config is invalid, or repository is null
      */
     void install(Concurrency.Config config, Repository repository);
 }

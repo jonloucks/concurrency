@@ -102,12 +102,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/ja
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#accept(T)" class="member-name-link">accept</a><wbr>(<a href="Waitable.html" title="type parameter in Waitable">T</a>&nbsp;value)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Change the current value</div>
+<div class="block">Assign a new value</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="Waitable.html" title="type parameter in Waitable">T</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#acceptIf(java.util.function.Predicate,T)" class="member-name-link">acceptIf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Predicate.html" title="class or interface in java.util.function" class="external-link">Predicate</a>&lt;<a href="Waitable.html" title="type parameter in Waitable">T</a>&gt;&nbsp;predicate,
  <a href="Waitable.html" title="type parameter in Waitable">T</a>&nbsp;value)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Assign a new value if conditions are satisfied</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="Waitable.html" title="type parameter in Waitable">T</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#get()" class="member-name-link">get</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
@@ -118,7 +120,9 @@ extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/ja
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#shutdown()" class="member-name-link">shutdown</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Aborts all waiting threads.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="Waitable.html" title="type parameter in Waitable">T</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#waitFor(java.util.function.Predicate)" class="member-name-link">waitFor</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Predicate.html" title="class or interface in java.util.function" class="external-link">Predicate</a>&lt;<a href="Waitable.html" title="type parameter in Waitable">T</a>&gt;&nbsp;predicate)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
@@ -169,6 +173,8 @@ extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/ja
 <dd><code>predicate</code> - the predicate</dd>
 <dt>Returns:</dt>
 <dd>optionally get the current value if it matches</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if predicate is null or if value is null</dd>
 </dl>
 </section>
 </li>
@@ -176,12 +182,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/ja
 <section class="detail" id="accept(T)">
 <h3 id="accept(java.lang.Object)">accept</h3>
 <div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">accept</span><wbr><span class="parameters">(<a href="Waitable.html" title="type parameter in Waitable">T</a>&nbsp;value)</span></div>
-<div class="block">Change the current value</div>
+<div class="block">Assign a new value</div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Consumer.html#accept(T)" title="class or interface in java.util.function" class="external-link">accept</a></code>&nbsp;in interface&nbsp;<code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="Waitable.html" title="type parameter in Waitable">T</a>&gt;</code></dd>
 <dt>Parameters:</dt>
 <dd><code>value</code> - the new value</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if value is null</dd>
 </dl>
 </section>
 </li>
@@ -190,19 +198,16 @@ extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/ja
 <h3 id="acceptIf(java.util.function.Predicate,java.lang.Object)">acceptIf</h3>
 <div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="Waitable.html" title="type parameter in Waitable">T</a>&gt;</span>&nbsp;<span class="element-name">acceptIf</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Predicate.html" title="class or interface in java.util.function" class="external-link">Predicate</a>&lt;<a href="Waitable.html" title="type parameter in Waitable">T</a>&gt;&nbsp;predicate,
  <a href="Waitable.html" title="type parameter in Waitable">T</a>&nbsp;value)</span></div>
+<div class="block">Assign a new value if conditions are satisfied</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>predicate</code> - the predicate to test if a value should be replaced</dd>
 <dd><code>value</code> - the new value</dd>
 <dt>Returns:</dt>
 <dd>if accepted the value replaced.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if predicate is null or if value is null</dd>
 </dl>
-</section>
-</li>
-<li>
-<section class="detail" id="shutdown()">
-<h3>shutdown</h3>
-<div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">shutdown</span>()</div>
 </section>
 </li>
 <li>
@@ -215,6 +220,8 @@ extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/ja
 <dd><code>predicate</code> - the predicate to test if the value satisfies the stop waiting condition</dd>
 <dt>Returns:</dt>
 <dd>optionally the value if</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if predicate is null</dd>
 </dl>
 </section>
 </li>
@@ -230,7 +237,18 @@ extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/ja
 <dd><code>timeout</code> - the time to wait for the value to satisfy the predicate</dd>
 <dt>Returns:</dt>
 <dd>optionally the value if</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if predicate is null, duration is null, or duration is negative</dd>
 </dl>
+</section>
+</li>
+<li>
+<section class="detail" id="shutdown()">
+<h3>shutdown</h3>
+<div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">shutdown</span>()</div>
+<div class="block">Aborts all waiting threads.
+ All subsequent wait related calls will return immediately.
+ Shutdown is permanent</div>
 </section>
 </li>
 </ul>

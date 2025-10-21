@@ -43,7 +43,7 @@ loadScripts(document, 'script');</script>
 <div>
 <ul class="sub-nav-list">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested-class-summary">Nested</a>&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method-summary">Method</a></li>
@@ -78,10 +78,38 @@ loadScripts(document, 'script');</script>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">StateMachine&lt;T&gt;</span></div>
-<div class="block">State machine, containing a set of sets that can be transitioned to by events/actions</div>
+<div class="block">State machine.
+ User defined states with rules to restrict state transitions.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<li>
+<section class="nested-class-summary" id="nested-class-summary">
+<h2>Nested Class Summary</h2>
+<div class="caption"><span>Nested Classes</span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Interface</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static interface&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="StateMachine.Config.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Config</a>&lt;<a href="StateMachine.Config.html" title="type parameter in StateMachine.Config">T</a>&gt;</code></div>
+<div class="col-last even-row-color">
+<div class="block">StateMachine configuration</div>
+</div>
+<div class="col-first odd-row-color"><code>static interface&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="StateMachine.Rule.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Rule</a>&lt;<a href="StateMachine.Rule.html" title="type parameter in StateMachine.Rule">T</a>&gt;</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Opt-in interface a state type can implement to assist in determining the valid transitions</div>
+</div>
+<div class="col-first even-row-color"><code>static interface&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="StateMachine.Transition.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition</a>&lt;<a href="StateMachine.Transition.html" title="type parameter in StateMachine.Transition">S</a>,<wbr><a href="StateMachine.Transition.html" title="type parameter in StateMachine.Transition">R</a>&gt;</code></div>
+<div class="col-last even-row-color">
+<div class="block">Defines how a transition between states will be done</div>
+</div>
+</div>
+</section>
+</li>
 <!-- ========== METHOD SUMMARY =========== -->
 <li>
 <section class="method-summary" id="method-summary">
@@ -93,44 +121,39 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#addState(T)" class="member-name-link">addState</a><wbr>(<a href="StateMachine.html" title="type parameter in StateMachine">T</a>&nbsp;state)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="StateMachine.html" title="type parameter in StateMachine">T</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getState()" class="member-name-link">getState</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Adds a new state if it does not already exist</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="StateMachine.html" title="type parameter in StateMachine">T</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getState()" class="member-name-link">getState</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Get the current state</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#hasState(T)" class="member-name-link">hasState</a><wbr>(<a href="StateMachine.html" title="type parameter in StateMachine">T</a>&nbsp;state)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#hasState(T)" class="member-name-link">hasState</a><wbr>(<a href="StateMachine.html" title="type parameter in StateMachine">T</a>&nbsp;state)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Determine if the given state is known</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#isTransitionAllowed(java.lang.String,T)" class="member-name-link">isTransitionAllowed</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event,
- <a href="StateMachine.html" title="type parameter in StateMachine">T</a>&nbsp;state)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Determine if a transition is allowed from the current state to a new one.</div>
-</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#setState(java.lang.String,T)" class="member-name-link">setState</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#isTransitionAllowed(java.lang.String,T)" class="member-name-link">isTransitionAllowed</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event,
  <a href="StateMachine.html" title="type parameter in StateMachine">T</a>&nbsp;state)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Determine if a transition is allowed from the current state to a new one.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#setState(java.lang.String,T)" class="member-name-link">setState</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event,
+ <a href="StateMachine.html" title="type parameter in StateMachine">T</a>&nbsp;state)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Set the current state, state must already exist and be an allowed transition</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>&lt;R&gt;&nbsp;R</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#transition(io.github.jonloucks.concurrency.api.Transition)" class="member-name-link">transition</a><wbr>(<a href="Transition.html" title="interface in io.github.jonloucks.concurrency.api">Transition</a>&lt;<a href="StateMachine.html" title="type parameter in StateMachine">T</a>,<wbr>R&gt;&nbsp;transition)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>&lt;R&gt;&nbsp;R</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#transition(io.github.jonloucks.concurrency.api.StateMachine.Transition)" class="member-name-link">transition</a><wbr>(<a href="StateMachine.Transition.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition</a>&lt;<a href="StateMachine.html" title="type parameter in StateMachine">T</a>,<wbr>R&gt;&nbsp;transition)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Execute a transition from the current state to another</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>&lt;B extends <a href="Transition.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Transition.Builder</a>&lt;B,<wbr>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>&lt;B extends <a href="StateMachine.Transition.Builder.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition.Builder</a>&lt;B,<wbr>
 <a href="StateMachine.html" title="type parameter in StateMachine">T</a>,<wbr>
 R&gt;,<wbr>
 R&gt;<br>R</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#transition(java.util.function.Consumer)" class="member-name-link">transition</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="Transition.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Transition.Builder</a>&lt;B,<wbr><a href="StateMachine.html" title="type parameter in StateMachine">T</a>,<wbr>R&gt;&gt;&nbsp;builderConsumer)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#transition(java.util.function.Consumer)" class="member-name-link">transition</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="StateMachine.Transition.Builder.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition.Builder</a>&lt;B,<wbr><a href="StateMachine.html" title="type parameter in StateMachine">T</a>,<wbr>R&gt;&gt;&nbsp;builderConsumer)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Execute a transition from the current state to another</div>
 </div>
 </div>
@@ -155,6 +178,7 @@ R&gt;<br>R</code></div>
 <div class="block">Set the current state, state must already exist and be an allowed transition</div>
 <dl class="notes">
 <dt>Parameters:</dt>
+<dd><code>event</code> - the event name</dd>
 <dd><code>state</code> - the new state</dd>
 <dt>Returns:</dt>
 <dd>true if state was changed</dd>
@@ -171,19 +195,6 @@ R&gt;<br>R</code></div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>the current state, never null</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="addState(T)">
-<h3 id="addState(java.lang.Object)">addState</h3>
-<div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">addState</span><wbr><span class="parameters">(<a href="StateMachine.html" title="type parameter in StateMachine">T</a>&nbsp;state)</span></div>
-<div class="block">Adds a new state if it does not already exist</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>state</code> - the new state</dd>
-<dt>Throws:</dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - when state is null</dd>
 </dl>
 </section>
 </li>
@@ -222,10 +233,11 @@ R&gt;<br>R</code></div>
 <li>
 <section class="detail" id="transition(java.util.function.Consumer)">
 <h3>transition</h3>
-<div class="member-signature"><span class="type-parameters">&lt;B extends <a href="Transition.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Transition.Builder</a>&lt;B,<wbr>
+<div class="member-signature"><span class="type-parameters-long">&lt;B extends <a href="StateMachine.Transition.Builder.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition.Builder</a>&lt;B,<wbr>
 <a href="StateMachine.html" title="type parameter in StateMachine">T</a>,<wbr>
 R&gt;,<wbr>
-R&gt;</span>&nbsp;<span class="return-type">R</span>&nbsp;<span class="element-name">transition</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="Transition.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Transition.Builder</a>&lt;B,<wbr><a href="StateMachine.html" title="type parameter in StateMachine">T</a>,<wbr>R&gt;&gt;&nbsp;builderConsumer)</span></div>
+R&gt;</span>
+<span class="return-type">R</span>&nbsp;<span class="element-name">transition</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="StateMachine.Transition.Builder.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition.Builder</a>&lt;B,<wbr><a href="StateMachine.html" title="type parameter in StateMachine">T</a>,<wbr>R&gt;&gt;&nbsp;builderConsumer)</span></div>
 <div class="block">Execute a transition from the current state to another</div>
 <dl class="notes">
 <dt>Type Parameters:</dt>
@@ -241,9 +253,9 @@ R&gt;</span>&nbsp;<span class="return-type">R</span>&nbsp;<span class="element-n
 </section>
 </li>
 <li>
-<section class="detail" id="transition(io.github.jonloucks.concurrency.api.Transition)">
+<section class="detail" id="transition(io.github.jonloucks.concurrency.api.StateMachine.Transition)">
 <h3>transition</h3>
-<div class="member-signature"><span class="type-parameters">&lt;R&gt;</span>&nbsp;<span class="return-type">R</span>&nbsp;<span class="element-name">transition</span><wbr><span class="parameters">(<a href="Transition.html" title="interface in io.github.jonloucks.concurrency.api">Transition</a>&lt;<a href="StateMachine.html" title="type parameter in StateMachine">T</a>,<wbr>R&gt;&nbsp;transition)</span></div>
+<div class="member-signature"><span class="type-parameters">&lt;R&gt;</span>&nbsp;<span class="return-type">R</span>&nbsp;<span class="element-name">transition</span><wbr><span class="parameters">(<a href="StateMachine.Transition.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition</a>&lt;<a href="StateMachine.html" title="type parameter in StateMachine">T</a>,<wbr>R&gt;&nbsp;transition)</span></div>
 <div class="block">Execute a transition from the current state to another</div>
 <dl class="notes">
 <dt>Type Parameters:</dt>
