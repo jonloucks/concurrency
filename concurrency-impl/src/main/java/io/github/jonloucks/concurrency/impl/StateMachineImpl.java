@@ -4,8 +4,10 @@ import io.github.jonloucks.concurrency.api.ConcurrencyException;
 import io.github.jonloucks.concurrency.api.StateMachine;
 import io.github.jonloucks.concurrency.api.Waitable;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static io.github.jonloucks.concurrency.impl.Internal.*;
@@ -24,8 +26,23 @@ final class StateMachineImpl<S> implements StateMachine<S> {
     }
     
     @Override
-    public S getState() {
+    public S get() {
         return currentState.get();
+    }
+    
+    @Override
+    public Optional<S> getIf(Predicate<S> predicate) {
+        return currentState.getIf(predicate);
+    }
+    
+    @Override
+    public Optional<S> getWhen(Predicate<S> predicate) {
+        return currentState.getWhen(predicate);
+    }
+    
+    @Override
+    public Optional<S> getWhen(Predicate<S> predicate, Duration timeout) {
+        return currentState.getWhen(predicate, timeout);
     }
     
     @Override
