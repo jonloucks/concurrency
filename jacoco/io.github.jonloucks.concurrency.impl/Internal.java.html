@@ -43,7 +43,7 @@ final class Internal {
 <span class="fc" id="L43">        return illegalCheck(validTimeout, validTimeout.isNegative(), &quot;Timeout must not be negative.&quot;);</span>
     }
     
-    static void throwUnchecked(Throwable thrown, String message) throws Error, ConcurrencyException, RuntimeException {
+    static void throwUnchecked(Throwable thrown, String message) throws Error,  RuntimeException {
 <span class="fc bfc" id="L47" title="All 2 branches covered.">        if (null == thrown) {</span>
 <span class="fc" id="L48">            return;</span>
 <span class="fc bfc" id="L49" title="All 2 branches covered.">        } else if (thrown instanceof Error) {</span>
@@ -62,10 +62,8 @@ final class Internal {
 <span class="fc" id="L62">    }</span>
     
     private static void validateUnchecked(Throwable thrown, String message) throws Error, ConcurrencyException {
-<span class="fc" id="L65">        runWithIgnore( () -&gt; {</span>
-<span class="fc" id="L66">            throwUnchecked(thrown, message);</span>
-<span class="fc" id="L67">        });</span>
-<span class="fc" id="L68">    }</span>
+<span class="fc" id="L65">        runWithIgnore( () -&gt; throwUnchecked(thrown, message));</span>
+<span class="fc" id="L66">    }</span>
     
     @FunctionalInterface
     interface ThrowingRunnable&lt;E extends Throwable&gt; {
@@ -74,9 +72,9 @@ final class Internal {
     
     static &lt;E extends Throwable&gt; void runWithIgnore(ThrowingRunnable&lt;E&gt; runnable) {
         try {
-<span class="fc" id="L77">            runnable.run();</span>
-<span class="fc" id="L78">        } catch (Throwable ignored) {</span>
-<span class="fc" id="L79">        }</span>
-<span class="fc" id="L80">    }</span>
+<span class="fc" id="L75">            runnable.run();</span>
+<span class="fc" id="L76">        } catch (Throwable ignored) {</span>
+<span class="fc" id="L77">        }</span>
+<span class="fc" id="L78">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StateMachine.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">concurrency</a> &gt; <a href="index.source.html" class="el_package">io.github.jonloucks.concurrency.api</a> &gt; <span class="el_source">StateMachine.java</span></div><h1>StateMachine.java</h1><pre class="source lang-java linenums">package io.github.jonloucks.concurrency.api;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+/**
+ * State machine.
+ * User defined states with rules to restrict state transitions.
+ *
+ * @param &lt;T&gt; the user define state type
+ */
+public interface StateMachine&lt;T&gt; extends WaitableSupplier&lt;T&gt; {
+    
+    /**
+     * Set the current state, state must already exist and be an allowed transition
+     *
+     * @param event the event name
+     * @param state the new state
+     * @return true if state was changed
+     * @throws IllegalArgumentException when event is null, state is null, or unknown
+     */
+    boolean setState(String event, T state);
+    
+    /**
+     * Get the current state
+     *
+     * @return the current state, never null
+     */
+    default T getState() {
+<span class="fc" id="L32">        return get();</span>
+    }
+    
+    /**
+     * Determine if the given state is known
+     *
+     * @param state the state to check
+     * @return true iif the state is known
+     * @throws IllegalArgumentException when state is null
+     */
+    boolean hasState(T state);
+    
+    /**
+     * Determine if a transition is allowed from the current state to a new one.
+     *
+     * @param event the event that is triggering the transition
+     * @param state the candidate state to transition to
+     * @return if transition event is allowed to change the current state to the given state
+     * @throws IllegalArgumentException when event is null, state is null, or unknown
+     */
+    boolean isTransitionAllowed(String event, T state);
+    
+    /**
+     * Execute a transition from the current state to another
+     *
+     * @param builderConsumer the transition builder consumer
+     * @param &lt;B&gt;             the transition return value
+     * @param &lt;R&gt;             the return type of the transition. For example, a Closeable during open.
+     * @return the builder consumer.
+     * @throws IllegalArgumentException when builderConsumer is null or required fields are not present.
+     */
+    &lt;B extends Transition.Builder&lt;B, T, R&gt;, R&gt; R transition(Consumer&lt;Transition.Builder&lt;B, T, R&gt;&gt; builderConsumer);
+    
+    /**
+     * Execute a transition from the current state to another
+     *
+     * @param transition the transition to execute
+     * @param &lt;R&gt;        the return type of the transition. For example, a Closeable during open.
+     * @return the transition return value
+     * @throws IllegalArgumentException when transition is null or required fields are not present.
+     */
+    &lt;R&gt; R transition(Transition&lt;T, R&gt; transition);
+    
+    /**
+     * Defines how a transition between states will be done
+     *
+     * @param &lt;R&gt; return type of the transition
+     */
+    interface Transition&lt;S, R&gt; {
+        
+        /**
+         * @return the name of the event
+         */
+        String getEvent();
+        
+        /**
+         * @return the success state of this transition
+         */
+        S getSuccessState();
+        
+        /**
+         * @return the optional state if an exception is thrown
+         */
+        Optional&lt;S&gt; getErrorState();
+        
+        /**
+         * @return the optional state if the transition is not allowed
+         */
+        Optional&lt;S&gt; getFailedState();
+        
+        /**
+         * @return the optional return value on success
+         */
+        Optional&lt;Supplier&lt;R&gt;&gt; getSuccessValue();
+        
+        /**
+         * @return the optional return value on exception thrown
+         */
+        Optional&lt;Supplier&lt;R&gt;&gt; getErrorValue();
+        
+        /**
+         * @return the optional return value if transition is not allowed
+         */
+        Optional&lt;Supplier&lt;R&gt;&gt; getFailedValue();
+   
+        /**
+         * Responsible for building a Transition
+         *
+         * @param &lt;S&gt; the return type of the transition
+         */
+        interface Builder&lt;B extends Builder&lt;B, S, R&gt;, S, R&gt; extends Transition&lt;S, R&gt; {
+            
+            /**
+             * Assign the required event name
+             *
+             * @param event the event name
+             * @return this builder
+             */
+            Builder&lt;B, S, R&gt; event(String event);
+            
+            /**
+             * Assign the required success state
+             *
+             * @param state the success state
+             * @return this builder
+             */
+            Builder&lt;B, S, R&gt; successState(S state);
+            
+            /**
+             * Assign the optional success value
+             *
+             * @param valueSupplier the success value supplier
+             * @return this builder
+             */
+            Builder&lt;B, S, R&gt; successValue(Supplier&lt;R&gt; valueSupplier);
+            
+            /**
+             * Assign the optional success block
+             *
+             * @param runnable the runnable action
+             * @return this builder
+             */
+            Builder&lt;B, S, R&gt; successValue(Runnable runnable);
+            
+            /**
+             * Assign the optional error state used if there is exception
+             *
+             * @param state the error state
+             * @return this builder
+             */
+            Builder&lt;B, S, R&gt; errorState(S state);
+            
+            /**
+             * Assign the optional error value
+             * Note: if this is set, when an exception occurs this value will be returned
+             *
+             * @param valueSupplier the error value supplier
+             * @return this builder
+             */
+            Builder&lt;B, S, R&gt; errorValue(Supplier&lt;R&gt; valueSupplier);
+            
+            /**
+             * Assign the optional failed state used if the goal state is not allowed
+             *
+             * @param state the failed state
+             * @return this builder
+             */
+            Builder&lt;B, S, R&gt; failedState(S state);
+            
+            /**
+             * Assign the optional failed value used when the goal state is not allowed
+             *
+             * @param valueSupplier the failed value supplier
+             * @return this builder
+             */
+            Builder&lt;B, S, R&gt; failedValue(Supplier&lt;R&gt; valueSupplier);
+        }
+    }
+    
+    /**
+     * Opt-in interface a state type can implement to assist in determining the valid transitions
+     */
+    interface Rule&lt;T&gt; {
+        
+        /**
+         * Determine if 'this' state can transition to the target
+         *
+         * @param event the event name
+         * @param goal  the goal state
+         * @return true if the transition is valid
+         */
+        boolean canTransition(String event, T goal);
+    }
+    
+    /**
+     * StateMachine configuration
+     *
+     * @param &lt;T&gt; the type of each state
+     */
+    interface Config&lt;T&gt; {
+        
+        /**
+         * Return the initial value. It is required, the use of required is because
+         * the builder may not have provided a value
+         *
+         * @return the optional initial state
+         */
+        Optional&lt;T&gt; getInitial();
+        
+        /**
+         * @return the list of states in the state machine
+         */
+        List&lt;T&gt; getStates();
+        
+        /**
+         * Get all the rules for a specified state
+         *
+         * @param state the state
+         * @return the rules of the state
+         */
+        List&lt;Rule&lt;T&gt;&gt; getStateRules(T state);
+        
+        /**
+         * The Builder for a State Machine
+         * @param &lt;T&gt; the type of each state
+         */
+        interface Builder&lt;T&gt; extends Config&lt;T&gt; {
+            
+            /**
+             * Assign the required initial state
+             * @param state the initial state
+             * @return this builder
+             */
+            Builder&lt;T&gt; initial(T state);
+            
+            /**
+             * Add a new state
+             * @param state the state to add
+             * @return this builder
+             */
+            Builder&lt;T&gt; state(T state);
+            
+            /**
+             * Add a list of states
+             * @param states the states to add
+             * @return this builder
+             */
+            Builder&lt;T&gt; states(List&lt;T&gt; states);
+            
+            /**
+             * Add a rule to a state
+             *
+             * @param state the state to add rules to
+             * @param rule the rule to add
+             * @return this builder
+             */
+            Builder&lt;T&gt; rule(T state, Rule&lt;T&gt; rule);
+            
+            /**
+             * Add many rules to a state
+             * @param state the to add rules to
+             * @param rules the rules to add
+             * @return this builder
+             */
+            Builder&lt;T&gt; rules(T state, List&lt;Rule&lt;T&gt;&gt; rules);
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
