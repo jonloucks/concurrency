@@ -11,7 +11,7 @@ import java.util.function.Supplier;
  *
  * @param <T> the user define state type
  */
-public interface StateMachine<T> {
+public interface StateMachine<T> extends WaitableSupplier<T> {
     
     /**
      * Set the current state, state must already exist and be an allowed transition
@@ -28,7 +28,9 @@ public interface StateMachine<T> {
      *
      * @return the current state, never null
      */
-    T getState();
+    default T getState() {
+        return get();
+    }
     
     /**
      * Determine if the given state is known

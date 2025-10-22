@@ -86,11 +86,11 @@ public interface WaitableTests {
     }
     
     @Test
-    default void waitable_waitFor_WithNullPredicate_Throws() {
+    default void waitable_getWhen_WithNullPredicate_Throws() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                waitable.waitFor(null);
+                waitable.getWhen(null);
             });
             
             assertThrown(thrown, "Predicate must be present.");
@@ -98,12 +98,12 @@ public interface WaitableTests {
     }
     
     @Test
-    default void waitable_waitFor_WithNullPredicateAndTimeout_Throws() {
+    default void waitable_getWhen_WithNullPredicateAndTimeout_Throws() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final Duration timeout = Duration.ofSeconds(1);
             final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                waitable.waitFor(null, timeout);
+                waitable.getWhen(null, timeout);
             });
             
             assertThrown(thrown, "Predicate must be present.");
@@ -111,12 +111,12 @@ public interface WaitableTests {
     }
     
     @Test
-    default void waitable_waitFor_WithPredicateAndNullTimeout_Throws() {
+    default void waitable_getWhen_WithPredicateAndNullTimeout_Throws() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final Predicate<String> predicate = s -> true;
             final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                waitable.waitFor(predicate, null);
+                waitable.getWhen(predicate, null);
             });
             
             assertThrown(thrown, "Timeout must be present.");
@@ -124,13 +124,13 @@ public interface WaitableTests {
     }
     
     @Test
-    default void waitable_waitFor_WithPredicateAndNegativeTimeout_Throws() {
+    default void waitable_getWhen_WithPredicateAndNegativeTimeout_Throws() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final Predicate<String> predicate = s -> true;
             final Duration timeout = Duration.ofSeconds(-1);
             final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                waitable.waitFor(predicate, timeout);
+                waitable.getWhen(predicate, timeout);
             });
             
             assertThrown(thrown, "Timeout must not be negative.");
@@ -138,6 +138,19 @@ public interface WaitableTests {
     }
     
     @Test
+    default void waitable_getWhen_WithInitialValue_Works() {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            
+            final Optional<String> optionalValue = waitable.getWhen(INITIAL::equals);
+            
+            assertTrue(optionalValue.isPresent());
+            assertEquals(INITIAL, optionalValue.get());
+        });
+    }
+    
+    @Test
+    @Deprecated
     default void waitable_waitFor_WithInitialValue_Works() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
@@ -161,6 +174,19 @@ public interface WaitableTests {
     }
     
     @Test
+    default void waitable_getWhen_WithInitialValueAndTimeout_Works() {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            
+            final Optional<String> optionalValue = waitable.getWhen(INITIAL::equals, Duration.ofDays(1));
+            
+            assertTrue(optionalValue.isPresent());
+            assertEquals(INITIAL, optionalValue.get());
+        });
+    }
+    
+    @Test
+    @Deprecated
     default void waitable_waitFor_WithInitialValueAndTimeout_Works() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
@@ -173,7 +199,7 @@ public interface WaitableTests {
     }
     
     @Test
-    default void waitable_waitFor_WithFailedAndTimeout_Works() {
+    default void waitable_getWhen_WithFailedAndTimeout_Works() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             
@@ -184,28 +210,28 @@ public interface WaitableTests {
             });
             thread.start();
             
-            final Optional<String> optionalValue = waitable.waitFor(MODIFIED::equals, Duration.ofMillis(100));
+            final Optional<String> optionalValue = waitable.getWhen(MODIFIED::equals, Duration.ofMillis(100));
             assertFalse(optionalValue.isPresent());
         });
     }
     
     @Test
-    default void waitable_waitFor_WithFailedAndZeroTimeout_Works() {
+    default void waitable_getWhen_WithFailedAndZeroTimeout_Works() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             
-            final Optional<String> optionalValue = waitable.waitFor(MODIFIED::equals, Duration.ZERO);
+            final Optional<String> optionalValue = waitable.getWhen(MODIFIED::equals, Duration.ZERO);
             assertFalse(optionalValue.isPresent());
             assertEquals(INITIAL, waitable.get());
         });
     }
     
     @Test
-    default void waitable_waitFor_WithFailedWhenShutdown_Works() {
+    default void waitable_getWhen_WithFailedWhenShutdown_Works() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             waitable.shutdown();
-            final Optional<String> optionalValue = waitable.waitFor(MODIFIED::equals, Duration.ofMinutes(5));
+            final Optional<String> optionalValue = waitable.getWhen(MODIFIED::equals, Duration.ofMinutes(5));
             assertFalse(optionalValue.isPresent());
             assertEquals(INITIAL, waitable.get());
         });
@@ -213,7 +239,7 @@ public interface WaitableTests {
     
     @ParameterizedTest(name = "threads = {0}")
     @ValueSource(ints = {1,3,17})
-    default void waitable_waitFor_Threads_Works(int numberOfThreads) {
+    default void waitable_getWhen_Threads_Works(int numberOfThreads) {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
@@ -222,7 +248,7 @@ public interface WaitableTests {
             for (int i = 0; i < numberOfThreads; i++) {
                 final Thread thread = new Thread(() -> {
                     try {
-                        final Optional<String> optionalValue = waitable.waitFor(MODIFIED::equals, Duration.ofMinutes(5));
+                        final Optional<String> optionalValue = waitable.getWhen(MODIFIED::equals, Duration.ofMinutes(5));
                         if (optionalValue.isPresent()) {
                             countDownLatch.countDown();
                         } else {
@@ -248,7 +274,7 @@ public interface WaitableTests {
 
     @ParameterizedTest(name = "threads = {0}")
     @ValueSource(ints = {1,3,17})
-    default void waitable_waitFor_shutdownWithThreads_Works(int numberOfThreads) {
+    default void waitable_getWhen_shutdownWithThreads_Works(int numberOfThreads) {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
@@ -257,7 +283,7 @@ public interface WaitableTests {
             for (int i = 0; i < numberOfThreads; i++) {
                 final Thread thread = new Thread(() -> {
                     try {
-                        final Optional<String> optionalValue = waitable.waitFor(MODIFIED::equals, Duration.ofMinutes(5));
+                        final Optional<String> optionalValue = waitable.getWhen(MODIFIED::equals, Duration.ofMinutes(5));
                         if (!optionalValue.isPresent()) {
                             countDownLatch.countDown();
                         } else {
@@ -282,7 +308,7 @@ public interface WaitableTests {
     
     @ParameterizedTest(name = "threads = {0}")
     @ValueSource(ints = {1,3,17})
-    default void waitable_waitFor_WithThreadsAndTimeout_Works(int numberOfThreads) {
+    default void waitable_getWhen_WithThreadsAndTimeout_Works(int numberOfThreads) {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
@@ -291,7 +317,7 @@ public interface WaitableTests {
             for (int i = 0; i < numberOfThreads; i++) {
                 final Thread thread = new Thread(() -> {
                     try {
-                        final Optional<String> optionalValue = waitable.waitFor(MODIFIED::equals, Duration.ofMillis(25));
+                        final Optional<String> optionalValue = waitable.getWhen(MODIFIED::equals, Duration.ofMillis(25));
                         if (!optionalValue.isPresent()) {
                             countDownLatch.countDown();
                         } else {

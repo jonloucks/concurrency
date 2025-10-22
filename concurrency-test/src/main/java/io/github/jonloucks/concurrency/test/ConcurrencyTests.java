@@ -13,8 +13,7 @@ import java.util.function.Consumer;
 import static io.github.jonloucks.concurrency.test.Tools.withConcurrency;
 import static io.github.jonloucks.contracts.test.Tools.assertObject;
 import static io.github.jonloucks.contracts.test.Tools.assertThrown;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("CodeBlock2Expr")
 @ExtendWith(MockitoExtension.class)
@@ -60,9 +59,15 @@ public interface ConcurrencyTests {
     @Test
     default void concurrency_createStateMachine_WithValidInitial_Works() {
         withConcurrency((contracts, concurrency) -> {
-            final StateMachine<String> stateMachine = concurrency.createStateMachine("hello");
+            final String initialState = "initialState";
+            final StateMachine<String> stateMachine = concurrency.createStateMachine(initialState);
             assertObject(stateMachine);
-            assertEquals("hello", stateMachine.getState());
+            assertEquals(initialState, stateMachine.getState());
+            assertEquals(initialState, stateMachine.get());
+            assertTrue(stateMachine.getIf(initialState::equals).isPresent());
+            assertEquals(initialState, stateMachine.getIf(initialState::equals).get());
+            assertTrue(stateMachine.getWhen(initialState::equals).isPresent());
+            assertEquals(initialState, stateMachine.getWhen(initialState::equals).get());
         });
     }
     

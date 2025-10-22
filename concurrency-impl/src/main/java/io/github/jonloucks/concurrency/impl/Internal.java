@@ -43,7 +43,7 @@ final class Internal {
         return illegalCheck(validTimeout, validTimeout.isNegative(), "Timeout must not be negative.");
     }
     
-    static void throwUnchecked(Throwable thrown, String message) throws Error, ConcurrencyException, RuntimeException {
+    static void throwUnchecked(Throwable thrown, String message) throws Error,  RuntimeException {
         if (null == thrown) {
             return;
         } else if (thrown instanceof Error) {
@@ -62,9 +62,7 @@ final class Internal {
     }
     
     private static void validateUnchecked(Throwable thrown, String message) throws Error, ConcurrencyException {
-        runWithIgnore( () -> {
-            throwUnchecked(thrown, message);
-        });
+        runWithIgnore( () -> throwUnchecked(thrown, message));
     }
     
     @FunctionalInterface

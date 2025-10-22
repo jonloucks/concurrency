@@ -12,14 +12,7 @@ import static io.github.jonloucks.concurrency.impl.Internal.*;
 import static io.github.jonloucks.contracts.api.Checks.nullCheck;
 
 final class WaitableImpl<T> implements Waitable<T> {
-    private final Object simpleLock = new Object();
-    private final AtomicReference<T> reference = new AtomicReference<>();
-    private volatile boolean isShutdown = false;
 
-    WaitableImpl(T initialValue) {
-        reference.set(valueCheck(initialValue));
-    }
-    
     @Override
     public void shutdown() {
         synchronized (simpleLock) {
@@ -29,12 +22,12 @@ final class WaitableImpl<T> implements Waitable<T> {
     }
     
     @Override
-    public Optional<T> waitFor(Predicate<T> predicate) {
-        return waitFor(predicate, Duration.ofSeconds(Long.MAX_VALUE));
+    public Optional<T> getWhen(Predicate<T> predicate) {
+        return getWhen(predicate, Duration.ofSeconds(Long.MAX_VALUE));
     }
     
     @Override
-    public Optional<T> waitFor(Predicate<T> predicate, Duration timeout) {
+    public Optional<T> getWhen(Predicate<T> predicate, Duration timeout) {
         final Predicate<T> validPredicate = predicateCheck(predicate);
         final Duration validDuration = timeoutCheck(timeout);
         
@@ -84,7 +77,13 @@ final class WaitableImpl<T> implements Waitable<T> {
     
     @Override
     public T get() {
-        return reference.get();
+        synchronized (simpleLock) {
+            return reference.get();
+        }
+    }
+    
+    WaitableImpl(T initialValue) {
+        reference.set(valueCheck(initialValue));
     }
     
     private Optional<T> waitForLoop(Predicate<T> predicate, Duration timeout) {
@@ -125,4 +124,8 @@ final class WaitableImpl<T> implements Waitable<T> {
     private static <T> T valueCheck(T t) {
         return nullCheck(t, "Value must be present.");
     }
+    
+    private final Object simpleLock = new Object();
+    private final AtomicReference<T> reference = new AtomicReference<>();
+    private volatile boolean isShutdown = false;
 }
