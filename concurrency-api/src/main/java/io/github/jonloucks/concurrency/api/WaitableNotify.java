@@ -16,7 +16,7 @@ public interface WaitableNotify<T> {
      * Note: It is likely the listener will be called within a write lock context.
      * Deadlocks could happen of listener is waiting on another thread to acquire a lock to this WaitableNotify
      *
-     * @param predicate the predicate to test if the value
+     * @param predicate the predicate to test if the value should be passed to listener
      * @param listener the listener
      * @return AutoClose which removes the listener
      * @throws IllegalArgumentException if predicate is null or the listener is null
