@@ -3,6 +3,7 @@
 import io.github.jonloucks.concurrency.api.ConcurrencyException;
 import io.github.jonloucks.concurrency.api.StateMachine;
 import io.github.jonloucks.concurrency.api.Waitable;
+import io.github.jonloucks.contracts.api.AutoClose;
 
 import java.time.Duration;
 import java.util.*;
@@ -18,98 +19,97 @@ final class StateMachineImpl&lt;S&gt; implements StateMachine&lt;S&gt; {
     
     @Override
     public boolean setState(String event, S state) {
-<span class="fc bfc" id="L21" title="All 2 branches covered.">        if (isTransitionAllowed(event, existsCheck(state))) {</span>
-<span class="fc" id="L22">            currentState.accept(state);</span>
-<span class="fc" id="L23">            return true;</span>
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        if (isTransitionAllowed(event, existsCheck(state))) {</span>
+<span class="fc" id="L23">            currentState.accept(state);</span>
+<span class="fc" id="L24">            return true;</span>
         }
-<span class="fc" id="L25">        return false;</span>
+<span class="fc" id="L26">        return false;</span>
     }
     
     @Override
     public S get() {
-<span class="fc" id="L30">        return currentState.get();</span>
-    }
-    
-    @Override
-    public Optional&lt;S&gt; getIf(Predicate&lt;S&gt; predicate) {
-<span class="fc" id="L35">        return currentState.getIf(predicate);</span>
-    }
-    
-    @Override
-    public Optional&lt;S&gt; getWhen(Predicate&lt;S&gt; predicate) {
-<span class="fc" id="L40">        return currentState.getWhen(predicate);</span>
+<span class="fc" id="L31">        return currentState.get();</span>
     }
     
     @Override
     public Optional&lt;S&gt; getWhen(Predicate&lt;S&gt; predicate, Duration timeout) {
-<span class="nc" id="L45">        return currentState.getWhen(predicate, timeout);</span>
+<span class="fc" id="L36">        return currentState.getWhen(predicate, timeout);</span>
+    }
+
+    @Override
+    public AutoClose notifyIf(Predicate&lt;S&gt; predicate, Consumer&lt;S&gt; listener) {
+<span class="fc" id="L41">        return currentState.notifyIf(predicate, listener);</span>
     }
     
     @Override
     public &lt;B extends Transition.Builder&lt;B, S, R&gt;, R&gt; R transition(Consumer&lt;Transition.Builder&lt;B, S, R&gt;&gt; builderConsumer) {
-<span class="fc" id="L50">        final TransitionBuilderImpl&lt;B,S,R&gt; builder = new TransitionBuilderImpl&lt;&gt;();</span>
-<span class="fc" id="L51">        builderConsumerCheck(builderConsumer).accept(builder);</span>
-<span class="fc" id="L52">        return transition(builder);</span>
+<span class="fc" id="L46">        final TransitionBuilderImpl&lt;B,S,R&gt; builder = new TransitionBuilderImpl&lt;&gt;();</span>
+<span class="fc" id="L47">        builderConsumerCheck(builderConsumer).accept(builder);</span>
+<span class="fc" id="L48">        return transition(builder);</span>
     }
     
     @Override
     public &lt;R&gt; R transition(Transition&lt;S, R&gt; transition) {
-<span class="fc" id="L57">        final Transition&lt;S,R&gt; t = transitionCheck(transition);</span>
-<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (isTransitionAllowed(t.getEvent(), t.getSuccessState())) {</span>
+<span class="fc" id="L53">        final Transition&lt;S,R&gt; t = transitionCheck(transition);</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        if (isAllowed(t)) {</span>
             try {
-<span class="fc" id="L60">                return handleSuccess(t);</span>
-<span class="fc" id="L61">            } catch (Throwable thrown) {</span>
-<span class="fc" id="L62">                return handleError(t, thrown);</span>
+<span class="fc" id="L56">                return handleSuccess(t);</span>
+<span class="fc" id="L57">            } catch (Throwable thrown) {</span>
+<span class="fc" id="L58">                return handleError(t, thrown);</span>
             }
         } else {
-<span class="fc" id="L65">            return handleDenied(t);</span>
+<span class="fc" id="L61">            return handleFailure(t);</span>
         }
     }
     
     @Override
     public boolean hasState(S state) {
-<span class="fc" id="L71">        return stateToRulesLookup.containsKey(stateCheck(state));</span>
+<span class="fc" id="L67">        return stateToRulesLookup.containsKey(stateCheck(state));</span>
     }
     
     @Override
     public boolean isTransitionAllowed(String event, S state) {
-<span class="fc" id="L76">        final String validEvent = Internal.eventCheck(event);</span>
-<span class="fc" id="L77">        final S toState = stateCheck(state);</span>
-<span class="fc" id="L78">        final S fromState = getState();</span>
-<span class="fc bfc" id="L79" title="All 4 branches covered.">        if (hasState(toState) &amp;&amp; !fromState.equals(toState)) {</span>
-<span class="fc" id="L80">            final Set&lt;Rule&lt;S&gt;&gt; rules = stateToRulesLookup.get(fromState);</span>
-<span class="pc bpc" id="L81" title="1 of 4 branches missed.">            if (ofNullable(rules).isPresent() &amp;&amp; !rules.isEmpty()) {</span>
-<span class="fc" id="L82">                return rules.stream().allMatch(r -&gt; r.canTransition(validEvent, toState));</span>
+<span class="fc" id="L72">        final String validEvent = Internal.eventCheck(event);</span>
+<span class="fc" id="L73">        final S toState = stateCheck(state);</span>
+<span class="fc" id="L74">        final S fromState = getState();</span>
+<span class="fc bfc" id="L75" title="All 4 branches covered.">        if (hasState(toState) &amp;&amp; !fromState.equals(toState)) {</span>
+<span class="fc" id="L76">            final Set&lt;Rule&lt;S&gt;&gt; rules = stateToRulesLookup.get(fromState);</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">            if (!rules.isEmpty()) {</span>
+<span class="fc" id="L78">                return rules.stream().allMatch(r -&gt; r.canTransition(validEvent, toState));</span>
             }
-<span class="fc" id="L84">            return true;</span>
+<span class="fc" id="L80">            return true;</span>
         }
-<span class="fc" id="L86">        return false;</span>
+<span class="fc" id="L82">        return false;</span>
     }
     
-<span class="fc" id="L89">    StateMachineImpl(Config&lt;S&gt; config) {</span>
-<span class="fc" id="L90">        final Config&lt;S&gt; validConfig = configCheck(config);</span>
-<span class="fc" id="L91">        final S validInitialState = validConfig.getInitial().orElseThrow(this::getInitialStateNotPresentException);</span>
-<span class="fc" id="L92">        this.currentState = new WaitableImpl&lt;&gt;(validInitialState);</span>
-<span class="fc" id="L93">        addStateAndRules(validInitialState, Collections.emptyList() );</span>
-<span class="fc" id="L94">        validConfig.getStates().forEach(state -&gt; addStateAndRules(state, validConfig.getStateRules(state)));</span>
-<span class="fc" id="L95">    }</span>
+<span class="fc" id="L85">    StateMachineImpl(Config&lt;S&gt; config) {</span>
+<span class="fc" id="L86">        final Config&lt;S&gt; validConfig = configCheck(config);</span>
+<span class="fc" id="L87">        final S validInitialState = validConfig.getInitial().orElseThrow(this::getInitialStateNotPresentException);</span>
+<span class="fc" id="L88">        this.currentState = new WaitableImpl&lt;&gt;(validInitialState);</span>
+<span class="fc" id="L89">        addStateAndRules(validInitialState, Collections.emptyList() );</span>
+<span class="fc" id="L90">        validConfig.getStates().forEach(state -&gt; addStateAndRules(state, validConfig.getStateRules(state)));</span>
+<span class="fc" id="L91">    }</span>
     
     private &lt;R&gt; Transition&lt;S,R&gt; transitionCheck(Transition&lt;S,R&gt; transition) {
-<span class="fc" id="L98">        final Transition&lt;S,R&gt; validTransition = nullCheck(transition, &quot;Transition must be present.&quot;);</span>
+<span class="fc" id="L94">        final Transition&lt;S,R&gt; validTransition = nullCheck(transition, &quot;Transition must be present.&quot;);</span>
         
-<span class="fc" id="L100">        existsCheck(validTransition.getSuccessState());</span>
-<span class="fc" id="L101">        ofNullable(transition.getEvent()).orElseThrow(this::getEventNotPresentException);</span>
+<span class="fc" id="L96">        existsCheck(validTransition.getSuccessState());</span>
+<span class="fc" id="L97">        ofNullable(transition.getEvent()).orElseThrow(this::getEventNotPresentException);</span>
         
-<span class="fc" id="L103">        return validTransition;</span>
+<span class="fc" id="L99">        return validTransition;</span>
     }
     
-    private &lt;R&gt; R handleSuccess(Transition&lt;S, R&gt; t) {
-<span class="fc" id="L107">        final R value = orNull(t.getSuccessValue());</span>
-<span class="fc" id="L108">        setState(t.getEvent(), t.getSuccessState());</span>
+    private &lt;R&gt; boolean isAllowed(Transition&lt;S,R&gt; transition) {
+<span class="fc" id="L103">        return isTransitionAllowed(transition.getEvent(), transition.getSuccessState());</span>
+    }
+    
+    private &lt;R&gt; R handleSuccess(Transition&lt;S, R&gt; transition) {
+<span class="fc" id="L107">        final R value = orNull(transition.getSuccessValue());</span>
+<span class="fc" id="L108">        setState(transition.getEvent(), transition.getSuccessState());</span>
 <span class="fc" id="L109">        return value;</span>
     }
     
-    private &lt;R&gt; R handleDenied(Transition&lt;S, R&gt; transition) {
+    private &lt;R&gt; R handleFailure(Transition&lt;S, R&gt; transition) {
 <span class="fc" id="L113">        setOptionalState(transition.getFailedState(), transition.getEvent());</span>
 <span class="fc bfc" id="L114" title="All 2 branches covered.">        if (transition.getFailedValue().isPresent()) {</span>
 <span class="fc" id="L115">            return transition.getFailedValue().get().get();</span>
@@ -118,13 +118,13 @@ final class StateMachineImpl&lt;S&gt; implements StateMachine&lt;S&gt; {
 <span class="fc" id="L118">            &quot; to &quot; + transition.getSuccessState() + &quot;.&quot;);</span>
     }
     
-    private &lt;R&gt; R handleError(Transition&lt;S, R&gt; t, Throwable thrown) throws Error, ConcurrencyException, RuntimeException {
-<span class="fc" id="L122">        setOptionalState(t.getErrorState(), t.getEvent());</span>
-<span class="pc bpc" id="L123" title="1 of 2 branches missed.">        if (t.getErrorValue().isPresent()) {</span>
-<span class="fc" id="L124">            return t.getErrorValue().get().get();</span>
+    private &lt;R&gt; R handleError(Transition&lt;S, R&gt; transition, Throwable thrown) throws Error, RuntimeException {
+<span class="fc" id="L122">        setOptionalState(transition.getErrorState(), transition.getEvent());</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">        if (transition.getErrorValue().isPresent()) {</span>
+<span class="fc" id="L124">            return transition.getErrorValue().get().get();</span>
         } else {
-<span class="nc" id="L126">            throwUnchecked(thrown, &quot;State machine error.&quot;);</span>
-<span class="nc" id="L127">            return null;</span>
+            // Jacoco probe-based exception coverage blind spot
+<span class="nc" id="L127">           throw ConcurrencyException.rethrow(thrown);</span>
         }
     }
     
@@ -134,13 +134,13 @@ final class StateMachineImpl&lt;S&gt; implements StateMachine&lt;S&gt; {
     }
     
     @SuppressWarnings(&quot;OptionalUsedAsFieldOrParameterType&quot;)
-    private &lt;R&gt; void setOptionalState(Optional&lt;S&gt; optional, String event) {
+    private void setOptionalState(Optional&lt;S&gt; optional, String event) {
 <span class="fc" id="L138">        optional.ifPresent(s -&gt; setState(event, s));</span>
 <span class="fc" id="L139">    }</span>
     
     private S existsCheck(S state) {
 <span class="fc" id="L142">        final S validState = stateCheck(state);</span>
-<span class="pc bpc" id="L143" title="1 of 2 branches missed.">        return illegalCheck(validState, !hasState(validState), &quot;Rule does not exist.&quot;);</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">        return illegalCheck(validState, !hasState(validState), &quot;State must be known.&quot;);</span>
     }
     
     private IllegalArgumentException getInitialStateNotPresentException() {

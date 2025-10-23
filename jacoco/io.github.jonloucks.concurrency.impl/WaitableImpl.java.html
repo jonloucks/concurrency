@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WaitableImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">concurrency</a> &gt; <a href="index.source.html" class="el_package">io.github.jonloucks.concurrency.impl</a> &gt; <span class="el_source">WaitableImpl.java</span></div><h1>WaitableImpl.java</h1><pre class="source lang-java linenums">package io.github.jonloucks.concurrency.impl;
 
 import io.github.jonloucks.concurrency.api.Waitable;
+import io.github.jonloucks.contracts.api.AutoClose;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static io.github.jonloucks.concurrency.impl.Internal.*;
@@ -15,66 +19,62 @@ final class WaitableImpl&lt;T&gt; implements Waitable&lt;T&gt; {
 
     @Override
     public void shutdown() {
-<span class="fc" id="L18">        synchronized (simpleLock) {</span>
-<span class="fc" id="L19">            isShutdown = true;</span>
-<span class="fc" id="L20">            wakeUpWaitingThreads();</span>
-<span class="fc" id="L21">        }</span>
-<span class="fc" id="L22">    }</span>
-    
-    @Override
-    public Optional&lt;T&gt; getWhen(Predicate&lt;T&gt; predicate) {
-<span class="fc" id="L26">        return getWhen(predicate, Duration.ofSeconds(Long.MAX_VALUE));</span>
-    }
+<span class="fc" id="L22">        synchronized (simpleLock) {</span>
+<span class="fc" id="L23">            isShutdown = true;</span>
+<span class="fc" id="L24">            notifyValueListeners.forEach(NotifyValueListener::close);</span>
+<span class="fc" id="L25">            wakeUpWaitingThreads();</span>
+<span class="fc" id="L26">        }</span>
+<span class="fc" id="L27">    }</span>
     
     @Override
     public Optional&lt;T&gt; getWhen(Predicate&lt;T&gt; predicate, Duration timeout) {
 <span class="fc" id="L31">        final Predicate&lt;T&gt; validPredicate = predicateCheck(predicate);</span>
-<span class="fc" id="L32">        final Duration validDuration = timeoutCheck(timeout);</span>
+<span class="fc" id="L32">        final Duration validTimeout = timeoutCheck(timeout);</span>
         
 <span class="fc" id="L34">        synchronized (simpleLock) {</span>
 <span class="fc" id="L35">            final T currentValue = reference.get();</span>
 <span class="fc bfc" id="L36" title="All 2 branches covered.">            if (validPredicate.test(currentValue)) {</span>
 <span class="fc" id="L37">                return Optional.of(currentValue);</span>
-<span class="fc bfc" id="L38" title="All 4 branches covered.">            } else if (isShutdown || validDuration.isZero()) {</span>
+<span class="fc bfc" id="L38" title="All 4 branches covered.">            } else if (isShutdown || validTimeout.isZero()) {</span>
 <span class="fc" id="L39">                return Optional.empty();</span>
             }
-<span class="fc" id="L41">            return waitForLoop(validPredicate, validDuration);</span>
+<span class="fc" id="L41">            return waitForLoop(validPredicate, validTimeout);</span>
         }
+    }
+    
+    @Override
+    public AutoClose notifyIf(Predicate&lt;T&gt; predicate, Consumer&lt;T&gt; listener) {
+<span class="fc" id="L47">        final NotifyValueListener&lt;T&gt; notifyValueListener = new NotifyValueListener&lt;&gt;(predicate, listener, notifyValueListeners);</span>
+        
+<span class="fc" id="L49">        notifyValueListener.process(get());</span>
+        
+<span class="fc" id="L51">        return notifyValueListener.open();</span>
     }
     
     @Override
     public void accept(T value) {
-<span class="fc" id="L47">        final T validValue = valueCheck(value);</span>
-<span class="fc" id="L48">        synchronized (simpleLock) {</span>
-<span class="fc" id="L49">            setAndNotifyIfChanged(validValue);</span>
-<span class="fc" id="L50">        }</span>
-<span class="fc" id="L51">    }</span>
-
+<span class="fc" id="L56">        final T validValue = valueCheck(value);</span>
+<span class="fc" id="L57">        synchronized (simpleLock) {</span>
+<span class="fc" id="L58">            setValue(validValue);</span>
+<span class="fc" id="L59">        }</span>
+<span class="fc" id="L60">    }</span>
+    
     @Override
     public Optional&lt;T&gt; acceptIf(Predicate&lt;T&gt; predicate, T value) {
-<span class="fc" id="L55">        final T validValue = valueCheck(value);</span>
-<span class="fc" id="L56">        final Predicate&lt;T&gt; validPredicate = predicateCheck(predicate);</span>
+<span class="fc" id="L64">        final T validValue = valueCheck(value);</span>
+<span class="fc" id="L65">        final Predicate&lt;T&gt; validPredicate = predicateCheck(predicate);</span>
         
-<span class="fc" id="L58">        synchronized (simpleLock) {</span>
-<span class="fc" id="L59">            final T currentValue = reference.get();</span>
-<span class="fc bfc" id="L60" title="All 2 branches covered.">            if (validPredicate.test(currentValue)) {</span>
-<span class="fc" id="L61">                setAndNotifyIfChanged(validValue);</span>
-<span class="fc" id="L62">                return Optional.of(currentValue);</span>
+<span class="fc" id="L67">        synchronized (simpleLock) {</span>
+<span class="fc" id="L68">            final T currentValue = reference.get();</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">            if (validPredicate.test(currentValue)) {</span>
+<span class="fc" id="L70">                setValue(validValue);</span>
+<span class="fc" id="L71">                return Optional.of(currentValue);</span>
             } else {
-<span class="fc" id="L64">                return Optional.empty();</span>
+<span class="fc" id="L73">                return Optional.empty();</span>
             }
         }
     }
-    
-    @Override
-    public Optional&lt;T&gt; getIf(Predicate&lt;T&gt; predicate) {
-<span class="fc" id="L71">        final Predicate&lt;T&gt; validPredicate = predicateCheck(predicate);</span>
-<span class="fc" id="L72">        synchronized (simpleLock) {</span>
-<span class="fc" id="L73">            final T currentValue = reference.get();</span>
-<span class="fc bfc" id="L74" title="All 2 branches covered.">            return validPredicate.test(currentValue) ? Optional.of(currentValue) : Optional.empty();</span>
-        }
-    }
-    
+
     @Override
     public T get() {
 <span class="fc" id="L80">        synchronized (simpleLock) {</span>
@@ -89,44 +89,46 @@ final class WaitableImpl&lt;T&gt; implements Waitable&lt;T&gt; {
     private Optional&lt;T&gt; waitForLoop(Predicate&lt;T&gt; predicate, Duration timeout) {
 <span class="fc" id="L90">        final Instant start = Instant.now();</span>
         do {
-<span class="fc" id="L92">            runWithIgnore(()-&gt; simpleLock.wait(getWaitMillis(timeout, start)));</span>
-<span class="fc" id="L93">            final T value = reference.get();</span>
-<span class="fc bfc" id="L94" title="All 2 branches covered.">            if (predicate.test(value)) {</span>
-<span class="fc" id="L95">                return Optional.of(value);</span>
+<span class="fc" id="L92">            final long waitMillis = getWaitMillis(timeout, start, Instant.now());</span>
+<span class="fc" id="L93">            runWithIgnore(() -&gt; simpleLock.wait(waitMillis));</span>
+<span class="fc" id="L94">            final T value = reference.get();</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">            if (predicate.test(value)) {</span>
+<span class="fc" id="L96">                return Optional.of(value);</span>
             }
-<span class="fc bfc" id="L97" title="All 2 branches covered.">        } while (shouldKeepWaiting(timeout, start));</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        } while (shouldKeepWaiting(timeout, start));</span>
         
-<span class="fc" id="L99">        return Optional.empty();</span>
+<span class="fc" id="L100">        return Optional.empty();</span>
     }
-    
-    private static long getWaitMillis(Duration timeout, Instant start) {
-<span class="fc" id="L103">        return Long.max(1, timeout.minus(Duration.between(start, Instant.now())).toMillis());</span>
-    }
-    
+
     private boolean shouldKeepWaiting(Duration timeout, Instant start) {
-<span class="fc bfc" id="L107" title="All 2 branches covered.">        if (isShutdown) {</span>
-<span class="fc" id="L108">            return false;</span>
-        }
-<span class="fc bfc" id="L110" title="All 2 branches covered.">        return Duration.between(start, Instant.now()).compareTo(timeout) &lt; 0;</span>
+<span class="fc bfc" id="L104" title="All 4 branches covered.">        return !isShutdown &amp;&amp; !hasTimedOut(timeout, start, Instant.now());</span>
     }
     
-    private void setAndNotifyIfChanged(T newValue) {
-<span class="fc" id="L114">        final T oldValue = reference.getAndSet(newValue);</span>
-<span class="fc bfc" id="L115" title="All 2 branches covered.">        if (oldValue != newValue) {</span>
-<span class="fc" id="L116">            wakeUpWaitingThreads();</span>
+    private void setValue(T newValue) {
+<span class="fc" id="L108">        final T oldValue = reference.getAndSet(newValue);</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (oldValue != newValue) {</span>
+<span class="fc" id="L110">            wakeUpWaitingThreads();</span>
+<span class="fc" id="L111">            notifyListeners(newValue);</span>
         }
-<span class="fc" id="L118">    }</span>
+<span class="fc" id="L113">    }</span>
+    
+    private void notifyListeners(T newValue) {
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        if (!notifyValueListeners.isEmpty()) {</span>
+<span class="fc" id="L117">            notifyValueListeners.forEach(n -&gt; n.process(newValue));</span>
+        }
+<span class="fc" id="L119">    }</span>
     
     private void wakeUpWaitingThreads() {
-<span class="fc" id="L121">        simpleLock.notifyAll();</span>
-<span class="fc" id="L122">    }</span>
+<span class="fc" id="L122">        simpleLock.notifyAll();</span>
+<span class="fc" id="L123">    }</span>
     
     private static &lt;T&gt; T valueCheck(T t) {
-<span class="fc" id="L125">        return nullCheck(t, &quot;Value must be present.&quot;);</span>
+<span class="fc" id="L126">        return nullCheck(t, &quot;Value must be present.&quot;);</span>
     }
     
-<span class="fc" id="L128">    private final Object simpleLock = new Object();</span>
-<span class="fc" id="L129">    private final AtomicReference&lt;T&gt; reference = new AtomicReference&lt;&gt;();</span>
-<span class="fc" id="L130">    private volatile boolean isShutdown = false;</span>
+<span class="fc" id="L129">    private final Object simpleLock = new Object();</span>
+<span class="fc" id="L130">    private final AtomicReference&lt;T&gt; reference = new AtomicReference&lt;&gt;();</span>
+<span class="fc" id="L131">    private volatile boolean isShutdown = false;</span>
+<span class="fc" id="L132">    private final List&lt;NotifyValueListener&lt;T&gt;&gt; notifyValueListeners = new CopyOnWriteArrayList&lt;&gt;();</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

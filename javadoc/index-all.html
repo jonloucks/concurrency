@@ -50,7 +50,7 @@ loadScripts(document, 'script');</script>
 <div class="header">
 <h1>Index</h1>
 </div>
-<a href="#I:A">A</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a><span class="vertical-separator">|</span><a href="serialized-form.html">Serialized&nbsp;Form</a>
+<a href="#I:A">A</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a><span class="vertical-separator">|</span><a href="serialized-form.html">Serialized&nbsp;Form</a>
 <h2 class="title" id="I:A">A</h2>
 <dl class="index">
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableConsumer.html#accept(T)" class="member-name-link">accept(T)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableConsumer.html" title="interface in io.github.jonloucks.concurrency.api">WaitableConsumer</a></dt>
@@ -106,6 +106,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/ConcurrencyFactory.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">ConcurrencyFactory</a> - Interface in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
 <dd>
 <div class="block">Responsible for creating new instances of Concurrency</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Constants.html" class="type-name-link" title="class in io.github.jonloucks.concurrency.api">Constants</a> - Class in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
+<dd>
+<div class="block">Concurrency constants</div>
 </dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.html#CONTRACT" class="member-name-link">CONTRACT</a> - Static variable in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a></dt>
 <dd>
@@ -327,6 +331,25 @@ loadScripts(document, 'script');</script>
 <div class="block">Determine if a transition is allowed from the current state to a new one.</div>
 </dd>
 </dl>
+<h2 class="title" id="I:M">M</h2>
+<dl class="index">
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Constants.html#MAX_TIMEOUT" class="member-name-link">MAX_TIMEOUT</a> - Static variable in class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Constants.html" title="class in io.github.jonloucks.concurrency.api">Constants</a></dt>
+<dd>
+<div class="block">The maximum timeout duration</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Constants.html#MIN_TIMEOUT" class="member-name-link">MIN_TIMEOUT</a> - Static variable in class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Constants.html" title="class in io.github.jonloucks.concurrency.api">Constants</a></dt>
+<dd>
+<div class="block">The minimum timeout duration</div>
+</dd>
+</dl>
+<h2 class="title" id="I:N">N</h2>
+<dl class="index">
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableNotify.html#notifyIf(java.util.function.Predicate,java.util.function.Consumer)" class="member-name-link">notifyIf(Predicate&lt;T&gt;, Consumer&lt;T&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableNotify.html" title="interface in io.github.jonloucks.concurrency.api">WaitableNotify</a></dt>
+<dd>
+<div class="block">When condition is satisfied the listener is invoked
+ Note: It is likely the listener will be called within a write lock context.</div>
+</dd>
+</dl>
 <h2 class="title" id="I:O">O</h2>
 <dl class="index">
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html#OPENABLE" class="member-name-link">OPENABLE</a> - Enum constant in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></dt>
@@ -350,6 +373,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.Config.Builder.html#reflectionClassName(java.lang.String)" class="member-name-link">reflectionClassName(String)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config.Builder</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/ConcurrencyException.html#rethrow(java.lang.Throwable)" class="member-name-link">rethrow(Throwable)</a> - Static method in exception io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/ConcurrencyException.html" title="class in io.github.jonloucks.concurrency.api">ConcurrencyException</a></dt>
+<dd>
+<div class="block">Rethrows a caught exception or a ConcurrencyException if unchecked</div>
+</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Config.Builder.html#rule(T,io.github.jonloucks.concurrency.api.StateMachine.Rule)" class="member-name-link">rule(T, StateMachine.Rule&lt;T&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Config.Builder</a></dt>
 <dd>
 <div class="block">Add a rule to a state</div>
@@ -477,6 +504,10 @@ the order they are declared.</div>
 <dd>
 <div class="block">Waitable Factory</div>
 </dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableNotify.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">WaitableNotify</a>&lt;<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableNotify.html" title="type parameter in WaitableNotify">T</a>&gt; - Interface in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
+<dd>
+<div class="block">Notify lister when condition is satisfied</div>
+</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableSupplier.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">WaitableSupplier</a>&lt;<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableSupplier.html" title="type parameter in WaitableSupplier">T</a>&gt; - Interface in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
 <dd>
 <div class="block">Waitable supplier</div>
@@ -502,7 +533,7 @@ the order they are declared.</div>
 <div class="block">Assist with an idempotent close</div>
 </dd>
 </dl>
-<a href="#I:A">A</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a><span class="vertical-separator">|</span><a href="serialized-form.html">Serialized&nbsp;Form</a></main>
+<a href="#I:A">A</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a><span class="vertical-separator">|</span><a href="serialized-form.html">Serialized&nbsp;Form</a></main>
 </div>
 </div>
 </body>
