@@ -3,12 +3,14 @@ package io.github.jonloucks.concurrency.test;
 import io.github.jonloucks.contracts.api.AutoClose;
 import io.github.jonloucks.contracts.api.Contracts;
 import io.github.jonloucks.concurrency.api.*;
+import org.junit.jupiter.params.provider.Arguments;
 import org.opentest4j.TestAbortedException;
 
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import static io.github.jonloucks.concurrency.api.GlobalConcurrency.findConcurrencyFactory;
 import static io.github.jonloucks.contracts.test.Tools.*;
@@ -42,6 +44,20 @@ public final class Tools {
                 block.accept(contracts, concurrency);
             }
         });
+    }
+    
+    static Stream<Arguments> getThrowingParameters() {
+        return Stream.of(
+            Arguments.of((Runnable) () -> {
+                throw new Error("Error.");
+            }),
+            Arguments.of((Runnable) () -> {
+                    throw new RuntimeException("RuntimeException.");
+                }),
+            Arguments.of((Runnable) () -> {
+                throw new ConcurrencyException("ConcurrencyException.");
+            })
+        );
     }
 
     public static void withConcurrency(BiConsumer<Contracts,Concurrency> block) {

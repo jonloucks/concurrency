@@ -5,6 +5,7 @@ package io.github.jonloucks.concurrency.test;
  */
 public interface Tests extends
     BadConcurrencyFactoryTests,
+    ConstantsTests,
     ExceptionTests,
     GlobalConcurrencyTests,
     ConcurrencyConfigTests,

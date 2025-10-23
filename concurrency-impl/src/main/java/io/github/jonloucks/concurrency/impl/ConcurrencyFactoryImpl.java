@@ -1,14 +1,13 @@
 package io.github.jonloucks.concurrency.impl;
 
-import io.github.jonloucks.contracts.api.Promisor;
-import io.github.jonloucks.contracts.api.Repository;
+import io.github.jonloucks.contracts.api.*;
 import io.github.jonloucks.concurrency.api.*;
 
 import java.util.function.Consumer;
 
 import static io.github.jonloucks.contracts.api.BindStrategy.IF_NOT_BOUND;
 import static io.github.jonloucks.contracts.api.Checks.*;
-import static io.github.jonloucks.contracts.api.GlobalContracts.lifeCycle;
+import static io.github.jonloucks.contracts.api.GlobalContracts.*;
 
 /**
  * Creates Concurrency instances
@@ -28,7 +27,7 @@ public final class ConcurrencyFactoryImpl implements ConcurrencyFactory {
         final Concurrency.Config validConfig = configCheck(config);
         final Repository repository = validConfig.contracts().claim(Repository.FACTORY).get();
         
-        installCore(validConfig, repository);
+        installCore(repository);
         
         final ConcurrencyImpl concurrency = new ConcurrencyImpl(validConfig, repository, true);
         repository.keep(Concurrency.CONTRACT, () -> concurrency, IF_NOT_BOUND);
@@ -50,17 +49,17 @@ public final class ConcurrencyFactoryImpl implements ConcurrencyFactory {
         final Concurrency.Config validConfig = configCheck(config);
         final Repository validRepository = nullCheck(repository, "Repository must be present.");
         
-        installCore(validConfig, validRepository);
+        installCore(validRepository);
         
         final Promisor<Concurrency> concurrencyPromisor = lifeCycle(() -> new ConcurrencyImpl(validConfig, validRepository, false));
         
         validRepository.keep(Concurrency.CONTRACT, concurrencyPromisor, IF_NOT_BOUND);
     }
     
-    private void installCore(Concurrency.Config config, Repository repository) {
+    private void installCore(Repository repository) {
         repository.require(Repository.FACTORY);
         
-        repository.keep(WaitableFactory.CONTRACT, WaitableFactoryImpl::new, IF_NOT_BOUND);
+        repository.keep(WaitableFactory.CONTRACT, lifeCycle(WaitableFactoryImpl::new), IF_NOT_BOUND);
         repository.keep(StateMachineFactory.CONTRACT, StateMachineFactoryImpl::new, IF_NOT_BOUND);
         repository.keep(Concurrency.Config.Builder.FACTORY, () -> ConfigBuilderImpl::new, IF_NOT_BOUND);
         repository.keep(ConcurrencyFactory.CONTRACT, lifeCycle(ConcurrencyFactoryImpl::new), IF_NOT_BOUND);
