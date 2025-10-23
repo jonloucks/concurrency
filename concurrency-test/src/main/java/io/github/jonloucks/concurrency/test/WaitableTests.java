@@ -1,9 +1,15 @@
 package io.github.jonloucks.concurrency.test;
 
 import io.github.jonloucks.concurrency.api.Waitable;
+import io.github.jonloucks.contracts.api.AutoClose;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -11,6 +17,7 @@ import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static io.github.jonloucks.concurrency.test.Tools.withConcurrency;
@@ -18,8 +25,11 @@ import static io.github.jonloucks.concurrency.test.WaitableTests.WaitableTestsTo
 import static io.github.jonloucks.concurrency.test.WaitableTests.WaitableTestsTools.MODIFIED;
 import static io.github.jonloucks.contracts.test.Tools.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("CodeBlock2Expr")
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public interface WaitableTests {
     
     @Test
@@ -134,6 +144,20 @@ public interface WaitableTests {
             });
             
             assertThrown(thrown, "Timeout must not be negative.");
+        });
+    }
+    
+    @Test
+    default void waitable_getWhen_WithPredicateAndTooLongOfTimeout_Throws() {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            final Predicate<String> predicate = s -> true;
+            final Duration timeout = Duration.ofSeconds(Long.MAX_VALUE);
+            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+                waitable.getWhen(predicate, timeout);
+            });
+            
+            assertThrown(thrown, "Timeout must less than or equal to maximum time.");
         });
     }
     
@@ -380,6 +404,138 @@ public interface WaitableTests {
             assertTrue(waitable.getIf(INITIAL::equals).isPresent());
             assertEquals(INITIAL, waitable.getIf(INITIAL::equals).get());
             assertFalse(waitable.getIf(MODIFIED::equals).isPresent());
+        });
+    }
+    
+    @Test
+    default void waitable_notifyIf_WithNullPredicate_Throws() {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            final Consumer<String> listener = t -> {};
+            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+                //noinspection resource
+                waitable.notifyIf(null, listener);
+            });
+            assertThrown(thrown, "Predicate must be present.");
+        });
+    }
+    
+    @Test
+    default void waitable_notifyIf_WithValid_Works(@Mock Consumer<String> listener) {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            
+            try (AutoClose closeNotify = waitable.notifyIf(v -> !INITIAL.equals(v), listener)) {
+                ignore(closeNotify);
+                waitable.accept(MODIFIED);
+                verify(listener, times(1)).accept(eq(MODIFIED));
+            }
+            
+            waitable.accept("listener should not receive this value");
+            
+            verify(listener, times(1)).accept(any());
+        });
+    }
+    
+    @Test
+    default void waitable_notifyIf_WithSameListener_Works(@Mock Consumer<String> listener) {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            
+            try (AutoClose closeNotify = waitable.notifyIf(v -> !INITIAL.equals(v), listener);
+                 AutoClose closeNotify2 = waitable.notifyIf(v -> !INITIAL.equals(v), listener)) {
+                ignore(closeNotify); ignore(closeNotify2);
+                waitable.accept(MODIFIED);
+                verify(listener, times(2)).accept(eq(MODIFIED));
+            }
+            
+            waitable.accept("listener should not receive this value");
+            
+            verify(listener, times(2)).accept(any());
+        });
+    }
+    
+    @Test
+    default void waitable_notifyIf_SameValue_NotifiesOnce(@Mock Consumer<String> listener) {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            
+            try (AutoClose closeNotify = waitable.notifyIf(v -> !INITIAL.equals(v), listener)) {
+                ignore(closeNotify);
+                waitable.accept(MODIFIED);
+                waitable.accept(MODIFIED);
+                waitable.accept(MODIFIED);
+                
+                verify(listener, times(1)).accept(eq(MODIFIED));
+            }
+        });
+    }
+    
+    @Test
+    default void waitable_notifyIf_ManyValueChanges_Works(@Mock Consumer<Integer> listener) {
+        withConcurrency((contracts,concurrency)-> {
+            final Integer initial = 1;
+            final Waitable<Integer> waitable = concurrency.createWaitable(0);
+            
+            try (AutoClose closeNotify = waitable.notifyIf(v -> !initial.equals(v), listener)) {
+                final int changeCount = 1_000;
+                ignore(closeNotify);
+                for (int i = 1; i <= changeCount; i++) {
+                    waitable.accept(i);
+                }
+                verify(listener, times(changeCount)).accept(any());
+            }
+        });
+    }
+    
+    @Test
+    default void waitable_notifyIf_WithManyConcurrentChanges_Works(@Mock Consumer<Integer> listener) {
+        withConcurrency((contracts,concurrency) -> {
+            final Integer initial = 0;
+            final Waitable<Integer> waitable = concurrency.createWaitable(initial);
+            
+            try (AutoClose closeNotify = waitable.notifyIf(v -> v % 2 == 0, listener)) {
+                ignore(closeNotify);
+                final Thread thread = new Thread(() -> {
+                    for (int n = 1; n <= 100_000; n++) {
+                        waitable.accept(n);
+                    }
+                });
+                thread.setDaemon(true);
+                thread.start();
+                sleep(Duration.ofMillis(10));
+            }
+            
+            verify(listener, atLeast(1)).accept(any());
+        });
+    }
+    
+    @Test
+    default void waitable_notifyIf_Idempotent_Works(@Mock Consumer<String> listener) {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            
+            try (AutoClose closeNotify = waitable.notifyIf(v -> !INITIAL.equals(v), listener)) {
+                assertDoesNotThrow(closeNotify::close);
+                assertDoesNotThrow(closeNotify::close);
+            }
+            
+            waitable.accept("listener should not receive this value");
+            
+            verify(listener, times(0)).accept(any());
+        });
+    }
+    
+    @Test
+    default void waitable_notifyIf_WithNullListener_Throws() {
+        withConcurrency((contracts,concurrency) -> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            final Predicate<String> predicate = t -> true;
+            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+                //noinspection resource
+                waitable.notifyIf(predicate, null);
+            });
+            assertThrown(thrown, "Listener must be present.");
         });
     }
     

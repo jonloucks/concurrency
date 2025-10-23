@@ -17,4 +17,7 @@ public interface ToolsTests
     default void testTools_clean_DoesNotThrow() {
         assertDoesNotThrow(Tools::clean);
     }
+    
+    @Test
+    default void testTools_ignore() {}
 }

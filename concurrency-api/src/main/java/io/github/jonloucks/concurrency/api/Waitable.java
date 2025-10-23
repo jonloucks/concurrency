@@ -4,13 +4,15 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import static io.github.jonloucks.concurrency.api.Constants.MIN_TIMEOUT;
+
 /**
  * Provides mutable reference that allows other threads to wait until
  * the value satisfies a given condition.
  *
  * @param <T> the type of references
  */
-public interface Waitable<T> extends WaitableSupplier<T>, WaitableConsumer<T> {
+public interface Waitable<T> extends WaitableSupplier<T>, WaitableConsumer<T>, WaitableNotify<T> {
 
     /**
      * Waits until condition is satisfied for a value to match the predicate
@@ -22,7 +24,7 @@ public interface Waitable<T> extends WaitableSupplier<T>, WaitableConsumer<T> {
      */
     @Deprecated
     default Optional<T> waitFor(Predicate<T> predicate) {
-        return getWhen(predicate);
+        return getWhen(predicate, MIN_TIMEOUT);
     }
 
     /**

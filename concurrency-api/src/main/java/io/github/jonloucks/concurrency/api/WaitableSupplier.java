@@ -5,6 +5,9 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static io.github.jonloucks.concurrency.api.Constants.MAX_TIMEOUT;
+import static io.github.jonloucks.concurrency.api.Constants.MIN_TIMEOUT;
+
 /**
  * Waitable supplier
  * @param <T> the type of value supplied
@@ -24,7 +27,9 @@ public interface WaitableSupplier<T> extends Supplier<T> {
      * @return the current value iif the condition is satisfied
      * @throws IllegalArgumentException if predicate is null or if value is null
      */
-    Optional<T> getIf(Predicate<T> predicate);
+    default Optional<T> getIf(Predicate<T> predicate) {
+        return getWhen(predicate, MIN_TIMEOUT);
+    }
     
     /**
      * Waits until the current value if it satisfies a condition
@@ -33,7 +38,9 @@ public interface WaitableSupplier<T> extends Supplier<T> {
      * @return the current value iif the condition is satisfied
      * @throws IllegalArgumentException if predicate is null
      */
-    Optional<T> getWhen(Predicate<T> predicate);
+    default Optional<T> getWhen(Predicate<T> predicate) {
+        return getWhen(predicate, MAX_TIMEOUT);
+    }
     
     /**
      * Waits until the current value if it satisfies a condition or a timeout is reached

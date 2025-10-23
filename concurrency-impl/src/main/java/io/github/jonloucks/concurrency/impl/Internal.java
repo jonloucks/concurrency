@@ -1,12 +1,14 @@
 package io.github.jonloucks.concurrency.impl;
 
-import io.github.jonloucks.concurrency.api.ConcurrencyException;
 import io.github.jonloucks.concurrency.api.StateMachine;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.Instant;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import static io.github.jonloucks.concurrency.api.Constants.MAX_TIMEOUT;
 import static io.github.jonloucks.contracts.api.Checks.illegalCheck;
 import static io.github.jonloucks.contracts.api.Checks.nullCheck;
 
@@ -38,31 +40,28 @@ final class Internal {
         return nullCheck(predicate, "Predicate must be present.");
     }
     
+    static <T> Consumer<T> listenerCheck(Consumer<T> consumer) {
+        return nullCheck(consumer, "Listener must be present.");
+    }
+    
     static Duration timeoutCheck(Duration timeout) {
-        final Duration validTimeout = nullCheck(timeout, "Timeout must be present.");
-        return illegalCheck(validTimeout, validTimeout.isNegative(), "Timeout must not be negative.");
+        final Duration notNullTimeout = nullCheck(timeout, "Timeout must be present.");
+        illegalCheck(timeout, timeout.isNegative(), "Timeout must not be negative.");
+        illegalCheck(timeout, timeout.compareTo(MAX_TIMEOUT) > 0, "Timeout must less than or equal to maximum time.");
+        return notNullTimeout;
     }
     
-    static void throwUnchecked(Throwable thrown, String message) throws Error,  RuntimeException {
-        if (null == thrown) {
-            return;
-        } else if (thrown instanceof Error) {
-            throw (Error) thrown;
-        } else if (thrown instanceof RuntimeException) {
-            throw (RuntimeException) thrown;
-        }
-        throw new ConcurrencyException(message, thrown);
+    static long getWaitMillis(Duration timeout, Instant start, Instant end) {
+        return Long.max(1, timeout.minus(Duration.between(start, end)).toMillis());
     }
     
+    static boolean hasTimedOut(Duration timeout, Instant start, Instant end) {
+        return Duration.between(start, end).compareTo(timeout) >= 0;
+    }
+
     static void validate() {
-        validateUnchecked(new Error(), "Some error.");
-        validateUnchecked(new IOException(), "Some IO error.");
-        validateUnchecked(new ConcurrencyException("Hello."), "Some concurrency error.");
-        validateUnchecked(null, "Some concurrency error.");
-    }
-    
-    private static void validateUnchecked(Throwable thrown, String message) throws Error, ConcurrencyException {
-        runWithIgnore( () -> throwUnchecked(thrown, message));
+        runWithIgnore(() -> { throw new IOException("Validate"); });
+        runWithIgnore(() -> { throw new InterruptedException("Validate"); });
     }
     
     @FunctionalInterface

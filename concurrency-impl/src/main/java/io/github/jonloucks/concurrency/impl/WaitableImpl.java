@@ -1,11 +1,15 @@
 package io.github.jonloucks.concurrency.impl;
 
 import io.github.jonloucks.concurrency.api.Waitable;
+import io.github.jonloucks.contracts.api.AutoClose;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static io.github.jonloucks.concurrency.impl.Internal.*;
@@ -17,39 +21,44 @@ final class WaitableImpl<T> implements Waitable<T> {
     public void shutdown() {
         synchronized (simpleLock) {
             isShutdown = true;
+            notifyValueListeners.forEach(NotifyValueListener::close);
             wakeUpWaitingThreads();
         }
     }
     
     @Override
-    public Optional<T> getWhen(Predicate<T> predicate) {
-        return getWhen(predicate, Duration.ofSeconds(Long.MAX_VALUE));
-    }
-    
-    @Override
     public Optional<T> getWhen(Predicate<T> predicate, Duration timeout) {
         final Predicate<T> validPredicate = predicateCheck(predicate);
-        final Duration validDuration = timeoutCheck(timeout);
+        final Duration validTimeout = timeoutCheck(timeout);
         
         synchronized (simpleLock) {
             final T currentValue = reference.get();
             if (validPredicate.test(currentValue)) {
                 return Optional.of(currentValue);
-            } else if (isShutdown || validDuration.isZero()) {
+            } else if (isShutdown || validTimeout.isZero()) {
                 return Optional.empty();
             }
-            return waitForLoop(validPredicate, validDuration);
+            return waitForLoop(validPredicate, validTimeout);
         }
+    }
+    
+    @Override
+    public AutoClose notifyIf(Predicate<T> predicate, Consumer<T> listener) {
+        final NotifyValueListener<T> notifyValueListener = new NotifyValueListener<>(predicate, listener, notifyValueListeners);
+        
+        notifyValueListener.process(get());
+        
+        return notifyValueListener.open();
     }
     
     @Override
     public void accept(T value) {
         final T validValue = valueCheck(value);
         synchronized (simpleLock) {
-            setAndNotifyIfChanged(validValue);
+            setValue(validValue);
         }
     }
-
+    
     @Override
     public Optional<T> acceptIf(Predicate<T> predicate, T value) {
         final T validValue = valueCheck(value);
@@ -58,23 +67,14 @@ final class WaitableImpl<T> implements Waitable<T> {
         synchronized (simpleLock) {
             final T currentValue = reference.get();
             if (validPredicate.test(currentValue)) {
-                setAndNotifyIfChanged(validValue);
+                setValue(validValue);
                 return Optional.of(currentValue);
             } else {
                 return Optional.empty();
             }
         }
     }
-    
-    @Override
-    public Optional<T> getIf(Predicate<T> predicate) {
-        final Predicate<T> validPredicate = predicateCheck(predicate);
-        synchronized (simpleLock) {
-            final T currentValue = reference.get();
-            return validPredicate.test(currentValue) ? Optional.of(currentValue) : Optional.empty();
-        }
-    }
-    
+
     @Override
     public T get() {
         synchronized (simpleLock) {
@@ -89,7 +89,8 @@ final class WaitableImpl<T> implements Waitable<T> {
     private Optional<T> waitForLoop(Predicate<T> predicate, Duration timeout) {
         final Instant start = Instant.now();
         do {
-            runWithIgnore(()-> simpleLock.wait(getWaitMillis(timeout, start)));
+            final long waitMillis = getWaitMillis(timeout, start, Instant.now());
+            runWithIgnore(() -> simpleLock.wait(waitMillis));
             final T value = reference.get();
             if (predicate.test(value)) {
                 return Optional.of(value);
@@ -98,22 +99,22 @@ final class WaitableImpl<T> implements Waitable<T> {
         
         return Optional.empty();
     }
-    
-    private static long getWaitMillis(Duration timeout, Instant start) {
-        return Long.max(1, timeout.minus(Duration.between(start, Instant.now())).toMillis());
-    }
-    
+
     private boolean shouldKeepWaiting(Duration timeout, Instant start) {
-        if (isShutdown) {
-            return false;
-        }
-        return Duration.between(start, Instant.now()).compareTo(timeout) < 0;
+        return !isShutdown && !hasTimedOut(timeout, start, Instant.now());
     }
     
-    private void setAndNotifyIfChanged(T newValue) {
+    private void setValue(T newValue) {
         final T oldValue = reference.getAndSet(newValue);
         if (oldValue != newValue) {
             wakeUpWaitingThreads();
+            notifyListeners(newValue);
+        }
+    }
+    
+    private void notifyListeners(T newValue) {
+        if (!notifyValueListeners.isEmpty()) {
+            notifyValueListeners.forEach(n -> n.process(newValue));
         }
     }
     
@@ -128,4 +129,5 @@ final class WaitableImpl<T> implements Waitable<T> {
     private final Object simpleLock = new Object();
     private final AtomicReference<T> reference = new AtomicReference<>();
     private volatile boolean isShutdown = false;
+    private final List<NotifyValueListener<T>> notifyValueListeners = new CopyOnWriteArrayList<>();
 }

@@ -24,6 +24,5 @@ final class StateMachineFactoryImpl implements StateMachineFactory {
     }
     
     StateMachineFactoryImpl() {
-    
     }
 }

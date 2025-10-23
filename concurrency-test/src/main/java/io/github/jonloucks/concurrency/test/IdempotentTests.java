@@ -72,7 +72,7 @@ public interface IdempotentTests {
     }
     
     @Test
-    default void idempotent_transition_WithIllegalTransitionAndDeniedValue_Works() {
+    default void idempotent_transition_WithIllegalTransitionAndFailedValue_Works() {
         withConcurrencyInstalled(contracts -> {
             final StateMachine<Idempotent> stateMachine = Idempotent.createStateMachine(contracts);
             
@@ -81,14 +81,14 @@ public interface IdempotentTests {
                 .successState(CLOSING)
                 .successValue(() -> "success value")
                 .errorValue(() -> "error value")
-                .failedValue(() -> "denied value")
+                .failedValue(() -> "failed value")
             );
-            assertEquals("denied value", value);
+            assertEquals("failed value", value);
         });
     }
     
     @Test
-    default void idempotent_transition_WithIllegalTransitionAndDeniedState_Works() {
+    default void idempotent_transition_WithIllegalTransitionAndFailedState_Works() {
         withConcurrencyInstalled(contracts -> {
             final StateMachine<Idempotent> stateMachine = Idempotent.createStateMachine(contracts);
             
@@ -98,10 +98,10 @@ public interface IdempotentTests {
                 .successValue(() -> "success value")
                 .errorValue(() -> "error value")
                 .failedState(DESTROYED)
-                .failedValue(() -> "denied value")
+                .failedValue(() -> "failed value")
             );
             assertEquals(DESTROYED, stateMachine.getState());
-            assertEquals("denied value", value);
+            assertEquals("failed value", value);
         });
     }
     
@@ -134,7 +134,7 @@ public interface IdempotentTests {
                     .successState(OPENING)
                     .successValue(() -> { throw expected; })
                     .errorValue(() -> "error value")
-                    .failedValue(() -> "denied value")
+                    .failedValue(() -> "failed value")
                     .errorState(DESTROYED)
                 );
     

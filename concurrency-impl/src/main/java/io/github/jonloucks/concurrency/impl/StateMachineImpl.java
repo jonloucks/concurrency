@@ -3,6 +3,7 @@ package io.github.jonloucks.concurrency.impl;
 import io.github.jonloucks.concurrency.api.ConcurrencyException;
 import io.github.jonloucks.concurrency.api.StateMachine;
 import io.github.jonloucks.concurrency.api.Waitable;
+import io.github.jonloucks.contracts.api.AutoClose;
 
 import java.time.Duration;
 import java.util.*;
@@ -31,18 +32,13 @@ final class StateMachineImpl<S> implements StateMachine<S> {
     }
     
     @Override
-    public Optional<S> getIf(Predicate<S> predicate) {
-        return currentState.getIf(predicate);
-    }
-    
-    @Override
-    public Optional<S> getWhen(Predicate<S> predicate) {
-        return currentState.getWhen(predicate);
-    }
-    
-    @Override
     public Optional<S> getWhen(Predicate<S> predicate, Duration timeout) {
         return currentState.getWhen(predicate, timeout);
+    }
+
+    @Override
+    public AutoClose notifyIf(Predicate<S> predicate, Consumer<S> listener) {
+        return currentState.notifyIf(predicate, listener);
     }
     
     @Override
@@ -55,14 +51,14 @@ final class StateMachineImpl<S> implements StateMachine<S> {
     @Override
     public <R> R transition(Transition<S, R> transition) {
         final Transition<S,R> t = transitionCheck(transition);
-        if (isTransitionAllowed(t.getEvent(), t.getSuccessState())) {
+        if (isAllowed(t)) {
             try {
                 return handleSuccess(t);
             } catch (Throwable thrown) {
                 return handleError(t, thrown);
             }
         } else {
-            return handleDenied(t);
+            return handleFailure(t);
         }
     }
     
@@ -78,7 +74,7 @@ final class StateMachineImpl<S> implements StateMachine<S> {
         final S fromState = getState();
         if (hasState(toState) && !fromState.equals(toState)) {
             final Set<Rule<S>> rules = stateToRulesLookup.get(fromState);
-            if (ofNullable(rules).isPresent() && !rules.isEmpty()) {
+            if (!rules.isEmpty()) {
                 return rules.stream().allMatch(r -> r.canTransition(validEvent, toState));
             }
             return true;
@@ -103,13 +99,17 @@ final class StateMachineImpl<S> implements StateMachine<S> {
         return validTransition;
     }
     
-    private <R> R handleSuccess(Transition<S, R> t) {
-        final R value = orNull(t.getSuccessValue());
-        setState(t.getEvent(), t.getSuccessState());
+    private <R> boolean isAllowed(Transition<S,R> transition) {
+        return isTransitionAllowed(transition.getEvent(), transition.getSuccessState());
+    }
+    
+    private <R> R handleSuccess(Transition<S, R> transition) {
+        final R value = orNull(transition.getSuccessValue());
+        setState(transition.getEvent(), transition.getSuccessState());
         return value;
     }
     
-    private <R> R handleDenied(Transition<S, R> transition) {
+    private <R> R handleFailure(Transition<S, R> transition) {
         setOptionalState(transition.getFailedState(), transition.getEvent());
         if (transition.getFailedValue().isPresent()) {
             return transition.getFailedValue().get().get();
@@ -118,13 +118,13 @@ final class StateMachineImpl<S> implements StateMachine<S> {
             " to " + transition.getSuccessState() + ".");
     }
     
-    private <R> R handleError(Transition<S, R> t, Throwable thrown) throws Error, ConcurrencyException, RuntimeException {
-        setOptionalState(t.getErrorState(), t.getEvent());
-        if (t.getErrorValue().isPresent()) {
-            return t.getErrorValue().get().get();
+    private <R> R handleError(Transition<S, R> transition, Throwable thrown) throws Error, RuntimeException {
+        setOptionalState(transition.getErrorState(), transition.getEvent());
+        if (transition.getErrorValue().isPresent()) {
+            return transition.getErrorValue().get().get();
         } else {
-            throwUnchecked(thrown, "State machine error.");
-            return null;
+            // Jacoco probe-based exception coverage blind spot
+           throw ConcurrencyException.rethrow(thrown);
         }
     }
     
@@ -134,13 +134,13 @@ final class StateMachineImpl<S> implements StateMachine<S> {
     }
     
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private <R> void setOptionalState(Optional<S> optional, String event) {
+    private void setOptionalState(Optional<S> optional, String event) {
         optional.ifPresent(s -> setState(event, s));
     }
     
     private S existsCheck(S state) {
         final S validState = stateCheck(state);
-        return illegalCheck(validState, !hasState(validState), "Rule does not exist.");
+        return illegalCheck(validState, !hasState(validState), "State must be known.");
     }
     
     private IllegalArgumentException getInitialStateNotPresentException() {
