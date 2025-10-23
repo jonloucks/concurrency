@@ -19,7 +19,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
+import static io.github.jonloucks.concurrency.api.Constants.MIN_TIMEOUT;
 import static io.github.jonloucks.concurrency.test.Tools.withConcurrency;
 import static io.github.jonloucks.concurrency.test.WaitableTests.WaitableTestsTools.INITIAL;
 import static io.github.jonloucks.concurrency.test.WaitableTests.WaitableTestsTools.MODIFIED;
@@ -33,7 +35,7 @@ import static org.mockito.Mockito.*;
 public interface WaitableTests {
     
     @Test
-    default void waitable_WithNullInitialValue_Throws() {
+    default void waitable_CreateWithNullInitialValue_Throws() {
         withConcurrency((contracts,concurrency)-> {
             
             final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
@@ -45,7 +47,7 @@ public interface WaitableTests {
     }
     
     @Test
-    default void waitable_WithValidInitial_Works() {
+    default void waitable_CreateWithValidInitial_Works() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             
@@ -71,12 +73,26 @@ public interface WaitableTests {
     }
     
     @Test
+    default void waitable_acceptWhen_WithNullPredicate_Throws() {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            final Supplier<String> valueSupplier = () -> INITIAL;
+            
+            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+                waitable.acceptWhen(null, valueSupplier);
+            });
+            
+            assertThrown(thrown, "Predicate must be present.");
+        });
+    }
+    
+    @Test
     default void waitable_acceptIf_WithNullValue_Throws() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final Predicate<String> predicate = s -> true;
             final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                waitable.acceptIf(predicate, null);
+                waitable.acceptIf(predicate, (String)null);
             });
             
             assertThrown(thrown, "Value must be present.");
@@ -84,11 +100,50 @@ public interface WaitableTests {
     }
     
     @Test
-    default void waitable_acceptIf_WithNullPredicate_Throws() {
+    default void waitable_acceptIf_WithNullValueSupplier_Throws() {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            final Predicate<String> predicate = s -> true;
+            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+                waitable.acceptIf(predicate, (Supplier<String>)null);
+            });
+            
+            assertThrown(thrown, "Value supplier must be present.");
+        });
+    }
+    
+    @Test
+    default void waitable_acceptIf_WithNullValueSupplierReturningNull_Throws() {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            final Predicate<String> predicate = s -> true;
+            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+                waitable.acceptIf(predicate, () -> null);
+            });
+            
+            assertThrown(thrown, "Value must be present.");
+        });
+    }
+    
+    @Test
+    default void waitable_acceptIf_WithNullPredicateAndValue_Throws() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
                 waitable.acceptIf(null, MODIFIED);
+            });
+            
+            assertThrown(thrown, "Predicate must be present.");
+        });
+    }
+
+    @Test
+    default void waitable_acceptIf_WithNullPredicateAndSupplier_Throws() {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            final Supplier<String> initialSupplier = () -> INITIAL;
+            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+                waitable.acceptIf(null, initialSupplier);
             });
             
             assertThrown(thrown, "Predicate must be present.");
@@ -194,6 +249,66 @@ public interface WaitableTests {
             waitable.accept(INITIAL);
             
             assertEquals(INITIAL, waitable.get());
+        });
+    }
+    
+    @Test
+    default void waitable_acceptWhen_WhenSuccess_Works() {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            
+            final Optional<String> accepted = waitable.acceptWhen(INITIAL::equals, () -> MODIFIED);
+            
+            assertNotNull(accepted);
+            assertTrue(accepted.isPresent());
+        });
+    }
+    
+    @Test
+    default void waitable_acceptWhen_WhenFailedAndZeroTimeout_Works() {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            
+            final Optional<String> accepted = waitable.acceptWhen("abc"::equals, () -> MODIFIED, MIN_TIMEOUT);
+            
+            assertNotNull(accepted);
+            assertFalse(accepted.isPresent());
+        });
+    }
+    
+    @Test
+    default void waitable_acceptWhen_WhenPassingAndZeroTimeout_Works() {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            
+            final Optional<String> accepted = waitable.acceptWhen(INITIAL::equals, () -> MODIFIED, MIN_TIMEOUT);
+            
+            assertNotNull(accepted);
+            assertTrue(accepted.isPresent());
+            assertEquals(INITIAL, accepted.get());
+        });
+    }
+    
+    @Test
+    default void waitable_acceptWhen_WhenPassingAndBeforeTimeout_Works() {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            
+            final Thread thread = new Thread(() -> {
+                for (int i = 1; i <= 1_000; i++) {
+                    waitable.accept(Integer.toString(i));
+                }
+                waitable.accept(MODIFIED);
+            });
+            thread.setDaemon(true);
+            thread.start();
+            
+            final Optional<String> accepted = waitable.acceptWhen(MODIFIED::equals, () -> "Hello", Duration.ofSeconds(1));
+            
+            assertNotNull(accepted);
+            assertTrue(accepted.isPresent());
+            assertEquals(MODIFIED, accepted.get());
+            assertEquals("Hello", waitable.get());
         });
     }
     
@@ -364,7 +479,7 @@ public interface WaitableTests {
     }
     
     @Test
-    default void waitable_accept_Works() {
+    default void waitable_accept_WithPredicateAndValue_Works() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
       
@@ -377,7 +492,7 @@ public interface WaitableTests {
     }
     
     @Test
-    default void waitable_acceptIf_Passing_Works() {
+    default void waitable_acceptIf_WithValue_Passing_Works() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             
@@ -393,11 +508,42 @@ public interface WaitableTests {
     }
     
     @Test
-    default void waitable_acceptIf_Failed_Works() {
+    default void waitable_acceptIf_WithValueSupplier_Passing_Works() {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            
+            Optional<String> optionalOldValue = waitable.acceptIf( INITIAL::equals, ()-> MODIFIED);
+            
+            assertTrue(optionalOldValue.isPresent());
+            assertEquals(INITIAL, optionalOldValue.get());
+            assertEquals(MODIFIED, waitable.get());
+            assertTrue(waitable.getIf(MODIFIED::equals).isPresent());
+            assertEquals(MODIFIED, waitable.getIf(MODIFIED::equals).get());
+            assertFalse(waitable.getIf(INITIAL::equals).isPresent());
+        });
+    }
+    
+    @Test
+    default void waitable_acceptIf_WithValue_Failed_Works() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             
             final Optional<String> oldValue = waitable.acceptIf( "unknown"::equals, MODIFIED);
+            
+            assertFalse(oldValue.isPresent());
+            assertEquals(INITIAL, waitable.get());
+            assertTrue(waitable.getIf(INITIAL::equals).isPresent());
+            assertEquals(INITIAL, waitable.getIf(INITIAL::equals).get());
+            assertFalse(waitable.getIf(MODIFIED::equals).isPresent());
+        });
+    }
+    
+    @Test
+    default void waitable_acceptIf_WithValueSupplier_Failed_Works() {
+        withConcurrency((contracts,concurrency)-> {
+            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
+            
+            final Optional<String> oldValue = waitable.acceptIf( "unknown"::equals, () -> MODIFIED);
             
             assertFalse(oldValue.isPresent());
             assertEquals(INITIAL, waitable.get());

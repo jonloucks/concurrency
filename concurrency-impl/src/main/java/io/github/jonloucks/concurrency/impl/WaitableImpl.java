@@ -11,6 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static io.github.jonloucks.concurrency.impl.Internal.*;
 import static io.github.jonloucks.contracts.api.Checks.nullCheck;
@@ -28,26 +29,15 @@ final class WaitableImpl<T> implements Waitable<T> {
     
     @Override
     public Optional<T> getWhen(Predicate<T> predicate, Duration timeout) {
-        final Predicate<T> validPredicate = predicateCheck(predicate);
-        final Duration validTimeout = timeoutCheck(timeout);
-        
         synchronized (simpleLock) {
-            final T currentValue = reference.get();
-            if (validPredicate.test(currentValue)) {
-                return Optional.of(currentValue);
-            } else if (isShutdown || validTimeout.isZero()) {
-                return Optional.empty();
-            }
-            return waitForLoop(validPredicate, validTimeout);
+            return waitUntilSatisfied(predicate, timeout, ()->{});
         }
     }
     
     @Override
     public AutoClose notifyIf(Predicate<T> predicate, Consumer<T> listener) {
         final NotifyValueListener<T> notifyValueListener = new NotifyValueListener<>(predicate, listener, notifyValueListeners);
-        
         notifyValueListener.process(get());
-        
         return notifyValueListener.open();
     }
     
@@ -62,19 +52,35 @@ final class WaitableImpl<T> implements Waitable<T> {
     @Override
     public Optional<T> acceptIf(Predicate<T> predicate, T value) {
         final T validValue = valueCheck(value);
-        final Predicate<T> validPredicate = predicateCheck(predicate);
         
+        return acceptIf(predicate, () -> validValue);
+    }
+    
+    @Override
+    public Optional<T> acceptIf(Predicate<T> predicate, Supplier<T> valueSupplier) {
+        final Predicate<T> validPredicate = predicateCheck(predicate);
+        final Supplier<T> validValueSupplier = valueSupplierCheck(valueSupplier);
         synchronized (simpleLock) {
             final T currentValue = reference.get();
             if (validPredicate.test(currentValue)) {
-                setValue(validValue);
+                setValue(valueCheck(validValueSupplier.get()));
                 return Optional.of(currentValue);
             } else {
                 return Optional.empty();
             }
         }
     }
-
+    
+    @Override
+    public Optional<T> acceptWhen(Predicate<T> predicate, Supplier<T> valueSupplier, Duration timeout) {
+        final Supplier<T> supplier = valueSupplierCheck(valueSupplier);
+        final Runnable setValue = () -> setValue(valueCheck(supplier.get()));
+        
+        synchronized (simpleLock) {
+            return waitUntilSatisfied(predicate, timeout, setValue);
+        }
+    }
+    
     @Override
     public T get() {
         synchronized (simpleLock) {
@@ -86,20 +92,31 @@ final class WaitableImpl<T> implements Waitable<T> {
         reference.set(valueCheck(initialValue));
     }
     
-    private Optional<T> waitForLoop(Predicate<T> predicate, Duration timeout) {
+    private Optional<T> waitUntilSatisfied(Predicate<T> predicate, Duration timeout, Runnable block) {
+        final Predicate<T> validPredicate = predicateCheck(predicate);
+        final Duration validTimeout = timeoutCheck(timeout);
+        
         final Instant start = Instant.now();
         do {
-            final long waitMillis = getWaitMillis(timeout, start, Instant.now());
-            runWithIgnore(() -> simpleLock.wait(waitMillis));
             final T value = reference.get();
-            if (predicate.test(value)) {
+            if (validPredicate.test(value)) {
+                block.run();
                 return Optional.of(value);
             }
-        } while (shouldKeepWaiting(timeout, start));
+        } while (keepWaiting(validTimeout, start));
         
         return Optional.empty();
     }
-
+    
+    private boolean keepWaiting(Duration validTimeout, Instant start) {
+        if (shouldKeepWaiting(validTimeout, start)) {
+            runWithIgnore(() -> simpleLock.wait(getWaitMillis(validTimeout, start, Instant.now())));
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     private boolean shouldKeepWaiting(Duration timeout, Instant start) {
         return !isShutdown && !hasTimedOut(timeout, start, Instant.now());
     }
@@ -124,6 +141,9 @@ final class WaitableImpl<T> implements Waitable<T> {
     
     private static <T> T valueCheck(T t) {
         return nullCheck(t, "Value must be present.");
+    }
+    private static <T> T valueSupplierCheck(T t) {
+        return nullCheck(t, "Value supplier must be present.");
     }
     
     private final Object simpleLock = new Object();
