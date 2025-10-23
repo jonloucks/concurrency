@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WaitableConsumer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">concurrency</a> &gt; <a href="index.source.html" class="el_package">io.github.jonloucks.concurrency.api</a> &gt; <span class="el_source">WaitableConsumer.java</span></div><h1>WaitableConsumer.java</h1><pre class="source lang-java linenums">package io.github.jonloucks.concurrency.api;
+
+import java.time.Duration;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+import static io.github.jonloucks.concurrency.api.Constants.MAX_TIMEOUT;
+
+/**
+ * Waitable consumer
+ * @param &lt;T&gt; the type of value
+ */
+public interface WaitableConsumer&lt;T&gt; extends Consumer&lt;T&gt; {
+    /**
+     * Assign a new value
+     *
+     * @param value the new value
+     *  @throws IllegalArgumentException if value is null
+     */
+    @Override
+    void accept(T value);
+    
+    /**
+     * Assign a new value if conditions are satisfied
+     *
+     * @param predicate the predicate to test if a value should be replaced
+     * @param value the new value
+     * @return if accepted the value replaced.
+     * @throws IllegalArgumentException if predicate is null or if value is null
+     */
+    Optional&lt;T&gt; acceptIf(Predicate&lt;T&gt; predicate, T value);
+    
+    /**
+     * Assign a new value if conditions are satisfied
+     *
+     * @param predicate the predicate to test if a value should be replaced
+     * @param valueSupplier the supplier of the new value
+     * @return if accepted the value replaced.
+     * @throws IllegalArgumentException if predicate is null or if value is null
+     */
+     Optional&lt;T&gt; acceptIf(Predicate&lt;T&gt; predicate, Supplier&lt;T&gt; valueSupplier);
+    
+    /**
+     * Assign a new value if conditions are satisfied
+     *
+     * @param predicate the predicate to test if a value should be replaced
+     * @param valueSupplier the new value supplier
+     * @return if accepted the value replaced.
+     * @throws IllegalArgumentException if predicate is null or if valueSupplier is null
+     */
+    default Optional&lt;T&gt; acceptWhen(Predicate&lt;T&gt; predicate, Supplier&lt;T&gt; valueSupplier) {
+<span class="fc" id="L54">        return acceptWhen(predicate, valueSupplier, MAX_TIMEOUT);</span>
+    }
+    
+    /**
+     * Assign a new value if conditions are satisfied
+     *
+     * @param predicate the predicate to test if a value should be replaced
+     * @param valueSupplier the new value supplier
+     * @param timeout how long to wait to for test is satisfied
+     * @return if accepted the value replaced.
+     * @throws IllegalArgumentException if predicate is null, valueSupplier is null, timeout is null or invalid
+     */
+    Optional&lt;T&gt; acceptWhen(Predicate&lt;T&gt; predicate, Supplier&lt;T&gt; valueSupplier, Duration timeout);
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

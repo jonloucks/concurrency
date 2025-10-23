@@ -97,7 +97,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/ja
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button><button id="method-summary-table-tab5" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab5', 3)" class="table-tab">Default Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -109,9 +109,28 @@ extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/ja
 <div class="block">Assign a new value</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#acceptIf(java.util.function.Predicate,T)" class="member-name-link">acceptIf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Predicate.html" title="class or interface in java.util.function" class="external-link">Predicate</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;&nbsp;predicate,
- <a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&nbsp;value)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#acceptIf(java.util.function.Predicate,java.util.function.Supplier)" class="member-name-link">acceptIf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Predicate.html" title="class or interface in java.util.function" class="external-link">Predicate</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;&nbsp;predicate,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;&nbsp;valueSupplier)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Assign a new value if conditions are satisfied</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#acceptIf(java.util.function.Predicate,T)" class="member-name-link">acceptIf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Predicate.html" title="class or interface in java.util.function" class="external-link">Predicate</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;&nbsp;predicate,
+ <a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&nbsp;value)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Assign a new value if conditions are satisfied</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#acceptWhen(java.util.function.Predicate,java.util.function.Supplier)" class="member-name-link">acceptWhen</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Predicate.html" title="class or interface in java.util.function" class="external-link">Predicate</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;&nbsp;predicate,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;&nbsp;valueSupplier)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">Assign a new value if conditions are satisfied</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#acceptWhen(java.util.function.Predicate,java.util.function.Supplier,java.time.Duration)" class="member-name-link">acceptWhen</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Predicate.html" title="class or interface in java.util.function" class="external-link">Predicate</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;&nbsp;predicate,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;&nbsp;valueSupplier,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Assign a new value if conditions are satisfied</div>
 </div>
 </div>
@@ -160,6 +179,59 @@ extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/ja
 <dd>if accepted the value replaced.</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if predicate is null or if value is null</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="acceptIf(java.util.function.Predicate,java.util.function.Supplier)">
+<h3>acceptIf</h3>
+<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;</span>&nbsp;<span class="element-name">acceptIf</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Predicate.html" title="class or interface in java.util.function" class="external-link">Predicate</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;&nbsp;predicate,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;&nbsp;valueSupplier)</span></div>
+<div class="block">Assign a new value if conditions are satisfied</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>predicate</code> - the predicate to test if a value should be replaced</dd>
+<dd><code>valueSupplier</code> - the supplier of the new value</dd>
+<dt>Returns:</dt>
+<dd>if accepted the value replaced.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if predicate is null or if value is null</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="acceptWhen(java.util.function.Predicate,java.util.function.Supplier)">
+<h3>acceptWhen</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;</span>&nbsp;<span class="element-name">acceptWhen</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Predicate.html" title="class or interface in java.util.function" class="external-link">Predicate</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;&nbsp;predicate,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;&nbsp;valueSupplier)</span></div>
+<div class="block">Assign a new value if conditions are satisfied</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>predicate</code> - the predicate to test if a value should be replaced</dd>
+<dd><code>valueSupplier</code> - the new value supplier</dd>
+<dt>Returns:</dt>
+<dd>if accepted the value replaced.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if predicate is null or if valueSupplier is null</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="acceptWhen(java.util.function.Predicate,java.util.function.Supplier,java.time.Duration)">
+<h3>acceptWhen</h3>
+<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;</span>&nbsp;<span class="element-name">acceptWhen</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Predicate.html" title="class or interface in java.util.function" class="external-link">Predicate</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;&nbsp;predicate,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="WaitableConsumer.html" title="type parameter in WaitableConsumer">T</a>&gt;&nbsp;valueSupplier,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</span></div>
+<div class="block">Assign a new value if conditions are satisfied</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>predicate</code> - the predicate to test if a value should be replaced</dd>
+<dd><code>valueSupplier</code> - the new value supplier</dd>
+<dd><code>timeout</code> - how long to wait to for test is satisfied</dd>
+<dt>Returns:</dt>
+<dd>if accepted the value replaced.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if predicate is null, valueSupplier is null, timeout is null or invalid</dd>
 </dl>
 </section>
 </li>

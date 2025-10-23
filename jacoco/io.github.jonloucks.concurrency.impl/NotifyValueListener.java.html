@@ -12,7 +12,7 @@ import static io.github.jonloucks.concurrency.impl.Internal.*;
 final class NotifyValueListener&lt;T&gt; {
     
     void process(T value) {
-<span class="fc bfc" id="L15" title="All 4 branches covered.">        if (isActive() &amp;&amp; predicate.test(value)) {</span>
+<span class="pc bpc" id="L15" title="1 of 4 branches missed.">        if (isActive() &amp;&amp; predicate.test(value)) {</span>
 <span class="fc" id="L16">            listener.accept(value);</span>
         }
 <span class="fc" id="L18">    }</span>
@@ -35,7 +35,7 @@ final class NotifyValueListener&lt;T&gt; {
 <span class="fc" id="L35">    }</span>
     
     private boolean isActive() {
-<span class="fc bfc" id="L38" title="All 2 branches covered.">        return !isClosed.get();</span>
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">        return !isClosed.get();</span>
     }
     
     private final Predicate&lt;T&gt; predicate;
