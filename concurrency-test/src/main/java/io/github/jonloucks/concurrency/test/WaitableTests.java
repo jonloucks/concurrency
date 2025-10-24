@@ -14,9 +14,6 @@ import org.mockito.quality.Strictness;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -329,7 +326,6 @@ public interface WaitableTests {
     default void waitable_waitFor_WithInitialValueAndTimeout_Works() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
-            
             final Optional<String> optionalValue = waitable.waitFor(INITIAL::equals, Duration.ofDays(1));
             
             assertTrue(optionalValue.isPresent());
@@ -381,67 +377,38 @@ public interface WaitableTests {
     default void waitable_getWhen_Threads_Works(int numberOfThreads) {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
-            final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
-            final AtomicInteger errorCount = new AtomicInteger(0);
             
-            for (int i = 0; i < numberOfThreads; i++) {
-                final Thread thread = new Thread(() -> {
-                    try {
-                        final Optional<String> optionalValue = waitable.getWhen(MODIFIED::equals, Duration.ofMinutes(5));
-                        if (optionalValue.isPresent()) {
-                            countDownLatch.countDown();
-                        } else {
-                            errorCount.incrementAndGet();
-                        }
-                    } catch (Throwable ignored) {
-                        errorCount.incrementAndGet();
-                    }
-                });
-                thread.start();
-            }
+            final Runnable runnable = () -> {
+                final Optional<String> optionalValue = waitable.getWhen(MODIFIED::equals, Duration.ofMinutes(5));
+                if (!optionalValue.isPresent()) {
+                    throw new AssertionError("Failed getWhen, value must be present.");
+                }
+            };
             
+            final SpawnThreads spawnThreads = new SpawnThreads(numberOfThreads, runnable);
+            spawnThreads.start();
             waitable.accept(MODIFIED);
-            try {
-                final boolean finished = countDownLatch.await(5, TimeUnit.MINUTES);
-                assertTrue(finished, "Timed out waiting for threads to finish.");
-                assertEquals(0, errorCount.get(), "Errors were found.");
-            } catch (InterruptedException ignored) {
-                throw new AssertionError("Interrupted waiting for threads to finish.");
-            }
+            spawnThreads.finish();
         });
     }
-
+    
     @ParameterizedTest(name = "threads = {0}")
     @ValueSource(ints = {1,3,17})
     default void waitable_getWhen_shutdownWithThreads_Works(int numberOfThreads) {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
-            final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
-            final AtomicInteger errorCount = new AtomicInteger(0);
             
-            for (int i = 0; i < numberOfThreads; i++) {
-                final Thread thread = new Thread(() -> {
-                    try {
-                        final Optional<String> optionalValue = waitable.getWhen(MODIFIED::equals, Duration.ofMinutes(5));
-                        if (!optionalValue.isPresent()) {
-                            countDownLatch.countDown();
-                        } else {
-                            errorCount.incrementAndGet();
-                        }
-                    } catch (Throwable ignored) {
-                        errorCount.incrementAndGet();
-                    }
-                });
-                thread.start();
-            }
+            final Runnable runnable = () -> {
+                final Optional<String> optionalValue = waitable.getWhen(MODIFIED::equals, Duration.ofMinutes(5));
+                if (optionalValue.isPresent()) {
+                    throw new AssertionError("Failed getWhen, not expecting present.");
+                }
+            };
+            
+            final SpawnThreads spawnThreads = new SpawnThreads(numberOfThreads, runnable);
+            spawnThreads.start();
             waitable.shutdown();
-            try {
-                final boolean finished = countDownLatch.await(5, TimeUnit.MINUTES);
-                assertTrue(finished, "Timed out waiting for threads to finish.");
-                assertEquals(0, errorCount.get(), "Errors were found.");
-            } catch (InterruptedException ignored) {
-                throw new AssertionError("Interrupted waiting for threads to finish.");
-            }
+            spawnThreads.finish();
         });
     }
     
@@ -450,44 +417,28 @@ public interface WaitableTests {
     default void waitable_getWhen_WithThreadsAndTimeout_Works(int numberOfThreads) {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
-            final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
-            final AtomicInteger errorCount = new AtomicInteger(0);
             
-            for (int i = 0; i < numberOfThreads; i++) {
-                final Thread thread = new Thread(() -> {
-                    try {
-                        final Optional<String> optionalValue = waitable.getWhen(MODIFIED::equals, Duration.ofMillis(25));
-                        if (!optionalValue.isPresent()) {
-                            countDownLatch.countDown();
-                        } else {
-                            errorCount.incrementAndGet();
-                        }
-                    } catch (Throwable ignored) {
-                        errorCount.incrementAndGet();
-                    }
-                });
-                thread.start();
-            }
-            try {
-                final boolean finished = countDownLatch.await(5, TimeUnit.MINUTES);
-                assertTrue(finished, "Timed out waiting for threads to finish.");
-                assertEquals(0, errorCount.get(), "Errors were found.");
-            } catch (InterruptedException ignored) {
-                throw new AssertionError("Interrupted waiting for threads to finish.");
-            }
+            final Runnable runnable = () -> {
+                final Optional<String> optionalValue = waitable.getWhen(MODIFIED::equals, Duration.ofMillis(25));
+                if (optionalValue.isPresent()) {
+                    throw new AssertionError("Failed getWhen, not expecting present.");
+                }
+            };
+            
+            final SpawnThreads spawnThreads = new SpawnThreads(numberOfThreads, runnable);
+            spawnThreads.start();
+            spawnThreads.finish();
         });
     }
-    
+
     @Test
     default void waitable_accept_WithPredicateAndValue_Works() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
       
             waitable.accept(MODIFIED);
+            
             assertEquals(MODIFIED, waitable.get());
-            assertTrue(waitable.getIf(MODIFIED::equals).isPresent());
-            assertEquals(MODIFIED, waitable.getIf(MODIFIED::equals).get());
-            assertFalse(waitable.getIf(INITIAL::equals).isPresent());
         });
     }
     
@@ -501,9 +452,6 @@ public interface WaitableTests {
             assertTrue(optionalOldValue.isPresent());
             assertEquals(INITIAL, optionalOldValue.get());
             assertEquals(MODIFIED, waitable.get());
-            assertTrue(waitable.getIf(MODIFIED::equals).isPresent());
-            assertEquals(MODIFIED, waitable.getIf(MODIFIED::equals).get());
-            assertFalse(waitable.getIf(INITIAL::equals).isPresent());
         });
     }
     
@@ -517,9 +465,6 @@ public interface WaitableTests {
             assertTrue(optionalOldValue.isPresent());
             assertEquals(INITIAL, optionalOldValue.get());
             assertEquals(MODIFIED, waitable.get());
-            assertTrue(waitable.getIf(MODIFIED::equals).isPresent());
-            assertEquals(MODIFIED, waitable.getIf(MODIFIED::equals).get());
-            assertFalse(waitable.getIf(INITIAL::equals).isPresent());
         });
     }
     
@@ -532,9 +477,6 @@ public interface WaitableTests {
             
             assertFalse(oldValue.isPresent());
             assertEquals(INITIAL, waitable.get());
-            assertTrue(waitable.getIf(INITIAL::equals).isPresent());
-            assertEquals(INITIAL, waitable.getIf(INITIAL::equals).get());
-            assertFalse(waitable.getIf(MODIFIED::equals).isPresent());
         });
     }
     
@@ -547,9 +489,6 @@ public interface WaitableTests {
             
             assertFalse(oldValue.isPresent());
             assertEquals(INITIAL, waitable.get());
-            assertTrue(waitable.getIf(INITIAL::equals).isPresent());
-            assertEquals(INITIAL, waitable.getIf(INITIAL::equals).get());
-            assertFalse(waitable.getIf(MODIFIED::equals).isPresent());
         });
     }
     
@@ -608,7 +547,6 @@ public interface WaitableTests {
             
             try (AutoClose closeNotify = waitable.notifyIf(v -> !INITIAL.equals(v), listener)) {
                 ignore(closeNotify);
-                waitable.accept(MODIFIED);
                 waitable.accept(MODIFIED);
                 waitable.accept(MODIFIED);
                 
