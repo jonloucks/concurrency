@@ -6,11 +6,13 @@ on:
     branches:
       - main
 
+env:
+  WORKFLOW_JDK: 25
+
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      WORKFLOW_JDK: "25"
       KIT_JAVA_TARGET_VERSION: "${{ env.WORKFLOW_JDK }}"
       KIT_JAVA_SOURCE_VERSION: "${{ env.WORKFLOW_JDK }}"
       KIT_JAVA_COMPILER_VERSION: "${{ env.WORKFLOW_JDK }}"
