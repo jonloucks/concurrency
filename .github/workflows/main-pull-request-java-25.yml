@@ -1,14 +1,19 @@
 name: Main Pull Request
 
 on:
+
   pull_request:
     branches:
       - main
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    env:
+      WORKFLOW_JDK: "25"
+      KIT_JAVA_TARGET_VERSION: "${{ env.WORKFLOW_JDK }}"
+      KIT_JAVA_SOURCE_VERSION: "${{ env.WORKFLOW_JDK }}"
+      KIT_JAVA_COMPILER_VERSION: "${{ env.WORKFLOW_JDK }}"
     permissions:
       contents: write
       packages: write
@@ -26,10 +31,10 @@ jobs:
       with:
         path: main-project
 
-    - name: Set up JDK 25
+    - name: Set up JDK ${{ env.WORKFLOW_JDK }}
       uses: actions/setup-java@v4
       with:
-        java-version: '25'
+        java-version: ${{ env.WORKFLOW_JDK }}
         distribution: 'temurin'
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
@@ -41,7 +46,7 @@ jobs:
       working-directory: main-project
       run: ./gradlew build jacocoTestReport
       env:
-        PROJECT_WORKFLOW: 'main-pull-request-latest-java'
+        PROJECT_WORKFLOW: 'main-pull-request'
 
     - name: Upload JaCoCo report artifact
       uses: actions/upload-artifact@v4
@@ -53,7 +58,7 @@ jobs:
       id: jacoco
       uses: cicirello/jacoco-badge-generator@v2.11.0
       with:
-        coverage-badge-filename: ${{ github.head_ref }}-latest-java-coverage.svg
+        coverage-badge-filename: ${{ github.head_ref }}-java-${{ env.WORKFLOW_JDK }}-coverage.svg
         badges-directory: badges
         jacoco-csv-file: main-project/build/reports/jacoco/test/jacocoTestReport.csv
 
@@ -62,7 +67,7 @@ jobs:
       with:
         default_author: github_actions
         message: 'Update JaCoCo coverage badge'
-        add: '*.latest-java-coverage.svg'
+        add: ${{ github.head_ref }}-java-${{ env.WORKFLOW_JDK }}-coverage.svg
         cwd: badges
 
     - name: Log coverage percentage
@@ -74,4 +79,4 @@ jobs:
       working-directory: main-project
       run: ./gradlew jacocoTestCoverageVerification
       env:
-        PROJECT_WORKFLOW: 'main-pull-request-latest-java'
+        PROJECT_WORKFLOW: 'main-pull-request'
