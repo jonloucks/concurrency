@@ -211,7 +211,7 @@ public interface StateMachineTests {
     }
     
     @ParameterizedTest
-    @MethodSource("io.github.jonloucks.concurrency.test.Tools#getThrowingParameters")
+    @MethodSource("io.github.jonloucks.concurrency.test.Internal#getThrowingParameters")
     default void stateMachine_transition_SuccessThrows_Throws(Runnable throwingBlock) {
         withConcurrency((contracts,concurrency) -> {
             final StateMachineFactory factory = assumeStateMachineFactory(contracts);
@@ -233,7 +233,7 @@ public interface StateMachineTests {
     }
     
     @ParameterizedTest
-    @MethodSource("io.github.jonloucks.concurrency.test.Tools#getThrowingParameters")
+    @MethodSource("io.github.jonloucks.concurrency.test.Internal#getThrowingParameters")
     default void stateMachine_transition_SuccessThrowsAndErrorValue_ReturnsValue(Runnable throwingBlock) {
         withConcurrency((contracts,concurrency) -> {
             final StateMachineFactory factory = assumeStateMachineFactory(contracts);
