@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: [ 11, 17, 21, 25 ]
+        java-version: [ 17, 21, 25 ]
     permissions:
       contents: write
       packages: write
@@ -65,7 +65,7 @@ jobs:
       with:
         default_author: github_actions
         message: 'Update JaCoCo coverage badge'
-        add: '*.svg'
+        add: ${{ github.head_ref }}-java-${{ matrix.java-version }}-coverage.svg
         cwd: badges
 
     - name: Log coverage percentage
