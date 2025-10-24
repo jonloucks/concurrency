@@ -60,13 +60,13 @@ jobs:
         badges-directory: badges
         jacoco-csv-file: main-project/build/reports/jacoco/test/jacocoTestReport.csv
 
-    - name: Commit and Push the Badge
-      uses: EndBug/add-and-commit@v9
-      with:
-        default_author: github_actions
-        message: 'Update JaCoCo coverage badge'
-        add: ${{ github.head_ref }}-java-${{ matrix.java-version }}-coverage.svg
-        cwd: badges
+#    - name: Commit and Push the Badge
+#      uses: EndBug/add-and-commit@v9
+#      with:
+#        default_author: github_actions
+#        message: 'Update JaCoCo coverage badge'
+#        add: ${{ github.head_ref }}-java-${{ matrix.java-version }}-coverage.svg
+#        cwd: badges
 
     - name: Log coverage percentage
       run: |
