@@ -9,9 +9,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java-version: [ 17, 21, 25 ]
     permissions:
       contents: write
       packages: write
@@ -29,10 +26,10 @@ jobs:
       with:
         path: main-project
 
-    - name: Set up JDK ${{ matrix.java-version }}
+    - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
-        java-version: ${{ matrix.java-version }}
+        java-version: '17'
         distribution: 'temurin'
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
@@ -49,24 +46,24 @@ jobs:
     - name: Upload JaCoCo report artifact
       uses: actions/upload-artifact@v4
       with:
-        name: jacoco-report-java-${{ matrix.java-version }}
+        name: jacoco-report
         path: main-project/build/reports/jacoco/test/html/
 
     - name: Generate JaCoCo Badge
       id: jacoco
       uses: cicirello/jacoco-badge-generator@v2.11.0
       with:
-        coverage-badge-filename: ${{ github.head_ref }}-java-${{ matrix.java-version }}-coverage.svg
+        coverage-badge-filename: ${{ github.head_ref }}-coverage.svg
         badges-directory: badges
         jacoco-csv-file: main-project/build/reports/jacoco/test/jacocoTestReport.csv
 
-#    - name: Commit and Push the Badge
-#      uses: EndBug/add-and-commit@v9
-#      with:
-#        default_author: github_actions
-#        message: 'Update JaCoCo coverage badge'
-#        add: ${{ github.head_ref }}-java-${{ matrix.java-version }}-coverage.svg
-#        cwd: badges
+    - name: Commit and Push the Badge
+      uses: EndBug/add-and-commit@v9
+      with:
+        default_author: github_actions
+        message: 'Update JaCoCo coverage badge'
+        add: '*.svg'
+        cwd: badges
 
     - name: Log coverage percentage
       run: |
