@@ -34,7 +34,7 @@ jobs:
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
     - name: Set up Gradle environment
-      uses: gradle/actions/setup-gradle@v4
+      uses: gradle/actions/setup-gradle@v5
 
     - name: Build with Gradle with java source ${{ matrix.java-source-version }}
       working-directory: main-project
