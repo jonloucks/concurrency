@@ -9,7 +9,7 @@ jobs:
 
     runs-on: ubuntu-latest
     strategy:
-      matrix:  # row matrix for release
+      matrix:  # row matrix only!
         java-version: [ 17 ]
         distribution: [ 'zulu' ]
         java-compiler-version: [ 17 ]

@@ -10,7 +10,7 @@ jobs:
 
     runs-on: ubuntu-latest
     strategy:
-      matrix:
+      matrix: # maximum of 25 combinations
         java-version: [ 17, 21, 25 ]
         distribution: [ 'zulu', 'temurin' ]
         java-compiler-version: [ 17 ]
