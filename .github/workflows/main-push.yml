@@ -61,6 +61,7 @@ jobs:
         with:
           default_author: github_actions
           message: 'Update Source Documentation'
+          pull: '--rebase --autostash'
           cwd: gh-pages
 
       - name: Upload JaCoCo report artifact
@@ -85,6 +86,7 @@ jobs:
           default_author: github_actions
           message: 'Update JaCoCo coverage badge'
           add: '*.svg'
+          pull: '--rebase --autostash'
           cwd: badges
 
       - name: Log coverage percentage
