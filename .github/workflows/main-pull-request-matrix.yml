@@ -39,3 +39,7 @@ jobs:
       run: ./gradlew
       env:
         PROJECT_WORKFLOW: 'main-pull-request-matrix'
+        KIT_JAVA_COMPILER_VERSION: ${{ matrix.java-version }}
+        KIT_JAVA_TARGET_VERSION: ${{ matrix.java-version }}
+        KIT_JAVA_SOURCE_VERSION: ${{ matrix.java-version }}
+
