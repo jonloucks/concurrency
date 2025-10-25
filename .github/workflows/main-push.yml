@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix: # row matrix only!
         java-version: [ 17 ]
-        distribution: [ 'zulu' ]
+        distribution: [ 'temurin' ]
         java-compiler-version: [ 17 ]
         java-source-version: [ 9 ]
     permissions:
