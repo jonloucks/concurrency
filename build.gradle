@@ -24,9 +24,9 @@ repositories {
 dependencies {
     api project(':concurrency-api')
     api project(':concurrency-impl')
-    api project(':concurrency-test')
     api libs.contracts.api
 
+    testImplementation project(':concurrency-test')
     testImplementation libs.contracts.test
     testImplementation libs.contracts
 
