@@ -16,14 +16,16 @@ final class ConcurrencyFactoryFinder {
     }
     
     Optional<ConcurrencyFactory> find() {
-        return createByReflection()
-            .or(this::createByServiceLoader);
+        final Optional<ConcurrencyFactory> byReflection = createByReflection();
+        return byReflection.isPresent() ? byReflection : createByServiceLoader();
     }
     
-    private Optional<? extends ConcurrencyFactory> createByServiceLoader() {
+    private Optional<ConcurrencyFactory> createByServiceLoader() {
         if (config.useServiceLoader()) {
             try {
-                return ServiceLoader.load(getServiceFactoryClass()).findFirst();
+                for (ConcurrencyFactory factory : ServiceLoader.load(getServiceFactoryClass())) {
+                    return Optional.of(factory);
+                }
             } catch (Throwable ignored) {
                 return Optional.empty();
             }
