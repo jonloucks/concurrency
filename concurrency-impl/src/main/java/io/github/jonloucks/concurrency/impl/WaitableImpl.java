@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 
 import static io.github.jonloucks.concurrency.impl.Internal.*;
 import static io.github.jonloucks.contracts.api.Checks.nullCheck;
+import static java.util.Optional.ofNullable;
 
 final class WaitableImpl<T> implements Waitable<T> {
 
@@ -43,17 +44,14 @@ final class WaitableImpl<T> implements Waitable<T> {
     
     @Override
     public void accept(T value) {
-        final T validValue = valueCheck(value);
         synchronized (simpleLock) {
-            setValue(validValue);
+            setValue(value);
         }
     }
     
     @Override
     public Optional<T> acceptIf(Predicate<T> predicate, T value) {
-        final T validValue = valueCheck(value);
-        
-        return acceptIf(predicate, () -> validValue);
+        return acceptIf(predicate, () -> value);
     }
     
     @Override
@@ -63,7 +61,7 @@ final class WaitableImpl<T> implements Waitable<T> {
         synchronized (simpleLock) {
             final T currentValue = reference.get();
             if (validPredicate.test(currentValue)) {
-                setValue(valueCheck(validValueSupplier.get()));
+                setValue(validValueSupplier.get());
                 return Optional.of(currentValue);
             } else {
                 return Optional.empty();
@@ -74,7 +72,7 @@ final class WaitableImpl<T> implements Waitable<T> {
     @Override
     public Optional<T> acceptWhen(Predicate<T> predicate, Supplier<T> valueSupplier, Duration timeout) {
         final Supplier<T> supplier = valueSupplierCheck(valueSupplier);
-        final Runnable setValue = () -> setValue(valueCheck(supplier.get()));
+        final Runnable setValue = () -> setValue(supplier.get());
         
         synchronized (simpleLock) {
             return waitUntilSatisfied(predicate, timeout, setValue);
@@ -87,9 +85,9 @@ final class WaitableImpl<T> implements Waitable<T> {
             return reference.get();
         }
     }
-    
+
     WaitableImpl(T initialValue) {
-        reference.set(valueCheck(initialValue));
+        reference.set(initialValue);
     }
     
     private Optional<T> waitUntilSatisfied(Predicate<T> predicate, Duration timeout, Runnable block) {
@@ -99,9 +97,11 @@ final class WaitableImpl<T> implements Waitable<T> {
         final Instant start = Instant.now();
         do {
             final T value = reference.get();
-            if (validPredicate.test(value)) {
-                block.run();
-                return Optional.of(value);
+            if (ofNullable(value).isPresent()) {
+                if (validPredicate.test(value)) {
+                    block.run();
+                    return Optional.of(value);
+                }
             }
         } while (keepWaiting(validTimeout, start));
         
@@ -138,10 +138,7 @@ final class WaitableImpl<T> implements Waitable<T> {
     private void wakeUpWaitingThreads() {
         simpleLock.notifyAll();
     }
-    
-    private static <T> T valueCheck(T t) {
-        return nullCheck(t, "Value must be present.");
-    }
+
     private static <T> T valueSupplierCheck(T t) {
         return nullCheck(t, "Value supplier must be present.");
     }

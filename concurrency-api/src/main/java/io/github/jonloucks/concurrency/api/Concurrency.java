@@ -18,10 +18,9 @@ public interface Concurrency extends AutoOpen {
     /**
      * Create a new Waitable with the given initial value
      *
-     * @param initialValue (null is not allowed)
+     * @param initialValue the intial value, null is allowed
      * @return the waitable
      * @param <T> the type of waitable
-     * @throws IllegalArgumentException if initialState is null
      */
     <T> Waitable<T> createWaitable(T initialValue);
     
@@ -55,6 +54,10 @@ public interface Concurrency extends AutoOpen {
      * @throws IllegalArgumentException if builderConsumer is null or resulting configuration is invalid
      */
     <T> StateMachine<T> createStateMachine(Consumer<StateMachine.Config.Builder<T>> builderConsumer);
+    
+    <T> Completable<T> createCompletable(Consumer<Completable.Config.Builder<T>> builderConsumer);
+    
+    <T> Completion<T> createCompletion(Consumer<Completion.Config.Builder<T>> builderConsumer);
     
     /**
      * The configuration used to create a new Concurrency instance.

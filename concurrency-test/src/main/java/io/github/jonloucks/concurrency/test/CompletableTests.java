@@ -1,0 +1,163 @@
+package io.github.jonloucks.concurrency.test;
+
+import io.github.jonloucks.concurrency.api.Completable;
+import io.github.jonloucks.concurrency.api.Completion;
+import io.github.jonloucks.contracts.api.AutoClose;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static io.github.jonloucks.concurrency.api.Completion.State.*;
+import static io.github.jonloucks.concurrency.test.Tools.withConcurrency;
+import static io.github.jonloucks.contracts.test.Tools.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@SuppressWarnings("CodeBlock2Expr")
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+public interface CompletableTests {
+    
+    @Test
+    default void completable_create_withNullBuilderConsumer_Throws() {
+        withConcurrency((contracts,concurrency) -> {
+            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+                concurrency.createCompletable(null);
+            });
+            assertThrown(thrown);
+        });
+    }
+    
+    @Test
+    default void completable_create_Defaults_Works() {
+        withConcurrency((contracts,concurrency) -> {
+            final Completable<String> completable = concurrency.createCompletable(b->{});
+    
+            assertObject(completable);
+            assertFalse(completable.isCompleted());
+            assertFalse(completable.getCompletion().isPresent());
+            assertNotNull(completable.observeState());
+            assertNotNull(completable.observeValue());
+        });
+    }
+    
+    @Test
+    default void completable_onCompletion_WithoutOpen_Throws() {
+        withConcurrency((contracts,concurrency) -> {
+            final Completable<String> completable = concurrency.createCompletable(b->{});
+            final Completion<String> completion = concurrency.createCompletion(b-> b.state(FAILED));
+            final IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> {
+                completable.onCompletion(completion);
+            });
+            assertThrown(thrown);
+            assertObject(completable);
+            assertFalse(completable.isCompleted());
+            assertFalse(completable.getCompletion().isPresent());
+        });
+    }
+    
+    @Test
+    default void completable_notify_WithNullOnCompletion_Throws() {
+        withConcurrency((contracts,concurrency) -> {
+            final Completable<String> completable = concurrency.createCompletable(b->{});
+            try (AutoClose close = completable.open()) {
+                ignore(close);
+                final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+                    //noinspection resource
+                    completable.notify(null);
+                });
+                assertThrown(thrown);
+            }
+        });
+    }
+    
+    @Test
+    default void completable_notify_WithHappyPath_Works() {
+        withConcurrency((contracts,concurrency) -> {
+            final Completable<String> completable = concurrency.createCompletable(b->{});
+            try (AutoClose close = completable.open()) {
+                ignore(close);
+                final Completion<String> completion = concurrency.createCompletion(b-> b.state(FAILED));
+                completable.onCompletion(completion);
+                
+                assertTrue(completable.isCompleted());
+                assertTrue(completable.getCompletion().isPresent());
+                assertEquals(completion, completable.getCompletion().get());
+            }
+        });
+    }
+    
+    @Test
+    default void completable_notify_WithHappyPathAndNotify_Works() {
+        withConcurrency((contracts,concurrency) -> {
+            final List<Completion<String>> completions = new ArrayList<>();
+            final Completable<String> completable = concurrency.createCompletable(b->{});
+            try ( AutoClose closeNotify = completable.notify(completions::add);
+                AutoClose closeCompletable = completable.open()) {
+                ignore(closeNotify); ignore(closeCompletable);
+                final Completion<String> completion = concurrency.createCompletion(b-> b.state(FAILED));
+                completable.onCompletion(completion);
+                
+                assertEquals(1, completions.size());
+                assertEquals(completion, completions.get(0));
+            }
+        });
+    }
+    
+    @Test
+    default void completable_notify_Close_Works() {
+        withConcurrency((contracts,concurrency) -> {
+            final List<Completion<String>> completions = new ArrayList<>();
+            final Completable<String> completable = concurrency.createCompletable(b->{});
+            try ( AutoClose closeNotify = completable.notify(completions::add);
+                  AutoClose closeCompletable = completable.open()) {
+                ignore(closeCompletable);
+                implicitClose(closeNotify);
+                final Completion<String> completion = concurrency.createCompletion(b-> b.state(FAILED));
+                completable.onCompletion(completion);
+                
+                assertEquals(0, completions.size());
+            }
+        });
+    }
+    
+    @Test
+    default void completable__Works() {
+        withConcurrency((contracts,concurrency) -> {
+            final List<Completion<String>> completions = new ArrayList<>();
+            final Completable<String> completable = concurrency.createCompletable(b->{});
+            try ( AutoClose closeNotify = completable.notify(completions::add);
+                  AutoClose closeCompletable = completable.open()) {
+                ignore(closeCompletable); ignore(closeNotify);
+                completable.onCompletion(concurrency.createCompletion(b-> b.state(DELEGATED)));
+                completable.onCompletion(concurrency.createCompletion(b-> b.state(DELEGATED)));
+                completable.onCompletion(concurrency.createCompletion(b-> b.state(SUCCEEDED)));
+                
+                assertTrue(completable.isCompleted());
+                assertTrue(completable.getCompletion().isPresent());
+                assertEquals(SUCCEEDED, completable.getCompletion().get().getState());
+                assertEquals(2, completions.size());
+                assertEquals(DELEGATED, completions.get(0).getState());
+                assertEquals(SUCCEEDED, completions.get(1).getState());
+            }
+        });
+    }
+    
+    @Test
+    default void completable_notify_CloseTwice_Works() {
+        withConcurrency((contracts,concurrency) -> {
+            final Completable<String> completable = concurrency.createCompletable(b->{});
+            try ( AutoClose closeNotify = completable.notify(c -> {})) {
+                
+                implicitClose(closeNotify);
+                assertDoesNotThrow(() -> {
+                    implicitClose(closeNotify);
+                });
+            }
+        });
+    }
+}

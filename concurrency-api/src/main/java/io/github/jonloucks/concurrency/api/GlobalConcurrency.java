@@ -14,10 +14,9 @@ public final class GlobalConcurrency {
     /**
      * Create a new Waitable with the given initial value
      *
-     * @param initialValue (null is not allowed)
+     * @param initialValue (null is allowed)
      * @return the waitable
      * @param <T> the type of waitable
-     * @throws IllegalArgumentException if initialValue is null
      */
     public static <T> Waitable<T> createWaitable(T initialValue) {
         return INSTANCE.concurrency.createWaitable(initialValue);
@@ -48,6 +47,7 @@ public final class GlobalConcurrency {
         return INSTANCE.concurrency.createStateMachine(enumClass, initialState);
     }
     
+
     /**
      * Return the global instance of Contracts
      * @return the instance

@@ -1,5 +1,7 @@
 package io.github.jonloucks.concurrency.impl;
 
+import io.github.jonloucks.concurrency.api.Completion;
+import io.github.jonloucks.concurrency.api.OnCompletion;
 import io.github.jonloucks.concurrency.api.StateMachine;
 
 import java.io.IOException;
@@ -49,6 +51,14 @@ final class Internal {
         illegalCheck(timeout, timeout.isNegative(), "Timeout must not be negative.");
         illegalCheck(timeout, timeout.compareTo(MAX_TIMEOUT) > 0, "Timeout must less than or equal to maximum time.");
         return notNullTimeout;
+    }
+    
+    static <T> Completion<T> completionCheck(Completion<T> completion) {
+        return nullCheck(completion, "Completion must be present.");
+    }
+    
+    static <T> OnCompletion<T> onCompletionCheck(OnCompletion<T> onCompletion) {
+        return nullCheck(onCompletion, "OnCompletion must be present.");
     }
     
     static long getWaitMillis(Duration timeout, Instant start, Instant end) {

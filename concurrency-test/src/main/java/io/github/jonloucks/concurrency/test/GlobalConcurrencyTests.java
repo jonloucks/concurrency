@@ -76,14 +76,6 @@ public interface GlobalConcurrencyTests {
         
         assertThrown(thrown);
     }
-
-    @Test
-    default void globalConcurrency_createWaitable_WithNullInitialValue_Throws() {
-        final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            GlobalConcurrency.createWaitable(null);
-        });
-        assertThrown(thrown);
-    }
     
     @Test
     default void globalConcurrency_createWaitable_WithValidInitial_Works() {

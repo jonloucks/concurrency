@@ -1,7 +1,6 @@
 package io.github.jonloucks.concurrency.api;
 
 import io.github.jonloucks.concurrency.api.StateMachine.Config;
-import io.github.jonloucks.concurrency.api.StateMachine.Config.Builder;
 import io.github.jonloucks.contracts.api.Contract;
 import java.util.function.Consumer;
 
@@ -36,7 +35,7 @@ public interface StateMachineFactory {
      * @param <T> the type of each state
      * @throws IllegalArgumentException if builderConsumer is null or resulting configuration is invalid
      */
-    <T> StateMachine<T> create(Consumer<Builder<T>> builderConsumer);
+    <T> StateMachine<T> create(Consumer<Config.Builder<T>> builderConsumer);
     
     /**
      * Create a new StateMachine

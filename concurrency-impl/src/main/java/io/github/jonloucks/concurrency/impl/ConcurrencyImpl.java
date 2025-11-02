@@ -41,12 +41,23 @@ final class ConcurrencyImpl implements Concurrency {
         return stateMachineFactory.create(builderConsumer);
     }
     
+    @Override
+    public <T> Completable<T> createCompletable(Consumer<Completable.Config.Builder<T>> builderConsumer) {
+        return completions.createCompletable(builderConsumer);
+    }
+    
+    @Override
+    public <T> Completion<T> createCompletion(Consumer<Completion.Config.Builder<T>> builderConsumer) {
+        return completions.createCompletion(builderConsumer);
+    }
+    
     ConcurrencyImpl(Config config, Repository repository, boolean autoOpen) {
         final Config validConfig = configCheck(config);
         final Repository validRepository = nullCheck(repository, "Repository must be present.");
         this.closeRepository = autoOpen ? validRepository.open() : AutoClose.NONE;
         this.waitableFactory = validConfig.contracts().claim(WaitableFactory.CONTRACT);
         this.stateMachineFactory = validConfig.contracts().claim(StateMachineFactory.CONTRACT);
+        this.completions = validConfig.contracts().claim(Completions.CONTRACT);
         this.stateMachine = createStateMachine(Idempotent.class, Idempotent.OPENABLE);
     }
     
@@ -69,4 +80,5 @@ final class ConcurrencyImpl implements Concurrency {
     private final WaitableFactory waitableFactory;
     private final StateMachineFactory stateMachineFactory;
     private final StateMachine<Idempotent> stateMachine;
+    private final Completions completions;
 }
