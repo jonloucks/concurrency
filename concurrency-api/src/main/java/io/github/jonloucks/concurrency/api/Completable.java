@@ -21,14 +21,26 @@ public interface Completable<T> extends AutoOpen, CompletionNotify<T>, OnComplet
      */
     WaitableSupplier<Completion.State> observeState();
     
+    /**
+     * @return Observe the completed value
+     */
     WaitableSupplier<T> observeValue();
     
     /**
      * @return the current completion state
      */
     Optional<Completion<T>> getCompletion();
-  
+    
+    /**
+     * Configuration used to create a new Completable
+     * @param <T> the type of value
+     */
     interface Config<T> {
+        
+        /**
+         * Configuration builder used to create a new Completeable
+         * @param <T> the type of value
+         */
         interface Builder<T> extends Config<T> {
         }
     }

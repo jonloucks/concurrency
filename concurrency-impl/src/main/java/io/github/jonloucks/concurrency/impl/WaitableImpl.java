@@ -23,7 +23,7 @@ final class WaitableImpl<T> implements Waitable<T> {
     public void shutdown() {
         synchronized (simpleLock) {
             isShutdown = true;
-            notifyValueListeners.forEach(NotifyValueListener::close);
+            notifyValueListeners.forEach(NotifyValueSubscription::close);
             wakeUpWaitingThreads();
         }
     }
@@ -37,7 +37,7 @@ final class WaitableImpl<T> implements Waitable<T> {
     
     @Override
     public AutoClose notifyIf(Predicate<T> predicate, Consumer<T> listener) {
-        final NotifyValueListener<T> notifyValueListener = new NotifyValueListener<>(predicate, listener, notifyValueListeners);
+        final NotifyValueSubscription<T> notifyValueListener = new NotifyValueSubscription<>(predicate, listener, notifyValueListeners);
         notifyValueListener.process(get());
         return notifyValueListener.open();
     }
@@ -62,7 +62,7 @@ final class WaitableImpl<T> implements Waitable<T> {
             final T currentValue = reference.get();
             if (validPredicate.test(currentValue)) {
                 setValue(validValueSupplier.get());
-                return Optional.of(currentValue);
+                return ofNullable(currentValue);
             } else {
                 return Optional.empty();
             }
@@ -97,11 +97,9 @@ final class WaitableImpl<T> implements Waitable<T> {
         final Instant start = Instant.now();
         do {
             final T value = reference.get();
-            if (ofNullable(value).isPresent()) {
-                if (validPredicate.test(value)) {
-                    block.run();
-                    return Optional.of(value);
-                }
+            if (validPredicate.test(value)) {
+                block.run();
+                return ofNullable(value);
             }
         } while (keepWaiting(validTimeout, start));
         
@@ -146,5 +144,5 @@ final class WaitableImpl<T> implements Waitable<T> {
     private final Object simpleLock = new Object();
     private final AtomicReference<T> reference = new AtomicReference<>();
     private volatile boolean isShutdown = false;
-    private final List<NotifyValueListener<T>> notifyValueListeners = new CopyOnWriteArrayList<>();
+    private final List<NotifyValueSubscription<T>> notifyValueListeners = new CopyOnWriteArrayList<>();
 }

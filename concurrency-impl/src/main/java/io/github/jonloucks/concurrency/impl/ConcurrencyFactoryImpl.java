@@ -61,7 +61,8 @@ public final class ConcurrencyFactoryImpl implements ConcurrencyFactory {
         
         repository.keep(WaitableFactory.CONTRACT, lifeCycle(WaitableFactoryImpl::new), IF_NOT_BOUND);
         repository.keep(StateMachineFactory.CONTRACT, StateMachineFactoryImpl::new, IF_NOT_BOUND);
-        repository.keep(Completions.CONTRACT, () -> new CompletionsImpl(config), IF_NOT_BOUND);
+        repository.keep(CompletionFactory.CONTRACT, CompletionFactoryImpl::new, IF_NOT_BOUND);
+        repository.keep(CompletableFactory.CONTRACT, () -> new CompletableFactoryImpl(config), IF_NOT_BOUND);
         repository.keep(Concurrency.Config.Builder.FACTORY, () -> ConfigBuilderImpl::new, IF_NOT_BOUND);
         repository.keep(ConcurrencyFactory.CONTRACT, lifeCycle(ConcurrencyFactoryImpl::new), IF_NOT_BOUND);
     }

@@ -26,8 +26,7 @@ public interface CompletionStateTests {
     
     @Test
     default void completionState_Transitions() {
-        assertTransitions(State.class, NEW, asList(DELEGATED,SUCCEEDED,FAILED,CANCELLED));
-        assertTransitions(State.class, DELEGATED, asList(SUCCEEDED,FAILED,CANCELLED));
+        assertTransitions(State.class, PENDING, asList(SUCCEEDED,FAILED,CANCELLED));
         assertTransitions(State.class, SUCCEEDED, emptyList());
         assertTransitions(State.class, FAILED, emptyList());
         assertTransitions(State.class, CANCELLED, emptyList());
@@ -35,7 +34,7 @@ public interface CompletionStateTests {
     
     @Test
     default void completionState_IsCompleted() {
-        assertFalse(NEW.isCompleted());
+        assertFalse(PENDING.isCompleted());
         assertTrue(SUCCEEDED.isCompleted());
         assertTrue(FAILED.isCompleted());
         assertTrue(CANCELLED.isCompleted());

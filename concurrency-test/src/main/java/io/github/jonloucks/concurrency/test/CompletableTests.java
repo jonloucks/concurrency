@@ -11,6 +11,7 @@ import org.mockito.quality.Strictness;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static io.github.jonloucks.concurrency.api.Completion.State.*;
 import static io.github.jonloucks.concurrency.test.Tools.withConcurrency;
@@ -26,7 +27,17 @@ public interface CompletableTests {
     default void completable_create_withNullBuilderConsumer_Throws() {
         withConcurrency((contracts,concurrency) -> {
             final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrency.createCompletable(null);
+                concurrency.createCompletable((Consumer<Completable.Config.Builder<String>>)null);
+            });
+            assertThrown(thrown);
+        });
+    }
+    
+    @Test
+    default void completable_create_withNullConfig_Throws() {
+        withConcurrency((contracts,concurrency) -> {
+            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+                concurrency.createCompletable((Completable.Config<String>)null);
             });
             assertThrown(thrown);
         });
@@ -37,6 +48,20 @@ public interface CompletableTests {
         withConcurrency((contracts,concurrency) -> {
             final Completable<String> completable = concurrency.createCompletable(b->{});
     
+            assertObject(completable);
+            assertFalse(completable.isCompleted());
+            assertFalse(completable.getCompletion().isPresent());
+            assertNotNull(completable.observeState());
+            assertNotNull(completable.observeValue());
+        });
+    }
+    
+    @Test
+    default void completable_create_WithConfig_Works() {
+        withConcurrency((contracts,concurrency) -> {
+            final Completable.Config<String> config = new Completable.Config<>() {};
+            final Completable<String> completable = concurrency.createCompletable(config);
+            
             assertObject(completable);
             assertFalse(completable.isCompleted());
             assertFalse(completable.getCompletion().isPresent());
@@ -126,23 +151,22 @@ public interface CompletableTests {
     }
     
     @Test
-    default void completable__Works() {
+    default void completable_RedundantOrIllegalStates_AreIgnored() {
         withConcurrency((contracts,concurrency) -> {
             final List<Completion<String>> completions = new ArrayList<>();
             final Completable<String> completable = concurrency.createCompletable(b->{});
             try ( AutoClose closeNotify = completable.notify(completions::add);
                   AutoClose closeCompletable = completable.open()) {
                 ignore(closeCompletable); ignore(closeNotify);
-                completable.onCompletion(concurrency.createCompletion(b-> b.state(DELEGATED)));
-                completable.onCompletion(concurrency.createCompletion(b-> b.state(DELEGATED)));
+                completable.onCompletion(concurrency.createCompletion(b-> b.state(PENDING)));
+                completable.onCompletion(concurrency.createCompletion(b-> b.state(PENDING)));
                 completable.onCompletion(concurrency.createCompletion(b-> b.state(SUCCEEDED)));
                 
                 assertTrue(completable.isCompleted());
                 assertTrue(completable.getCompletion().isPresent());
                 assertEquals(SUCCEEDED, completable.getCompletion().get().getState());
-                assertEquals(2, completions.size());
-                assertEquals(DELEGATED, completions.get(0).getState());
-                assertEquals(SUCCEEDED, completions.get(1).getState());
+                assertEquals(1, completions.size());
+                assertEquals(SUCCEEDED, completions.get(0).getState());
             }
         });
     }

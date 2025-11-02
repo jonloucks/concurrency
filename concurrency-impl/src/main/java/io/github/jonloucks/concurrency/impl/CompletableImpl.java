@@ -43,9 +43,7 @@ final class CompletableImpl<T> implements Completable<T>, OnCompletion<T> {
         final Completion<T> validCompletion = completionCheck(completion);
         if (completionStateMachine.setState("onCompletion", validCompletion.getState())) {
             this.completion = validCompletion;
-            if (completionStateMachine.getState().isCompleted()) {
-                this.waitableValue.accept(validCompletion.getValue().orElse(null));
-            }
+            this.waitableValue.accept(validCompletion.getValue().orElse(null));
             subscriptions.forEach(s -> s.onCompletion(validCompletion));
         }
     }

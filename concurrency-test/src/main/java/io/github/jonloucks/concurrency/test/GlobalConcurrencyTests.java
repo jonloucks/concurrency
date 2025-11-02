@@ -7,12 +7,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import java.time.Duration;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static io.github.jonloucks.contracts.test.Tools.*;
@@ -121,6 +123,34 @@ public interface GlobalConcurrencyTests {
         final StateMachine<Thread.State> stateMachine = GlobalConcurrency.createStateMachine(Thread.State.class, Thread.State.RUNNABLE);
         assertObject(stateMachine);
         assertEquals(Thread.State.RUNNABLE, stateMachine.getState());
+    }
+ 
+    @Test
+    default void globalConcurrency_createCompletable_WithConfigBuilder_Works() {
+        final Completable<String> completable = GlobalConcurrency.createCompletable(b->{});
+        
+        assertObject(completable);
+    }
+    
+    @Test
+    default void globalConcurrency_createCompletion_WithConfigBuilder_Works() {
+        final Completion<String> completion = GlobalConcurrency.createCompletion( b-> {});
+        
+        assertObject(completion);
+    }
+    
+    @Test
+    default void globalConcurrency_completeLater_Works() {
+        assertDoesNotThrow(() -> {
+            GlobalConcurrency.completeLater(c -> {}, x -> {});
+        });
+    }
+
+    @Test
+    default void globalConcurrency_completeNow_Works(@Mock OnCompletion<String> onCompletion) {
+        final Supplier<String> valueSupplier = () -> "Hello";
+        final String completionValue = GlobalConcurrency.completeNow(onCompletion, valueSupplier);
+        assertEquals("Hello", completionValue);
     }
     
     @Test

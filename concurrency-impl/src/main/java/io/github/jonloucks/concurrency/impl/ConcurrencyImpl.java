@@ -2,11 +2,14 @@ package io.github.jonloucks.concurrency.impl;
 
 import io.github.jonloucks.concurrency.api.*;
 import io.github.jonloucks.contracts.api.AutoClose;
-import io.github.jonloucks.contracts.api.AutoOpen;
+import io.github.jonloucks.contracts.api.Contracts;
 import io.github.jonloucks.contracts.api.Repository;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
+import static io.github.jonloucks.concurrency.api.Idempotent.withClose;
+import static io.github.jonloucks.concurrency.api.Idempotent.withOpen;
 import static io.github.jonloucks.contracts.api.Checks.configCheck;
 import static io.github.jonloucks.contracts.api.Checks.nullCheck;
 
@@ -14,11 +17,7 @@ final class ConcurrencyImpl implements Concurrency {
     
     @Override
     public AutoClose open() {
-        return stateMachine.transition(b -> b
-            .event("open")
-            .successState(Idempotent.OPENED)
-            .successValue(this::realOpen)
-       .failedValue(AutoOpen.NONE::open));
+        return withOpen(stateMachine, this::realOpen);
     }
     
     @Override
@@ -42,22 +41,44 @@ final class ConcurrencyImpl implements Concurrency {
     }
     
     @Override
+    public <T> Completable<T> createCompletable(Completable.Config<T> config) {
+        return completableFactory.createCompletable(config);
+    }
+    
+    @Override
     public <T> Completable<T> createCompletable(Consumer<Completable.Config.Builder<T>> builderConsumer) {
-        return completions.createCompletable(builderConsumer);
+        return completableFactory.createCompletable(builderConsumer);
+    }
+    
+    @Override
+    public <T> Completion<T> createCompletion(Completion.Config<T> config) {
+        return completionFactory.createCompletion(config);
     }
     
     @Override
     public <T> Completion<T> createCompletion(Consumer<Completion.Config.Builder<T>> builderConsumer) {
-        return completions.createCompletion(builderConsumer);
+        return completionFactory.createCompletion(builderConsumer);
+    }
+    
+    @Override
+    public <T> void completeLater(OnCompletion<T> onCompletion, Consumer<OnCompletion<T>> delegate) {
+        new CompleteLaterImpl<>(onCompletion,delegate).run();
+    }
+    
+    @Override
+    public <T> T completeNow(OnCompletion<T> onCompletion, Supplier<T> successBlock) {
+       return new CompleteNowImpl<>(onCompletion,successBlock).run();
     }
     
     ConcurrencyImpl(Config config, Repository repository, boolean autoOpen) {
         final Config validConfig = configCheck(config);
         final Repository validRepository = nullCheck(repository, "Repository must be present.");
         this.closeRepository = autoOpen ? validRepository.open() : AutoClose.NONE;
-        this.waitableFactory = validConfig.contracts().claim(WaitableFactory.CONTRACT);
-        this.stateMachineFactory = validConfig.contracts().claim(StateMachineFactory.CONTRACT);
-        this.completions = validConfig.contracts().claim(Completions.CONTRACT);
+        final Contracts contracts = validConfig.contracts();
+        this.waitableFactory = contracts.claim(WaitableFactory.CONTRACT);
+        this.completionFactory = contracts.claim(CompletionFactory.CONTRACT);
+        this.completableFactory = contracts.claim(CompletableFactory.CONTRACT);
+        this.stateMachineFactory = contracts.claim(StateMachineFactory.CONTRACT);
         this.stateMachine = createStateMachine(Idempotent.class, Idempotent.OPENABLE);
     }
     
@@ -66,10 +87,7 @@ final class ConcurrencyImpl implements Concurrency {
     }
 
     private void close() {
-        stateMachine.transition(b -> b
-            .event("close")
-            .successState(Idempotent.CLOSED)
-            .successValue(this::realClose));
+        withClose(stateMachine, this::realClose);
     }
     
     private void realClose() {
@@ -79,6 +97,7 @@ final class ConcurrencyImpl implements Concurrency {
     private final AutoClose closeRepository;
     private final WaitableFactory waitableFactory;
     private final StateMachineFactory stateMachineFactory;
+    private final CompletionFactory completionFactory;
+    private final CompletableFactory completableFactory;
     private final StateMachine<Idempotent> stateMachine;
-    private final Completions completions;
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static io.github.jonloucks.concurrency.impl.Internal.onCompletionCheck;
+import static io.github.jonloucks.concurrency.impl.Internal.removeExact;
 
 final class NotifyCompletionSubscription<T> implements OnCompletion<T> {
 
@@ -23,7 +24,7 @@ final class NotifyCompletionSubscription<T> implements OnCompletion<T> {
     
     void close() {
         if (isClosed.compareAndSet(false, true)) {
-            ownerList.removeIf(x -> x == this);
+            removeExact(ownerList, this);
         }
     }
     

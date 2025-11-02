@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -126,7 +126,7 @@ public interface StateMachineTests {
                 .initial(Thread.State.NEW)
                 .state(Thread.State.RUNNABLE)
                 .state(Thread.State.WAITING)
-                .rules(Thread.State.NEW, List.of((s, r) -> {
+                .rules(Thread.State.NEW, Collections.singletonList((s, r) -> {
                     assertNotNull(s);
                     return !Thread.State.WAITING.equals(r);
                 }))

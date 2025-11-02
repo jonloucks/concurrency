@@ -7,6 +7,7 @@ import io.github.jonloucks.concurrency.api.StateMachine;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -67,6 +68,10 @@ final class Internal {
     
     static boolean hasTimedOut(Duration timeout, Instant start, Instant end) {
         return Duration.between(start, end).compareTo(timeout) >= 0;
+    }
+    
+    static <T> void removeExact(List<T> list, T element) {
+        list.removeIf(x -> x == element);
     }
 
     static void validate() {

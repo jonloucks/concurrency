@@ -55,6 +55,6 @@ final class CompletionBuilderImpl<T> implements Completion.Config.Builder<T> {
     
     private Throwable thrown;
     private T value;
-    private Completion.State state = Completion.State.DELEGATED;
+    private Completion.State state = Completion.State.PENDING;
     private Future<T> future;
 }

@@ -12,55 +12,115 @@ import static io.github.jonloucks.contracts.api.Checks.contractsCheck;
  */
 public interface Completion<T> {
     
+    /**
+     * @return the completion state
+     */
     State getState();
     
+    /**
+     * @return optional thrown exception
+     */
     Optional<Throwable> getThrown();
     
+    /**
+     * @return the optional completion value
+     */
     Optional<T> getValue();
     
+    /**
+     * @return the optional associated Future
+     */
     Optional<Future<T>> getFuture();
     
+    /**
+     * True if final completion
+     * @return true if final completion
+     */
     default boolean isCompleted() {
         return getState().isCompleted();
     }
     
+    /**
+     * Configuration for creating a new Completion
+     * @param <T> the value type
+     */
     interface Config<T> extends Completion<T> {
+        
+        /**
+         * Builder for creating a configuration for a new Completion
+         *
+         * @param <T> the value type
+         */
         interface Builder<T> extends Config<T> {
+            
+            /**
+             * Assign the state
+             *
+             * @param state the new state
+             * @return this builder
+             */
             Builder<T> state(State state);
             
+            /**
+             * Assign the thrown exception
+             *
+             * @param thrown the exception
+             * @return this builder
+             */
             Builder<T> thrown(Throwable thrown);
             
+            /**
+             * Assign the value
+             *
+             * @param value the value
+             * @return this builder
+             */
             Builder<T> value(T value);
             
+            /**
+             * Assign the future
+             *
+             * @param future the future
+             * @return this builder
+             */
             Builder<T> future(Future<T> future);
         }
     }
     
+    /**
+     * The Completion states
+     */
     enum State implements StateMachine.Rule<State> {
-        NEW() {
-            @Override
-            public boolean canTransition(String event, State goal) {
-                return goal == DELEGATED || goal == FAILED || goal == CANCELLED || goal == SUCCEEDED;
-            }
-        },
-        DELEGATED() {
+        /**
+         * The initial state
+         */
+        PENDING() {
             @Override
             public boolean canTransition(String event, State goal) {
                 return goal == FAILED || goal == CANCELLED || goal == SUCCEEDED;
             }
         },
+        /**
+         * Represents a failed completion
+         */
         FAILED() {
             @Override
             public boolean isCompleted() {
                 return true;
             }
         },
+        /**
+         * Represents a canceled completion
+         */
         CANCELLED() {
             @Override
             public boolean isCompleted() {
                 return true;
             }
         },
+        /**
+         * Represents a successful completion
+         */
         SUCCEEDED() {
             @Override
             public boolean isCompleted() {
@@ -73,6 +133,9 @@ public interface Completion<T> {
             return false;
         }
         
+        /**
+         * @return true of state is a completed state.
+         */
         public boolean isCompleted() {
             return false;
         }
@@ -88,7 +151,7 @@ public interface Completion<T> {
             final Contracts validContracts = contractsCheck(contracts);
             final StateMachineFactory factory = validContracts.claim(StateMachineFactory.CONTRACT);
             return factory.create(b -> {
-                b.initial(NEW);
+                b.initial(PENDING);
                 for (State outcome : State.values()) {
                     b.state(outcome);
                     b.rule(outcome, outcome);
