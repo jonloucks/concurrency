@@ -3,10 +3,12 @@ package io.github.jonloucks.concurrency.impl;
 import io.github.jonloucks.concurrency.api.Completion;
 import io.github.jonloucks.concurrency.api.OnCompletion;
 import io.github.jonloucks.concurrency.api.StateMachine;
+import io.github.jonloucks.contracts.api.AutoClose;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -77,6 +79,15 @@ final class Internal {
     static void validate() {
         runWithIgnore(() -> { throw new IOException("Validate"); });
         runWithIgnore(() -> { throw new InterruptedException("Validate"); });
+        runtimeTest_NotifyCompletionSubscription();
+    }
+    
+    private static void runtimeTest_NotifyCompletionSubscription() {
+        final NotifyCompletionSubscription<String> subscription = new NotifyCompletionSubscription<>(c->{}, new ArrayList<>());
+        final AutoClose close = subscription.open();
+        close.close();
+        subscription.onCompletion(new CompletionBuilderImpl<String>().state(Completion.State.SUCCEEDED));
+        close.close();
     }
     
     @FunctionalInterface

@@ -19,12 +19,12 @@ public interface Completable<T> extends AutoOpen, CompletionNotify<T>, OnComplet
     /**
      * @return observe state change
      */
-    WaitableSupplier<Completion.State> observeState();
+    WaitableNotify<Completion.State> notifyState();
     
     /**
      * @return Observe the completed value
      */
-    WaitableSupplier<T> observeValue();
+    WaitableNotify<T> notifyValue();
     
     /**
      * @return the current completion state

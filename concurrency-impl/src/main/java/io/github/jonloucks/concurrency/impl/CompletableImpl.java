@@ -21,12 +21,12 @@ final class CompletableImpl<T> implements Completable<T>, OnCompletion<T> {
     }
     
     @Override
-    public WaitableSupplier<State> observeState() {
+    public WaitableNotify<State> notifyState() {
         return completionStateMachine;
     }
     
     @Override
-    public WaitableSupplier<T> observeValue() {
+    public WaitableNotify<T> notifyValue() {
         return waitableValue;
     }
     

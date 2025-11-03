@@ -3,18 +3,23 @@ package io.github.jonloucks.concurrency.test;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class SpawnThreads {
     SpawnThreads(int numberOfThreads, Runnable runnable) {
+        this(numberOfThreads, () -> runnable);
+    }
+    
+    SpawnThreads(int numberOfThreads, Supplier<Runnable> runnableSupplier) {
         this.countDownLatch = new CountDownLatch(numberOfThreads);
         this.threads = new Thread[numberOfThreads];
         for (int i = 0; i < numberOfThreads; i++) {
             final Thread thread = new Thread(() -> {
                 try {
-                    runnable.run();
+                    runnableSupplier.get().run();
                 } catch (Throwable ignored) {
                     errorCount.incrementAndGet();
                 } finally {
