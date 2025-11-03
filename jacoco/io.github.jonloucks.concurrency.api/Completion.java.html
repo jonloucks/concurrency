@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Completion.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">concurrency</a> &gt; <a href="index.source.html" class="el_package">io.github.jonloucks.concurrency.api</a> &gt; <span class="el_source">Completion.java</span></div><h1>Completion.java</h1><pre class="source lang-java linenums">package io.github.jonloucks.concurrency.api;
+
+import io.github.jonloucks.contracts.api.Contracts;
+
+import java.util.Optional;
+import java.util.concurrent.Future;
+
+import static io.github.jonloucks.contracts.api.Checks.contractsCheck;
+
+/**
+ * Responsibility: Represent a progression step in the life cycle of an activity.
+ */
+public interface Completion&lt;T&gt; {
+    
+    /**
+     * @return the completion state
+     */
+    State getState();
+    
+    /**
+     * @return optional thrown exception
+     */
+    Optional&lt;Throwable&gt; getThrown();
+    
+    /**
+     * @return the optional completion value
+     */
+    Optional&lt;T&gt; getValue();
+    
+    /**
+     * @return the optional associated Future
+     */
+    Optional&lt;Future&lt;T&gt;&gt; getFuture();
+    
+    /**
+     * True if final completion
+     * @return true if final completion
+     */
+    default boolean isCompleted() {
+<span class="fc" id="L40">        return getState().isCompleted();</span>
+    }
+    
+    /**
+     * Configuration for creating a new Completion
+     * @param &lt;T&gt; the value type
+     */
+    interface Config&lt;T&gt; extends Completion&lt;T&gt; {
+        
+        /**
+         * Builder for creating a configuration for a new Completion
+         *
+         * @param &lt;T&gt; the value type
+         */
+        interface Builder&lt;T&gt; extends Config&lt;T&gt; {
+            
+            /**
+             * Assign the state
+             *
+             * @param state the new state
+             * @return this builder
+             */
+            Builder&lt;T&gt; state(State state);
+            
+            /**
+             * Assign the thrown exception
+             *
+             * @param thrown the exception
+             * @return this builder
+             */
+            Builder&lt;T&gt; thrown(Throwable thrown);
+            
+            /**
+             * Assign the value
+             *
+             * @param value the value
+             * @return this builder
+             */
+            Builder&lt;T&gt; value(T value);
+            
+            /**
+             * Assign the future
+             *
+             * @param future the future
+             * @return this builder
+             */
+            Builder&lt;T&gt; future(Future&lt;T&gt; future);
+        }
+    }
+    
+    /**
+     * The Completion states
+     */
+<span class="fc" id="L93">    enum State implements StateMachine.Rule&lt;State&gt; {</span>
+        /**
+         * The initial state
+         */
+<span class="fc" id="L97">        PENDING() {</span>
+            @Override
+            public boolean canTransition(String event, State goal) {
+<span class="fc bfc" id="L100" title="All 6 branches covered.">                return goal == FAILED || goal == CANCELLED || goal == SUCCEEDED;</span>
+            }
+        },
+        /**
+         * Represents a failed completion
+         */
+<span class="fc" id="L106">        FAILED() {</span>
+            @Override
+            public boolean isCompleted() {
+<span class="fc" id="L109">                return true;</span>
+            }
+        },
+        /**
+         * Represents a canceled completion
+         */
+<span class="fc" id="L115">        CANCELLED() {</span>
+            @Override
+            public boolean isCompleted() {
+<span class="fc" id="L118">                return true;</span>
+            }
+        },
+        /**
+         * Represents a successful completion
+         */
+<span class="fc" id="L124">        SUCCEEDED() {</span>
+            @Override
+            public boolean isCompleted() {
+<span class="fc" id="L127">                return true;</span>
+            }
+        };
+        
+        @Override
+        public boolean canTransition(String event, State goal) {
+<span class="fc" id="L133">            return false;</span>
+        }
+        
+        /**
+         * @return true of state is a completed state.
+         */
+        public boolean isCompleted() {
+<span class="fc" id="L140">            return false;</span>
+        }
+        
+        /**
+         * Create a StateMachine for Completion State
+         *
+         * @param contracts the contracts for getting dependencies
+         * @return the new StateMachine
+         * @throws IllegalArgumentException if contracts is null
+         */
+        public static StateMachine&lt;State&gt; createStateMachine(Contracts contracts) {
+<span class="fc" id="L151">            final Contracts validContracts = contractsCheck(contracts);</span>
+<span class="fc" id="L152">            final StateMachineFactory factory = validContracts.claim(StateMachineFactory.CONTRACT);</span>
+<span class="fc" id="L153">            return factory.create(b -&gt; {</span>
+<span class="fc" id="L154">                b.initial(PENDING);</span>
+<span class="fc bfc" id="L155" title="All 2 branches covered.">                for (State outcome : State.values()) {</span>
+<span class="fc" id="L156">                    b.state(outcome);</span>
+<span class="fc" id="L157">                    b.rule(outcome, outcome);</span>
+                }
+<span class="fc" id="L159">            });</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

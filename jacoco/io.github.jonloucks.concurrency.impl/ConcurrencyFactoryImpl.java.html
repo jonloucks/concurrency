@@ -27,7 +27,7 @@ public final class ConcurrencyFactoryImpl implements ConcurrencyFactory {
 <span class="fc" id="L27">        final Concurrency.Config validConfig = configCheck(config);</span>
 <span class="fc" id="L28">        final Repository repository = validConfig.contracts().claim(Repository.FACTORY).get();</span>
         
-<span class="fc" id="L30">        installCore(repository);</span>
+<span class="fc" id="L30">        installCore(validConfig, repository);</span>
         
 <span class="fc" id="L32">        final ConcurrencyImpl concurrency = new ConcurrencyImpl(validConfig, repository, true);</span>
 <span class="pc" id="L33">        repository.keep(Concurrency.CONTRACT, () -&gt; concurrency, IF_NOT_BOUND);</span>
@@ -49,20 +49,22 @@ public final class ConcurrencyFactoryImpl implements ConcurrencyFactory {
 <span class="fc" id="L49">        final Concurrency.Config validConfig = configCheck(config);</span>
 <span class="fc" id="L50">        final Repository validRepository = nullCheck(repository, &quot;Repository must be present.&quot;);</span>
         
-<span class="fc" id="L52">        installCore(validRepository);</span>
+<span class="fc" id="L52">        installCore(validConfig, validRepository);</span>
         
 <span class="fc" id="L54">        final Promisor&lt;Concurrency&gt; concurrencyPromisor = lifeCycle(() -&gt; new ConcurrencyImpl(validConfig, validRepository, false));</span>
         
 <span class="fc" id="L56">        validRepository.keep(Concurrency.CONTRACT, concurrencyPromisor, IF_NOT_BOUND);</span>
 <span class="fc" id="L57">    }</span>
     
-    private void installCore(Repository repository) {
+    private void installCore(Concurrency.Config config, Repository repository) {
 <span class="fc" id="L60">        repository.require(Repository.FACTORY);</span>
         
 <span class="fc" id="L62">        repository.keep(WaitableFactory.CONTRACT, lifeCycle(WaitableFactoryImpl::new), IF_NOT_BOUND);</span>
 <span class="fc" id="L63">        repository.keep(StateMachineFactory.CONTRACT, StateMachineFactoryImpl::new, IF_NOT_BOUND);</span>
-<span class="fc" id="L64">        repository.keep(Concurrency.Config.Builder.FACTORY, () -&gt; ConfigBuilderImpl::new, IF_NOT_BOUND);</span>
-<span class="fc" id="L65">        repository.keep(ConcurrencyFactory.CONTRACT, lifeCycle(ConcurrencyFactoryImpl::new), IF_NOT_BOUND);</span>
-<span class="fc" id="L66">    }</span>
+<span class="fc" id="L64">        repository.keep(CompletionFactory.CONTRACT, CompletionFactoryImpl::new, IF_NOT_BOUND);</span>
+<span class="fc" id="L65">        repository.keep(CompletableFactory.CONTRACT, () -&gt; new CompletableFactoryImpl(config), IF_NOT_BOUND);</span>
+<span class="fc" id="L66">        repository.keep(Concurrency.Config.Builder.FACTORY, () -&gt; ConfigBuilderImpl::new, IF_NOT_BOUND);</span>
+<span class="fc" id="L67">        repository.keep(ConcurrencyFactory.CONTRACT, lifeCycle(ConcurrencyFactoryImpl::new), IF_NOT_BOUND);</span>
+<span class="fc" id="L68">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

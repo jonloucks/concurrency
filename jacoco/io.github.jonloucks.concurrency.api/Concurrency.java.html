@@ -18,10 +18,9 @@ public interface Concurrency extends AutoOpen {
     /**
      * Create a new Waitable with the given initial value
      *
-     * @param initialValue (null is not allowed)
+     * @param initialValue the initial value, null is allowed
      * @return the waitable
      * @param &lt;T&gt; the type of waitable
-     * @throws IllegalArgumentException if initialState is null
      */
     &lt;T&gt; Waitable&lt;T&gt; createWaitable(T initialValue);
     
@@ -56,6 +55,66 @@ public interface Concurrency extends AutoOpen {
      */
     &lt;T&gt; StateMachine&lt;T&gt; createStateMachine(Consumer&lt;StateMachine.Config.Builder&lt;T&gt;&gt; builderConsumer);
     
+    
+    /**
+     * Create a new Completable
+     *
+     * @param config the completable configuration
+     * @return the new Completable
+     * @param &lt;T&gt; the type of completion value
+     */
+    &lt;T&gt; Completable&lt;T&gt; createCompletable(Completable.Config&lt;T&gt; config);
+    
+    /**
+     * Create a new Completable
+     *
+     * @param builderConsumer receives the Completable Config Builder
+     * @return the new Completable
+     * @param &lt;T&gt; the type of completion value
+     */
+    &lt;T&gt; Completable&lt;T&gt; createCompletable(Consumer&lt;Completable.Config.Builder&lt;T&gt;&gt; builderConsumer);
+    
+    /**
+     * Create a new Completion
+     *
+     * @param config the Completion configuration
+     * @return the new Completable
+     * @param &lt;T&gt; the type of completion value
+     */
+    &lt;T&gt; Completion&lt;T&gt; createCompletion(Completion.Config&lt;T&gt; config);
+    
+    /**
+     * Create a new Completion
+     *
+     * @param builderConsumer receives the Completion Config Builder
+     * @return the new Completable
+     * @param &lt;T&gt; the type of completion value
+     */
+    &lt;T&gt; Completion&lt;T&gt; createCompletion(Consumer&lt;Completion.Config.Builder&lt;T&gt;&gt; builderConsumer);
+    
+    /**
+     * Guaranteed execution: complete later block.
+     * Either the delegate successfully takes ownership of the OnCompletion or
+     * a final {@link io.github.jonloucks.concurrency.api.Completion.State#FAILED} completion is dispatched
+     *
+     * @param onCompletion the OnCompletion callback
+     * @param delegate the intended delegate to receive the OnCompletion
+     * @param &lt;T&gt; the completion value type
+     */
+    &lt;T&gt; void completeLater(OnCompletion&lt;T&gt; onCompletion, Consumer&lt;OnCompletion&lt;T&gt;&gt; delegate);
+    
+    /**
+     * Guaranteed execution: complete now block
+     * When this method finishes, it is guaranteed the OnCompletion will have received a final completion.
+     * Exceptions will result in a {@link io.github.jonloucks.concurrency.api.Completion.State#FAILED} completion
+     * Exceptions will be rethrown.
+     *
+     * @param onCompletion the OnCompletion callback
+     * @param successBlock executed to determine the final completion value for an activity
+     * @return the final completion value
+     * @param &lt;T&gt; the completion value type
+     */
+    &lt;T&gt; T completeNow(OnCompletion&lt;T&gt; onCompletion, Supplier&lt;T&gt; successBlock);
     /**
      * The configuration used to create a new Concurrency instance.
      */
@@ -64,41 +123,41 @@ public interface Concurrency extends AutoOpen {
         /**
          * The default configuration used when creating a new Concurrency instance
          */
-<span class="fc" id="L67">        Config DEFAULT = new Config() {};</span>
+<span class="fc" id="L126">        Config DEFAULT = new Config() {};</span>
         
         /**
          * @return if true, reflection might be used to locate the ConcurrencyFactory
          */
         default boolean useReflection() {
-<span class="fc" id="L73">            return true;</span>
+<span class="fc" id="L132">            return true;</span>
         }
         
         /**
          * @return the class name to use if reflection is used to find the ConcurrencyFactory
          */
         default String reflectionClassName() {
-<span class="fc" id="L80">            return &quot;io.github.jonloucks.concurrency.impl.ConcurrencyFactoryImpl&quot;;</span>
+<span class="fc" id="L139">            return &quot;io.github.jonloucks.concurrency.impl.ConcurrencyFactoryImpl&quot;;</span>
         }
         
         /**
          * @return if true, the ServiceLoader might be used to locate the ConcurrencyFactory
          */
         default boolean useServiceLoader() {
-<span class="fc" id="L87">            return true;</span>
+<span class="fc" id="L146">            return true;</span>
         }
         
         /**
          * @return the class name to load from the ServiceLoader to find the ConcurrencyFactory
          */
         default Class&lt;? extends ConcurrencyFactory&gt; serviceLoaderClass() {
-<span class="fc" id="L94">            return ConcurrencyFactory.class;</span>
+<span class="fc" id="L153">            return ConcurrencyFactory.class;</span>
         }
         
         /**
          * @return the contracts, some use case have their own Contracts instance.
          */
         default Contracts contracts() {
-<span class="fc" id="L101">            return GlobalContracts.getInstance();</span>
+<span class="fc" id="L160">            return GlobalContracts.getInstance();</span>
         }
         
         /**
@@ -107,7 +166,7 @@ public interface Concurrency extends AutoOpen {
          * @return the timeout duration
          */
         default Duration shutdownTimeout() {
-<span class="fc" id="L110">            return Duration.ofSeconds(60);</span>
+<span class="fc" id="L169">            return Duration.ofSeconds(60);</span>
         }
         
         /**
@@ -118,7 +177,7 @@ public interface Concurrency extends AutoOpen {
             /**
              * Concurrency Config Builder
              */
-<span class="fc" id="L121">            Contract&lt;Supplier&lt;Builder&gt;&gt; FACTORY = Contract.create(&quot;Concurrency Config Builder Factory&quot;);</span>
+<span class="fc" id="L180">            Contract&lt;Supplier&lt;Builder&gt;&gt; FACTORY = Contract.create(&quot;Concurrency Config Builder Factory&quot;);</span>
             
             /**
              * @param useReflection enables or disables locating ConcurrencyFactory implementation by reflection

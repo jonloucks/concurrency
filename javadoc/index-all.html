@@ -50,7 +50,7 @@ loadScripts(document, 'script');</script>
 <div class="header">
 <h1>Index</h1>
 </div>
-<a href="#I:A">A</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a><span class="vertical-separator">|</span><a href="serialized-form.html">Serialized&nbsp;Form</a>
+<a href="#I:A">A</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a><span class="vertical-separator">|</span><a href="serialized-form.html">Serialized&nbsp;Form</a>
 <h2 class="title" id="I:A">A</h2>
 <dl class="index">
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableConsumer.html#accept(T)" class="member-name-link">accept(T)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableConsumer.html" title="interface in io.github.jonloucks.concurrency.api">WaitableConsumer</a></dt>
@@ -76,6 +76,12 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:C">C</h2>
 <dl class="index">
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html#CANCELLED" class="member-name-link">CANCELLED</a> - Enum constant in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html" title="enum class in io.github.jonloucks.concurrency.api">Completion.State</a></dt>
+<dd>
+<div class="block">Represents a canceled completion</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html#canTransition(java.lang.String,io.github.jonloucks.concurrency.api.Completion.State)" class="member-name-link">canTransition(String, Completion.State)</a> - Method in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html" title="enum class in io.github.jonloucks.concurrency.api">Completion.State</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html#canTransition(java.lang.String,io.github.jonloucks.concurrency.api.Idempotent)" class="member-name-link">canTransition(String, Idempotent)</a> - Method in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Rule.html#canTransition(java.lang.String,T)" class="member-name-link">canTransition(String, T)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Rule.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Rule</a></dt>
@@ -90,6 +96,64 @@ loadScripts(document, 'script');</script>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html#CLOSING" class="member-name-link">CLOSING</a> - Enum constant in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></dt>
 <dd>
 <div class="block">A state of closing or shutting down.</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completable.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">Completable</a>&lt;<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completable.html" title="type parameter in Completable">T</a>&gt; - Interface in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
+<dd>
+<div class="block">Responsibility: Observe a single activity from start to finish</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completable.Config.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">Completable.Config</a>&lt;<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completable.Config.html" title="type parameter in Completable.Config">T</a>&gt; - Interface in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
+<dd>
+<div class="block">Configuration used to create a new Completable</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completable.Config.Builder.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">Completable.Config.Builder</a>&lt;<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completable.Config.Builder.html" title="type parameter in Completable.Config.Builder">T</a>&gt; - Interface in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
+<dd>
+<div class="block">Configuration builder used to create a new Completeable</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletableFactory.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">CompletableFactory</a> - Interface in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
+<dd>
+<div class="block">Responsibility: Creating a new Completable</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.html#completeLater(io.github.jonloucks.concurrency.api.OnCompletion,java.util.function.Consumer)" class="member-name-link">completeLater(OnCompletion&lt;T&gt;, Consumer&lt;OnCompletion&lt;T&gt;&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a></dt>
+<dd>
+<div class="block">Guaranteed execution: complete later block.</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/GlobalConcurrency.html#completeLater(io.github.jonloucks.concurrency.api.OnCompletion,java.util.function.Consumer)" class="member-name-link">completeLater(OnCompletion&lt;T&gt;, Consumer&lt;OnCompletion&lt;T&gt;&gt;)</a> - Static method in class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/GlobalConcurrency.html" title="class in io.github.jonloucks.concurrency.api">GlobalConcurrency</a></dt>
+<dd>
+<div class="block">Guaranteed execution: complete later block.</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.html#completeNow(io.github.jonloucks.concurrency.api.OnCompletion,java.util.function.Supplier)" class="member-name-link">completeNow(OnCompletion&lt;T&gt;, Supplier&lt;T&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a></dt>
+<dd>
+<div class="block">Guaranteed execution: complete now block
+ When this method finishes, it is guaranteed the OnCompletion will have received a final completion.</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/GlobalConcurrency.html#completeNow(io.github.jonloucks.concurrency.api.OnCompletion,java.util.function.Supplier)" class="member-name-link">completeNow(OnCompletion&lt;T&gt;, Supplier&lt;T&gt;)</a> - Static method in class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/GlobalConcurrency.html" title="class in io.github.jonloucks.concurrency.api">GlobalConcurrency</a></dt>
+<dd>
+<div class="block">Guaranteed execution: complete now block
+ When this method finishes, it is guaranteed the OnCompletion will have received a final completion.</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">Completion</a>&lt;<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.html" title="type parameter in Completion">T</a>&gt; - Interface in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
+<dd>
+<div class="block">Responsibility: Represent a progression step in the life cycle of an activity.</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.Config.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">Completion.Config</a>&lt;<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.Config.html" title="type parameter in Completion.Config">T</a>&gt; - Interface in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
+<dd>
+<div class="block">Configuration for creating a new Completion</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.Config.Builder.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">Completion.Config.Builder</a>&lt;<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.Config.Builder.html" title="type parameter in Completion.Config.Builder">T</a>&gt; - Interface in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
+<dd>
+<div class="block">Builder for creating a configuration for a new Completion</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html" class="type-name-link" title="enum class in io.github.jonloucks.concurrency.api">Completion.State</a> - Enum Class in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
+<dd>
+<div class="block">The Completion states</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletionFactory.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">CompletionFactory</a> - Interface in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
+<dd>
+<div class="block">Responsibility: Creating a new Completion</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletionNotify.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">CompletionNotify</a>&lt;<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletionNotify.html" title="type parameter in CompletionNotify">T</a>&gt; - Interface in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
+<dd>
+<div class="block">Responsibility: Dispatch Completion status to subscribers</div>
 </dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a> - Interface in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
 <dd>
@@ -122,6 +186,14 @@ loadScripts(document, 'script');</script>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Constants.html" class="type-name-link" title="class in io.github.jonloucks.concurrency.api">Constants</a> - Class in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
 <dd>
 <div class="block">Concurrency constants</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletableFactory.html#CONTRACT" class="member-name-link">CONTRACT</a> - Static variable in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletableFactory.html" title="interface in io.github.jonloucks.concurrency.api">CompletableFactory</a></dt>
+<dd>
+<div class="block">The Contract for the CompletableFactory</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletionFactory.html#CONTRACT" class="member-name-link">CONTRACT</a> - Static variable in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletionFactory.html" title="interface in io.github.jonloucks.concurrency.api">CompletionFactory</a></dt>
+<dd>
+<div class="block">The Contract for the CompletionFactory</div>
 </dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.html#CONTRACT" class="member-name-link">CONTRACT</a> - Static variable in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a></dt>
 <dd>
@@ -171,9 +243,57 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Create a new Waitable with the given initial value</div>
 </dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletableFactory.html#createCompletable(io.github.jonloucks.concurrency.api.Completable.Config)" class="member-name-link">createCompletable(Completable.Config&lt;T&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletableFactory.html" title="interface in io.github.jonloucks.concurrency.api">CompletableFactory</a></dt>
+<dd>
+<div class="block">Create a new Completable</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.html#createCompletable(io.github.jonloucks.concurrency.api.Completable.Config)" class="member-name-link">createCompletable(Completable.Config&lt;T&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a></dt>
+<dd>
+<div class="block">Create a new Completable</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletableFactory.html#createCompletable(java.util.function.Consumer)" class="member-name-link">createCompletable(Consumer&lt;Completable.Config.Builder&lt;T&gt;&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletableFactory.html" title="interface in io.github.jonloucks.concurrency.api">CompletableFactory</a></dt>
+<dd>
+<div class="block">Create a new Completable</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.html#createCompletable(java.util.function.Consumer)" class="member-name-link">createCompletable(Consumer&lt;Completable.Config.Builder&lt;T&gt;&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a></dt>
+<dd>
+<div class="block">Create a new Completable</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/GlobalConcurrency.html#createCompletable(java.util.function.Consumer)" class="member-name-link">createCompletable(Consumer&lt;Completable.Config.Builder&lt;T&gt;&gt;)</a> - Static method in class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/GlobalConcurrency.html" title="class in io.github.jonloucks.concurrency.api">GlobalConcurrency</a></dt>
+<dd>
+<div class="block">Create a new Completable</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletionFactory.html#createCompletion(io.github.jonloucks.concurrency.api.Completion.Config)" class="member-name-link">createCompletion(Completion.Config&lt;T&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletionFactory.html" title="interface in io.github.jonloucks.concurrency.api">CompletionFactory</a></dt>
+<dd>
+<div class="block">Create a new Completion</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.html#createCompletion(io.github.jonloucks.concurrency.api.Completion.Config)" class="member-name-link">createCompletion(Completion.Config&lt;T&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a></dt>
+<dd>
+<div class="block">Create a new Completion</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/GlobalConcurrency.html#createCompletion(io.github.jonloucks.concurrency.api.Completion.Config)" class="member-name-link">createCompletion(Completion.Config&lt;T&gt;)</a> - Static method in class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/GlobalConcurrency.html" title="class in io.github.jonloucks.concurrency.api">GlobalConcurrency</a></dt>
+<dd>
+<div class="block">Create a new Completion</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletionFactory.html#createCompletion(java.util.function.Consumer)" class="member-name-link">createCompletion(Consumer&lt;Completion.Config.Builder&lt;T&gt;&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletionFactory.html" title="interface in io.github.jonloucks.concurrency.api">CompletionFactory</a></dt>
+<dd>
+<div class="block">Create a new Completion</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.html#createCompletion(java.util.function.Consumer)" class="member-name-link">createCompletion(Consumer&lt;Completion.Config.Builder&lt;T&gt;&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a></dt>
+<dd>
+<div class="block">Create a new Completion</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/GlobalConcurrency.html#createCompletion(java.util.function.Consumer)" class="member-name-link">createCompletion(Consumer&lt;Completion.Config.Builder&lt;T&gt;&gt;)</a> - Static method in class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/GlobalConcurrency.html" title="class in io.github.jonloucks.concurrency.api">GlobalConcurrency</a></dt>
+<dd>
+<div class="block">Create a new Completion</div>
+</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/GlobalConcurrency.html#createConcurrency(io.github.jonloucks.concurrency.api.Concurrency.Config)" class="member-name-link">createConcurrency(Concurrency.Config)</a> - Static method in class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/GlobalConcurrency.html" title="class in io.github.jonloucks.concurrency.api">GlobalConcurrency</a></dt>
 <dd>
 <div class="block">Create a new Concurrency instance for customized deployments.</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html#createStateMachine(io.github.jonloucks.contracts.api.Contracts)" class="member-name-link">createStateMachine(Contracts)</a> - Static method in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html" title="enum class in io.github.jonloucks.concurrency.api">Completion.State</a></dt>
+<dd>
+<div class="block">Create a StateMachine for Completion State</div>
 </dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html#createStateMachine(io.github.jonloucks.contracts.api.Contracts)" class="member-name-link">createStateMachine(Contracts)</a> - Static method in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></dt>
 <dd>
@@ -241,6 +361,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Concurrency Config Builder</div>
 </dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html#FAILED" class="member-name-link">FAILED</a> - Enum constant in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html" title="enum class in io.github.jonloucks.concurrency.api">Completion.State</a></dt>
+<dd>
+<div class="block">Represents a failed completion</div>
+</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Transition.Builder.html#failedState(S)" class="member-name-link">failedState(S)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Transition.Builder.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition.Builder</a></dt>
 <dd>
 <div class="block">Assign the optional failed state used if the goal state is not allowed</div>
@@ -253,10 +377,16 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Finds the ConcurrencyFactory implementation</div>
 </dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.Config.Builder.html#future(java.util.concurrent.Future)" class="member-name-link">future(Future&lt;T&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Completion.Config.Builder</a></dt>
+<dd>
+<div class="block">Assign the future</div>
+</dd>
 </dl>
 <h2 class="title" id="I:G">G</h2>
 <dl class="index">
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableSupplier.html#get()" class="member-name-link">get()</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableSupplier.html" title="interface in io.github.jonloucks.concurrency.api">WaitableSupplier</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completable.html#getCompletion()" class="member-name-link">getCompletion()</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completable.html" title="interface in io.github.jonloucks.concurrency.api">Completable</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Transition.html#getErrorState()" class="member-name-link">getErrorState()</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Transition.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition</a></dt>
 <dd>&nbsp;</dd>
@@ -267,6 +397,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Transition.html#getFailedState()" class="member-name-link">getFailedState()</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Transition.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Transition.html#getFailedValue()" class="member-name-link">getFailedValue()</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Transition.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.html#getFuture()" class="member-name-link">getFuture()</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.html" title="interface in io.github.jonloucks.concurrency.api">Completion</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableSupplier.html#getIf(java.util.function.Predicate)" class="member-name-link">getIf(Predicate&lt;T&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableSupplier.html" title="interface in io.github.jonloucks.concurrency.api">WaitableSupplier</a></dt>
 <dd>
@@ -280,6 +412,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Return the global instance of Contracts</div>
 </dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.html#getState()" class="member-name-link">getState()</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.html" title="interface in io.github.jonloucks.concurrency.api">Completion</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.html#getState()" class="member-name-link">getState()</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a></dt>
 <dd>
 <div class="block">Get the current state</div>
@@ -293,6 +427,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Transition.html#getSuccessState()" class="member-name-link">getSuccessState()</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Transition.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Transition.html#getSuccessValue()" class="member-name-link">getSuccessValue()</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Transition.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.html#getThrown()" class="member-name-link">getThrown()</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.html" title="interface in io.github.jonloucks.concurrency.api">Completion</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.html#getValue()" class="member-name-link">getValue()</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.html" title="interface in io.github.jonloucks.concurrency.api">Completion</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableSupplier.html#getWhen(java.util.function.Predicate)" class="member-name-link">getWhen(Predicate&lt;T&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableSupplier.html" title="interface in io.github.jonloucks.concurrency.api">WaitableSupplier</a></dt>
 <dd>
@@ -334,6 +472,14 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a> - package io.github.jonloucks.concurrency.api</dt>
 <dd>&nbsp;</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completable.html#isCompleted()" class="member-name-link">isCompleted()</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completable.html" title="interface in io.github.jonloucks.concurrency.api">Completable</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.html#isCompleted()" class="member-name-link">isCompleted()</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.html" title="interface in io.github.jonloucks.concurrency.api">Completion</a></dt>
+<dd>
+<div class="block">True if final completion</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html#isCompleted()" class="member-name-link">isCompleted()</a> - Method in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html" title="enum class in io.github.jonloucks.concurrency.api">Completion.State</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html#isRejecting()" class="member-name-link">isRejecting()</a> - Method in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></dt>
 <dd>
 <div class="block">Determines if new requests/action should be rejected</div>
@@ -356,14 +502,30 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:N">N</h2>
 <dl class="index">
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletionNotify.html#notify(io.github.jonloucks.concurrency.api.OnCompletion)" class="member-name-link">notify(OnCompletion&lt;T&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/CompletionNotify.html" title="interface in io.github.jonloucks.concurrency.api">CompletionNotify</a></dt>
+<dd>
+<div class="block">Open a notification subscription for receive completions</div>
+</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableNotify.html#notifyIf(java.util.function.Predicate,java.util.function.Consumer)" class="member-name-link">notifyIf(Predicate&lt;T&gt;, Consumer&lt;T&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/WaitableNotify.html" title="interface in io.github.jonloucks.concurrency.api">WaitableNotify</a></dt>
 <dd>
 <div class="block">When condition is satisfied the listener is invoked
  Note: It is likely the listener will be called within a write lock context.</div>
 </dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completable.html#notifyState()" class="member-name-link">notifyState()</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completable.html" title="interface in io.github.jonloucks.concurrency.api">Completable</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completable.html#notifyValue()" class="member-name-link">notifyValue()</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completable.html" title="interface in io.github.jonloucks.concurrency.api">Completable</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:O">O</h2>
 <dl class="index">
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/OnCompletion.html#onCompletion(io.github.jonloucks.concurrency.api.Completion)" class="member-name-link">onCompletion(Completion&lt;T&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/OnCompletion.html" title="interface in io.github.jonloucks.concurrency.api">OnCompletion</a></dt>
+<dd>
+<div class="block">Callback which receives the</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/OnCompletion.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">OnCompletion</a>&lt;<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/OnCompletion.html" title="type parameter in OnCompletion">T</a>&gt; - Interface in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
+<dd>
+<div class="block">Responsibility: to receive the information when an action or activity has finished.</div>
+</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html#OPENABLE" class="member-name-link">OPENABLE</a> - Enum constant in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></dt>
 <dd>
 <div class="block">Initial state
@@ -377,6 +539,13 @@ loadScripts(document, 'script');</script>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html#OPENING" class="member-name-link">OPENING</a> - Enum constant in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></dt>
 <dd>
 <div class="block">For use cases where the open can take some time or reentrancy calls while initializing.</div>
+</dd>
+</dl>
+<h2 class="title" id="I:P">P</h2>
+<dl class="index">
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html#PENDING" class="member-name-link">PENDING</a> - Enum constant in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html" title="enum class in io.github.jonloucks.concurrency.api">Completion.State</a></dt>
+<dd>
+<div class="block">The initial state</div>
 </dd>
 </dl>
 <h2 class="title" id="I:R">R</h2>
@@ -418,6 +587,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.Config.Builder.html#shutdownTimeout(java.time.Duration)" class="member-name-link">shutdownTimeout(Duration)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config.Builder</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.Config.Builder.html#state(io.github.jonloucks.concurrency.api.Completion.State)" class="member-name-link">state(Completion.State)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Completion.Config.Builder</a></dt>
+<dd>
+<div class="block">Assign the state</div>
+</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Config.Builder.html#state(T)" class="member-name-link">state(T)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Config.Builder</a></dt>
 <dd>
 <div class="block">Add a new state</div>
@@ -454,6 +627,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Add a list of states</div>
 </dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html#SUCCEEDED" class="member-name-link">SUCCEEDED</a> - Enum constant in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html" title="enum class in io.github.jonloucks.concurrency.api">Completion.State</a></dt>
+<dd>
+<div class="block">Represents a successful completion</div>
+</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Transition.Builder.html#successState(S)" class="member-name-link">successState(S)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.Transition.Builder.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine.Transition.Builder</a></dt>
 <dd>
 <div class="block">Assign the required success state</div>
@@ -469,6 +646,10 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:T">T</h2>
 <dl class="index">
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.Config.Builder.html#thrown(java.lang.Throwable)" class="member-name-link">thrown(Throwable)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Completion.Config.Builder</a></dt>
+<dd>
+<div class="block">Assign the thrown exception</div>
+</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.html#transition(io.github.jonloucks.concurrency.api.StateMachine.Transition)" class="member-name-link">transition(StateMachine.Transition&lt;T, R&gt;)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachine.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a></dt>
 <dd>
 <div class="block">Execute a transition from the current state to another</div>
@@ -491,9 +672,22 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:V">V</h2>
 <dl class="index">
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.Config.Builder.html#value(T)" class="member-name-link">value(T)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Completion.Config.Builder</a></dt>
+<dd>
+<div class="block">Assign the value</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html#valueOf(java.lang.String)" class="member-name-link">valueOf(String)</a> - Static method in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html" title="enum class in io.github.jonloucks.concurrency.api">Completion.State</a></dt>
+<dd>
+<div class="block">Returns the enum constant of this class with the specified name.</div>
+</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html#valueOf(java.lang.String)" class="member-name-link">valueOf(String)</a> - Static method in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></dt>
 <dd>
 <div class="block">Returns the enum constant of this class with the specified name.</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html#values()" class="member-name-link">values()</a> - Static method in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.State.html" title="enum class in io.github.jonloucks.concurrency.api">Completion.State</a></dt>
+<dd>
+<div class="block">Returns an array containing the constants of this enum class, in
+the order they are declared.</div>
 </dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html#values()" class="member-name-link">values()</a> - Static method in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></dt>
 <dd>
@@ -545,7 +739,7 @@ the order they are declared.</div>
 <div class="block">Assist with an idempotent close</div>
 </dd>
 </dl>
-<a href="#I:A">A</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a><span class="vertical-separator">|</span><a href="serialized-form.html">Serialized&nbsp;Form</a></main>
+<a href="#I:A">A</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a><span class="vertical-separator">|</span><a href="serialized-form.html">Serialized&nbsp;Form</a></main>
 </div>
 </div>
 </body>

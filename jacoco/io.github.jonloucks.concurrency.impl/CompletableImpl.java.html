@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CompletableImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">concurrency</a> &gt; <a href="index.source.html" class="el_package">io.github.jonloucks.concurrency.impl</a> &gt; <span class="el_source">CompletableImpl.java</span></div><h1>CompletableImpl.java</h1><pre class="source lang-java linenums">package io.github.jonloucks.concurrency.impl;
+
+import io.github.jonloucks.concurrency.api.*;
+import io.github.jonloucks.concurrency.api.Completion.State;
+import io.github.jonloucks.contracts.api.AutoClose;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import static io.github.jonloucks.concurrency.api.Idempotent.withClose;
+import static io.github.jonloucks.concurrency.api.Idempotent.withOpen;
+import static io.github.jonloucks.concurrency.impl.Internal.completionCheck;
+import static java.util.Optional.ofNullable;
+
+final class CompletableImpl&lt;T&gt; implements Completable&lt;T&gt;, OnCompletion&lt;T&gt; {
+    
+    @Override
+    public boolean isCompleted() {
+<span class="fc" id="L20">        return completionStateMachine.getState().isCompleted();</span>
+    }
+    
+    @Override
+    public WaitableNotify&lt;State&gt; notifyState() {
+<span class="fc" id="L25">        return completionStateMachine;</span>
+    }
+    
+    @Override
+    public WaitableNotify&lt;T&gt; notifyValue() {
+<span class="fc" id="L30">        return waitableValue;</span>
+    }
+    
+    @Override
+    public Optional&lt;Completion&lt;T&gt;&gt; getCompletion() {
+<span class="fc" id="L35">        return ofNullable(completion);</span>
+    }
+    
+    @Override
+    public void onCompletion(Completion&lt;T&gt; completion) {
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (idempotentStateMachine.getState().isRejecting()) {</span>
+<span class="fc" id="L41">            throw new IllegalStateException(&quot;Completable must be open.&quot;);</span>
+        }
+<span class="fc" id="L43">        final Completion&lt;T&gt; validCompletion = completionCheck(completion);</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (completionStateMachine.setState(&quot;onCompletion&quot;, validCompletion.getState())) {</span>
+<span class="fc" id="L45">            this.completion = validCompletion;</span>
+<span class="fc" id="L46">            this.waitableValue.accept(validCompletion.getValue().orElse(null));</span>
+<span class="fc" id="L47">            subscriptions.forEach(s -&gt; s.onCompletion(validCompletion));</span>
+        }
+<span class="fc" id="L49">    }</span>
+
+    @Override
+    public AutoClose notify(OnCompletion&lt;T&gt; onCompletion) {
+<span class="fc" id="L53">        return new NotifyCompletionSubscription&lt;&gt;(onCompletion, subscriptions).open();</span>
+    }
+    
+    @Override
+    public AutoClose open() {
+<span class="fc" id="L58">        return withOpen(idempotentStateMachine, this::realOpen);</span>
+    }
+  
+    void close() {
+<span class="fc" id="L62">        withClose(idempotentStateMachine, this::realClose);</span>
+<span class="fc" id="L63">    }</span>
+    
+<span class="fc" id="L65">    CompletableImpl(Concurrency.Config concurrencyConfig, Completable.Config&lt;T&gt; ignored) {</span>
+<span class="fc" id="L66">        this.completionStateMachine = State.createStateMachine(concurrencyConfig.contracts());</span>
+<span class="fc" id="L67">        this.idempotentStateMachine = Idempotent.createStateMachine(concurrencyConfig.contracts());</span>
+<span class="fc" id="L68">        this.waitableValue = GlobalConcurrency.createWaitable(null);</span>
+<span class="fc" id="L69">    }</span>
+    
+    private AutoClose realOpen() {
+<span class="fc" id="L72">        return this::close;</span>
+    }
+    
+    private void realClose() {
+<span class="fc" id="L76">        subscriptions.forEach(NotifyCompletionSubscription::close);</span>
+<span class="fc" id="L77">    }</span>
+    
+    private final StateMachine&lt;State&gt; completionStateMachine;
+    private final StateMachine&lt;Idempotent&gt; idempotentStateMachine;
+    private Completion&lt;T&gt; completion;
+    private final Waitable&lt;T&gt; waitableValue;
+<span class="fc" id="L83">    private final List&lt;NotifyCompletionSubscription&lt;T&gt;&gt; subscriptions = new CopyOnWriteArrayList&lt;&gt;();</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

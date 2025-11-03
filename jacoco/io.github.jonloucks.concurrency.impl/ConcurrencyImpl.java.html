@@ -2,11 +2,14 @@
 
 import io.github.jonloucks.concurrency.api.*;
 import io.github.jonloucks.contracts.api.AutoClose;
-import io.github.jonloucks.contracts.api.AutoOpen;
+import io.github.jonloucks.contracts.api.Contracts;
 import io.github.jonloucks.contracts.api.Repository;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
+import static io.github.jonloucks.concurrency.api.Idempotent.withClose;
+import static io.github.jonloucks.concurrency.api.Idempotent.withOpen;
 import static io.github.jonloucks.contracts.api.Checks.configCheck;
 import static io.github.jonloucks.contracts.api.Checks.nullCheck;
 
@@ -14,60 +17,88 @@ final class ConcurrencyImpl implements Concurrency {
     
     @Override
     public AutoClose open() {
-<span class="fc" id="L17">        return stateMachine.transition(b -&gt; b</span>
-<span class="fc" id="L18">            .event(&quot;open&quot;)</span>
-<span class="fc" id="L19">            .successState(Idempotent.OPENED)</span>
-<span class="fc" id="L20">            .successValue(this::realOpen)</span>
-<span class="fc" id="L21">       .failedValue(AutoOpen.NONE::open));</span>
+<span class="fc" id="L20">        return withOpen(stateMachine, this::realOpen);</span>
     }
     
     @Override
     public &lt;T&gt; Waitable&lt;T&gt; createWaitable(T initialValue) {
-<span class="fc" id="L26">        return waitableFactory.create(initialValue);</span>
+<span class="fc" id="L25">        return waitableFactory.create(initialValue);</span>
     }
     
     @Override
     public &lt;T&gt; StateMachine&lt;T&gt; createStateMachine(T initialState) {
-<span class="fc" id="L31">        return stateMachineFactory.create(b -&gt; b.initial(initialState));</span>
+<span class="fc" id="L30">        return stateMachineFactory.create(b -&gt; b.initial(initialState));</span>
     }
     
     @Override
     public &lt;T extends Enum&lt;T&gt;&gt; StateMachine&lt;T&gt; createStateMachine(Class&lt;T&gt; enumClass, T initialState) {
-<span class="fc" id="L36">        return stateMachineFactory.create(enumClass, initialState);</span>
+<span class="fc" id="L35">        return stateMachineFactory.create(enumClass, initialState);</span>
     }
     
     @Override
     public &lt;T&gt; StateMachine&lt;T&gt; createStateMachine(Consumer&lt;StateMachine.Config.Builder&lt;T&gt;&gt; builderConsumer) {
-<span class="fc" id="L41">        return stateMachineFactory.create(builderConsumer);</span>
+<span class="fc" id="L40">        return stateMachineFactory.create(builderConsumer);</span>
     }
     
-<span class="fc" id="L44">    ConcurrencyImpl(Config config, Repository repository, boolean autoOpen) {</span>
-<span class="fc" id="L45">        final Config validConfig = configCheck(config);</span>
-<span class="fc" id="L46">        final Repository validRepository = nullCheck(repository, &quot;Repository must be present.&quot;);</span>
-<span class="fc bfc" id="L47" title="All 2 branches covered.">        this.closeRepository = autoOpen ? validRepository.open() : AutoClose.NONE;</span>
-<span class="fc" id="L48">        this.waitableFactory = validConfig.contracts().claim(WaitableFactory.CONTRACT);</span>
-<span class="fc" id="L49">        this.stateMachineFactory = validConfig.contracts().claim(StateMachineFactory.CONTRACT);</span>
-<span class="fc" id="L50">        this.stateMachine = createStateMachine(Idempotent.class, Idempotent.OPENABLE);</span>
-<span class="fc" id="L51">    }</span>
+    @Override
+    public &lt;T&gt; Completable&lt;T&gt; createCompletable(Completable.Config&lt;T&gt; config) {
+<span class="fc" id="L45">        return completableFactory.createCompletable(config);</span>
+    }
+    
+    @Override
+    public &lt;T&gt; Completable&lt;T&gt; createCompletable(Consumer&lt;Completable.Config.Builder&lt;T&gt;&gt; builderConsumer) {
+<span class="fc" id="L50">        return completableFactory.createCompletable(builderConsumer);</span>
+    }
+    
+    @Override
+    public &lt;T&gt; Completion&lt;T&gt; createCompletion(Completion.Config&lt;T&gt; config) {
+<span class="nc" id="L55">        return completionFactory.createCompletion(config);</span>
+    }
+    
+    @Override
+    public &lt;T&gt; Completion&lt;T&gt; createCompletion(Consumer&lt;Completion.Config.Builder&lt;T&gt;&gt; builderConsumer) {
+<span class="fc" id="L60">        return completionFactory.createCompletion(builderConsumer);</span>
+    }
+    
+    @Override
+    public &lt;T&gt; void completeLater(OnCompletion&lt;T&gt; onCompletion, Consumer&lt;OnCompletion&lt;T&gt;&gt; delegate) {
+<span class="fc" id="L65">        new CompleteLaterImpl&lt;&gt;(onCompletion,delegate).run();</span>
+<span class="fc" id="L66">    }</span>
+    
+    @Override
+    public &lt;T&gt; T completeNow(OnCompletion&lt;T&gt; onCompletion, Supplier&lt;T&gt; successBlock) {
+<span class="fc" id="L70">       return new CompleteNowImpl&lt;&gt;(onCompletion,successBlock).run();</span>
+    }
+    
+<span class="fc" id="L73">    ConcurrencyImpl(Config config, Repository repository, boolean autoOpen) {</span>
+<span class="fc" id="L74">        final Config validConfig = configCheck(config);</span>
+<span class="fc" id="L75">        final Repository validRepository = nullCheck(repository, &quot;Repository must be present.&quot;);</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        this.closeRepository = autoOpen ? validRepository.open() : AutoClose.NONE;</span>
+<span class="fc" id="L77">        final Contracts contracts = validConfig.contracts();</span>
+<span class="fc" id="L78">        this.waitableFactory = contracts.claim(WaitableFactory.CONTRACT);</span>
+<span class="fc" id="L79">        this.completionFactory = contracts.claim(CompletionFactory.CONTRACT);</span>
+<span class="fc" id="L80">        this.completableFactory = contracts.claim(CompletableFactory.CONTRACT);</span>
+<span class="fc" id="L81">        this.stateMachineFactory = contracts.claim(StateMachineFactory.CONTRACT);</span>
+<span class="fc" id="L82">        this.stateMachine = createStateMachine(Idempotent.class, Idempotent.OPENABLE);</span>
+<span class="fc" id="L83">    }</span>
     
     private AutoClose realOpen() {
-<span class="fc" id="L54">        return this::close;</span>
+<span class="fc" id="L86">        return this::close;</span>
     }
 
     private void close() {
-<span class="fc" id="L58">        stateMachine.transition(b -&gt; b</span>
-<span class="fc" id="L59">            .event(&quot;close&quot;)</span>
-<span class="fc" id="L60">            .successState(Idempotent.CLOSED)</span>
-<span class="fc" id="L61">            .successValue(this::realClose));</span>
-<span class="fc" id="L62">    }</span>
+<span class="fc" id="L90">        withClose(stateMachine, this::realClose);</span>
+<span class="fc" id="L91">    }</span>
     
     private void realClose() {
-<span class="fc" id="L65">        closeRepository.close();</span>
-<span class="fc" id="L66">    }</span>
+<span class="fc" id="L94">        closeRepository.close();</span>
+<span class="fc" id="L95">    }</span>
     
     private final AutoClose closeRepository;
     private final WaitableFactory waitableFactory;
     private final StateMachineFactory stateMachineFactory;
+    private final CompletionFactory completionFactory;
+    private final CompletableFactory completableFactory;
     private final StateMachine&lt;Idempotent&gt; stateMachine;
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

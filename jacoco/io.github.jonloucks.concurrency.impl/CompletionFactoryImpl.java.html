@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CompletionFactoryImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">concurrency</a> &gt; <a href="index.source.html" class="el_package">io.github.jonloucks.concurrency.impl</a> &gt; <span class="el_source">CompletionFactoryImpl.java</span></div><h1>CompletionFactoryImpl.java</h1><pre class="source lang-java linenums">package io.github.jonloucks.concurrency.impl;
+
+import io.github.jonloucks.concurrency.api.Completion;
+import io.github.jonloucks.concurrency.api.CompletionFactory;
+
+import java.util.function.Consumer;
+
+import static io.github.jonloucks.contracts.api.Checks.builderConsumerCheck;
+
+final class CompletionFactoryImpl implements CompletionFactory {
+    
+    @Override
+    public &lt;T&gt; Completion&lt;T&gt; createCompletion(Consumer&lt;Completion.Config.Builder&lt;T&gt;&gt; builderConsumer) {
+<span class="fc" id="L14">        final Consumer&lt;Completion.Config.Builder&lt;T&gt;&gt; validConsumerBuilder = builderConsumerCheck(builderConsumer);</span>
+<span class="fc" id="L15">        final CompletionBuilderImpl&lt;T&gt; builder = new CompletionBuilderImpl&lt;&gt;();</span>
+<span class="fc" id="L16">        validConsumerBuilder.accept(builder);</span>
+<span class="fc" id="L17">        return createCompletion(builder);</span>
+    }
+    
+    @Override
+    public &lt;T&gt; Completion&lt;T&gt; createCompletion(Completion.Config&lt;T&gt; config) {
+<span class="fc" id="L22">        return new ImmutableCompletionImpl&lt;&gt;(config);</span>
+    }
+    
+<span class="fc" id="L25">    CompletionFactoryImpl() {</span>
+    
+<span class="fc" id="L27">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -94,35 +94,63 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Concurrency.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createConcurrency(io.github.jonloucks.concurrency.api.Concurrency.Config)" class="member-name-link">createConcurrency</a><wbr>(<a href="Concurrency.Config.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config</a>&nbsp;config)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T&gt;&nbsp;void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#completeLater(io.github.jonloucks.concurrency.api.OnCompletion,java.util.function.Consumer)" class="member-name-link">completeLater</a><wbr>(<a href="OnCompletion.html" title="interface in io.github.jonloucks.concurrency.api">OnCompletion</a>&lt;T&gt;&nbsp;onCompletion,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="OnCompletion.html" title="interface in io.github.jonloucks.concurrency.api">OnCompletion</a>&lt;T&gt;&gt;&nbsp;delegate)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Create a new Concurrency instance for customized deployments.</div>
+<div class="block">Guaranteed execution: complete later block.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Enum.html" title="class or interface in java.lang" class="external-link">Enum</a>&lt;T&gt;&gt;<br><a href="StateMachine.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a>&lt;T&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createStateMachine(java.lang.Class,T)" class="member-name-link">createStateMachine</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;enumClass,
- T&nbsp;initialState)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T&gt;&nbsp;T</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#completeNow(io.github.jonloucks.concurrency.api.OnCompletion,java.util.function.Supplier)" class="member-name-link">completeNow</a><wbr>(<a href="OnCompletion.html" title="interface in io.github.jonloucks.concurrency.api">OnCompletion</a>&lt;T&gt;&nbsp;onCompletion,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;T&gt;&nbsp;successBlock)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Create a new StateMachine</div>
+<div class="block">Guaranteed execution: complete now block
+ When this method finishes, it is guaranteed the OnCompletion will have received a final completion.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T&gt;&nbsp;<a href="StateMachine.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a>&lt;T&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createStateMachine(T)" class="member-name-link">createStateMachine</a><wbr>(T&nbsp;initialState)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T&gt;&nbsp;<a href="Completable.html" title="interface in io.github.jonloucks.concurrency.api">Completable</a>&lt;T&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createCompletable(java.util.function.Consumer)" class="member-name-link">createCompletable</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="Completable.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Completable.Config.Builder</a>&lt;T&gt;&gt;&nbsp;builderConsumer)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Create a new StateMachine</div>
+<div class="block">Create a new Completable</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T&gt;&nbsp;<a href="Waitable.html" title="interface in io.github.jonloucks.concurrency.api">Waitable</a>&lt;T&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createWaitable(T)" class="member-name-link">createWaitable</a><wbr>(T&nbsp;initialValue)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T&gt;&nbsp;<a href="Completion.html" title="interface in io.github.jonloucks.concurrency.api">Completion</a>&lt;T&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createCompletion(io.github.jonloucks.concurrency.api.Completion.Config)" class="member-name-link">createCompletion</a><wbr>(<a href="Completion.Config.html" title="interface in io.github.jonloucks.concurrency.api">Completion.Config</a>&lt;T&gt;&nbsp;config)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Create a new Waitable with the given initial value</div>
+<div class="block">Create a new Completion</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="ConcurrencyFactory.html" title="interface in io.github.jonloucks.concurrency.api">ConcurrencyFactory</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#findConcurrencyFactory(io.github.jonloucks.concurrency.api.Concurrency.Config)" class="member-name-link">findConcurrencyFactory</a><wbr>(<a href="Concurrency.Config.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config</a>&nbsp;config)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T&gt;&nbsp;<a href="Completion.html" title="interface in io.github.jonloucks.concurrency.api">Completion</a>&lt;T&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createCompletion(java.util.function.Consumer)" class="member-name-link">createCompletion</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="Completion.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Completion.Config.Builder</a>&lt;T&gt;&gt;&nbsp;builderConsumer)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Finds the ConcurrencyFactory implementation</div>
+<div class="block">Create a new Completion</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Concurrency.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getInstance()" class="member-name-link">getInstance</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createConcurrency(io.github.jonloucks.concurrency.api.Concurrency.Config)" class="member-name-link">createConcurrency</a><wbr>(<a href="Concurrency.Config.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config</a>&nbsp;config)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Create a new Concurrency instance for customized deployments.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Enum.html" title="class or interface in java.lang" class="external-link">Enum</a>&lt;T&gt;&gt;<br><a href="StateMachine.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a>&lt;T&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createStateMachine(java.lang.Class,T)" class="member-name-link">createStateMachine</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;enumClass,
+ T&nbsp;initialState)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Create a new StateMachine</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T&gt;&nbsp;<a href="StateMachine.html" title="interface in io.github.jonloucks.concurrency.api">StateMachine</a>&lt;T&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createStateMachine(T)" class="member-name-link">createStateMachine</a><wbr>(T&nbsp;initialState)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Create a new StateMachine</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T&gt;&nbsp;<a href="Waitable.html" title="interface in io.github.jonloucks.concurrency.api">Waitable</a>&lt;T&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createWaitable(T)" class="member-name-link">createWaitable</a><wbr>(T&nbsp;initialValue)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Create a new Waitable with the given initial value</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="ConcurrencyFactory.html" title="interface in io.github.jonloucks.concurrency.api">ConcurrencyFactory</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#findConcurrencyFactory(io.github.jonloucks.concurrency.api.Concurrency.Config)" class="member-name-link">findConcurrencyFactory</a><wbr>(<a href="Concurrency.Config.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config</a>&nbsp;config)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Finds the ConcurrencyFactory implementation</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Concurrency.html" title="interface in io.github.jonloucks.concurrency.api">Concurrency</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getInstance()" class="member-name-link">getInstance</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Return the global instance of Contracts</div>
 </div>
 </div>
@@ -151,11 +179,9 @@ loadScripts(document, 'script');</script>
 <dt>Type Parameters:</dt>
 <dd><code>T</code> - the type of waitable</dd>
 <dt>Parameters:</dt>
-<dd><code>initialValue</code> - (null is not allowed)</dd>
+<dd><code>initialValue</code> - (null is allowed)</dd>
 <dt>Returns:</dt>
 <dd>the waitable</dd>
-<dt>Throws:</dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if initialValue is null</dd>
 </dl>
 </section>
 </li>
@@ -192,6 +218,88 @@ loadScripts(document, 'script');</script>
 <dd>the new StateMachine</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if enumClass is null or initialState is null</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="createCompletable(java.util.function.Consumer)">
+<h3>createCompletable</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="Completable.html" title="interface in io.github.jonloucks.concurrency.api">Completable</a>&lt;T&gt;</span>&nbsp;<span class="element-name">createCompletable</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="Completable.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Completable.Config.Builder</a>&lt;T&gt;&gt;&nbsp;builderConsumer)</span></div>
+<div class="block">Create a new Completable</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>T</code> - the type of completion value</dd>
+<dt>Parameters:</dt>
+<dd><code>builderConsumer</code> - receives the Completable Config Builder</dd>
+<dt>Returns:</dt>
+<dd>the new Completable</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="createCompletion(java.util.function.Consumer)">
+<h3>createCompletion</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="Completion.html" title="interface in io.github.jonloucks.concurrency.api">Completion</a>&lt;T&gt;</span>&nbsp;<span class="element-name">createCompletion</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="Completion.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Completion.Config.Builder</a>&lt;T&gt;&gt;&nbsp;builderConsumer)</span></div>
+<div class="block">Create a new Completion</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>T</code> - the type of completion value</dd>
+<dt>Parameters:</dt>
+<dd><code>builderConsumer</code> - receives the Completion Config Builder</dd>
+<dt>Returns:</dt>
+<dd>the new Completable</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="createCompletion(io.github.jonloucks.concurrency.api.Completion.Config)">
+<h3>createCompletion</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="Completion.html" title="interface in io.github.jonloucks.concurrency.api">Completion</a>&lt;T&gt;</span>&nbsp;<span class="element-name">createCompletion</span><wbr><span class="parameters">(<a href="Completion.Config.html" title="interface in io.github.jonloucks.concurrency.api">Completion.Config</a>&lt;T&gt;&nbsp;config)</span></div>
+<div class="block">Create a new Completion</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>T</code> - the type of completion value</dd>
+<dt>Parameters:</dt>
+<dd><code>config</code> - the Completion configuration</dd>
+<dt>Returns:</dt>
+<dd>the new Completable</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="completeLater(io.github.jonloucks.concurrency.api.OnCompletion,java.util.function.Consumer)">
+<h3>completeLater</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">completeLater</span><wbr><span class="parameters">(<a href="OnCompletion.html" title="interface in io.github.jonloucks.concurrency.api">OnCompletion</a>&lt;T&gt;&nbsp;onCompletion,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="OnCompletion.html" title="interface in io.github.jonloucks.concurrency.api">OnCompletion</a>&lt;T&gt;&gt;&nbsp;delegate)</span></div>
+<div class="block">Guaranteed execution: complete later block.
+ Either the delegate successfully takes ownership of the OnCompletion or
+ a final <a href="Completion.State.html#FAILED"><code>Completion.State.FAILED</code></a> completion is dispatched</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>T</code> - the completion value type</dd>
+<dt>Parameters:</dt>
+<dd><code>onCompletion</code> - the OnCompletion callback</dd>
+<dd><code>delegate</code> - the intended delegate to receive the OnCompletion</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="completeNow(io.github.jonloucks.concurrency.api.OnCompletion,java.util.function.Supplier)">
+<h3>completeNow</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type">T</span>&nbsp;<span class="element-name">completeNow</span><wbr><span class="parameters">(<a href="OnCompletion.html" title="interface in io.github.jonloucks.concurrency.api">OnCompletion</a>&lt;T&gt;&nbsp;onCompletion,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;T&gt;&nbsp;successBlock)</span></div>
+<div class="block">Guaranteed execution: complete now block
+ When this method finishes, it is guaranteed the OnCompletion will have received a final completion.
+ Exceptions will result in a <a href="Completion.State.html#FAILED"><code>Completion.State.FAILED</code></a> completion
+ Exceptions will be rethrown.</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>T</code> - the completion value type</dd>
+<dt>Parameters:</dt>
+<dd><code>onCompletion</code> - the OnCompletion callback</dd>
+<dd><code>successBlock</code> - executed to determine the final completion value for an activity</dd>
+<dt>Returns:</dt>
+<dd>the final completion value</dd>
 </dl>
 </section>
 </li>

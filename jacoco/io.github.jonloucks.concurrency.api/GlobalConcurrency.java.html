@@ -3,6 +3,8 @@
 import io.github.jonloucks.contracts.api.AutoClose;
 
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static io.github.jonloucks.contracts.api.Checks.nullCheck;
 
@@ -14,13 +16,12 @@ public final class GlobalConcurrency {
     /**
      * Create a new Waitable with the given initial value
      *
-     * @param initialValue (null is not allowed)
+     * @param initialValue (null is allowed)
      * @return the waitable
      * @param &lt;T&gt; the type of waitable
-     * @throws IllegalArgumentException if initialValue is null
      */
     public static &lt;T&gt; Waitable&lt;T&gt; createWaitable(T initialValue) {
-<span class="fc" id="L23">        return INSTANCE.concurrency.createWaitable(initialValue);</span>
+<span class="fc" id="L24">        return INSTANCE.concurrency.createWaitable(initialValue);</span>
     }
     
     /**
@@ -32,7 +33,7 @@ public final class GlobalConcurrency {
      * @throws IllegalArgumentException if initialState is null
      */
     public static &lt;T&gt; StateMachine&lt;T&gt; createStateMachine(T initialState) {
-<span class="fc" id="L35">        return INSTANCE.concurrency.createStateMachine(initialState);</span>
+<span class="fc" id="L36">        return INSTANCE.concurrency.createStateMachine(initialState);</span>
     }
     
     /**
@@ -45,15 +46,77 @@ public final class GlobalConcurrency {
      * @throws IllegalArgumentException if enumClass is null or initialState is null
      */
     public static &lt;T extends Enum&lt;T&gt;&gt; StateMachine&lt;T&gt; createStateMachine(Class&lt;T&gt; enumClass, T initialState) {
-<span class="fc" id="L48">        return INSTANCE.concurrency.createStateMachine(enumClass, initialState);</span>
+<span class="fc" id="L49">        return INSTANCE.concurrency.createStateMachine(enumClass, initialState);</span>
     }
     
+    
+    /**
+     * Create a new Completable
+     *
+     * @param builderConsumer receives the Completable Config Builder
+     * @return the new Completable
+     * @param &lt;T&gt; the type of completion value
+     */
+    public static &lt;T&gt; Completable&lt;T&gt; createCompletable(Consumer&lt;Completable.Config.Builder&lt;T&gt;&gt; builderConsumer) {
+<span class="fc" id="L61">        return INSTANCE.concurrency.createCompletable(builderConsumer);</span>
+    }
+    
+    /**
+     * Create a new Completion
+     *
+     * @param builderConsumer receives the Completion Config Builder
+     * @return the new Completable
+     * @param &lt;T&gt; the type of completion value
+     */
+    public static &lt;T&gt; Completion&lt;T&gt; createCompletion(Consumer&lt;Completion.Config.Builder&lt;T&gt;&gt; builderConsumer) {
+<span class="fc" id="L72">        return INSTANCE.concurrency.createCompletion(builderConsumer);</span>
+    }
+    
+    /**
+     * Create a new Completion
+     *
+     * @param config the Completion configuration
+     * @return the new Completable
+     * @param &lt;T&gt; the type of completion value
+     */
+    public static &lt;T&gt; Completion&lt;T&gt; createCompletion(Completion.Config&lt;T&gt; config) {
+<span class="nc" id="L83">        return INSTANCE.concurrency.createCompletion(config);</span>
+    }
+    
+    /**
+     * Guaranteed execution: complete later block.
+     * Either the delegate successfully takes ownership of the OnCompletion or
+     * a final {@link io.github.jonloucks.concurrency.api.Completion.State#FAILED} completion is dispatched
+     *
+     * @param onCompletion the OnCompletion callback
+     * @param delegate the intended delegate to receive the OnCompletion
+     * @param &lt;T&gt; the completion value type
+     */
+    public static &lt;T&gt; void completeLater(OnCompletion&lt;T&gt; onCompletion, Consumer&lt;OnCompletion&lt;T&gt;&gt; delegate) {
+<span class="fc" id="L96">        INSTANCE.concurrency.completeLater(onCompletion, delegate);</span>
+<span class="fc" id="L97">    }</span>
+    
+    /**
+     * Guaranteed execution: complete now block
+     * When this method finishes, it is guaranteed the OnCompletion will have received a final completion.
+     * Exceptions will result in a {@link io.github.jonloucks.concurrency.api.Completion.State#FAILED} completion
+     * Exceptions will be rethrown.
+     *
+     * @param onCompletion the OnCompletion callback
+     * @param successBlock executed to determine the final completion value for an activity
+     * @return the final completion value
+     * @param &lt;T&gt; the completion value type
+     */
+    public static &lt;T&gt; T completeNow(OnCompletion&lt;T&gt; onCompletion, Supplier&lt;T&gt; successBlock) {
+<span class="fc" id="L111">        return INSTANCE.concurrency.completeNow(onCompletion, successBlock);</span>
+    }
+
     /**
      * Return the global instance of Contracts
      * @return the instance
      */
     public static Concurrency getInstance() {
-<span class="fc" id="L56">        return INSTANCE.concurrency;</span>
+<span class="fc" id="L119">        return INSTANCE.concurrency;</span>
     }
     
     /**
@@ -71,10 +134,10 @@ public final class GlobalConcurrency {
      * @throws IllegalArgumentException if config is null or invalid
      */
     public static Concurrency createConcurrency(Concurrency.Config config) {
-<span class="fc" id="L74">        final ConcurrencyFactory factory = findConcurrencyFactory(config)</span>
-<span class="fc" id="L75">            .orElseThrow(() -&gt; new ConcurrencyException(&quot;Concurrency factory must be present.&quot;));</span>
+<span class="fc" id="L137">        final ConcurrencyFactory factory = findConcurrencyFactory(config)</span>
+<span class="fc" id="L138">            .orElseThrow(() -&gt; new ConcurrencyException(&quot;Concurrency factory must be present.&quot;));</span>
    
-<span class="fc" id="L77">        return nullCheck(factory.create(config), &quot;Concurrency could not be created.&quot;);</span>
+<span class="fc" id="L140">        return nullCheck(factory.create(config), &quot;Concurrency could not be created.&quot;);</span>
     }
     
     /**
@@ -85,15 +148,15 @@ public final class GlobalConcurrency {
      * @throws IllegalArgumentException if config is null or invalid
      */
     public static Optional&lt;ConcurrencyFactory&gt; findConcurrencyFactory(Concurrency.Config config) {
-<span class="fc" id="L88">        return new ConcurrencyFactoryFinder(config).find();</span>
+<span class="fc" id="L151">        return new ConcurrencyFactoryFinder(config).find();</span>
     }
     
-<span class="fc" id="L91">    private GlobalConcurrency() {</span>
-<span class="fc" id="L92">        this.concurrency = createConcurrency(Concurrency.Config.DEFAULT);</span>
-<span class="fc" id="L93">        this.close = concurrency.open();</span>
-<span class="fc" id="L94">    }</span>
+<span class="fc" id="L154">    private GlobalConcurrency() {</span>
+<span class="fc" id="L155">        this.concurrency = createConcurrency(Concurrency.Config.DEFAULT);</span>
+<span class="fc" id="L156">        this.close = concurrency.open();</span>
+<span class="fc" id="L157">    }</span>
     
-<span class="fc" id="L96">    private static final GlobalConcurrency INSTANCE = new GlobalConcurrency();</span>
+<span class="fc" id="L159">    private static final GlobalConcurrency INSTANCE = new GlobalConcurrency();</span>
     
     private final Concurrency concurrency;
     @SuppressWarnings({&quot;FieldCanBeLocal&quot;, &quot;unused&quot;})
