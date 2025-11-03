@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 
 import static io.github.jonloucks.concurrency.impl.Internal.*;
 
-final class NotifyValueListener<T> {
+final class NotifyValueSubscription<T> {
     
     void process(T value) {
         if (isActive() && predicate.test(value)) {
@@ -17,7 +17,7 @@ final class NotifyValueListener<T> {
         }
     }
 
-    NotifyValueListener(Predicate<T> predicate, Consumer<T> listener, List<NotifyValueListener<T>> ownerList) {
+    NotifyValueSubscription(Predicate<T> predicate, Consumer<T> listener, List<NotifyValueSubscription<T>> ownerList) {
         this.predicate = predicateCheck(predicate);
         this.listener = listenerCheck(listener);
         this.ownerList = ownerList;
@@ -30,7 +30,7 @@ final class NotifyValueListener<T> {
     
     void close() {
         if (isClosed.compareAndSet(false, true)) {
-            ownerList.removeIf(x -> x == this);
+            removeExact(ownerList,this);
         }
     }
     
@@ -40,6 +40,6 @@ final class NotifyValueListener<T> {
     
     private final Predicate<T> predicate;
     private final Consumer<T> listener;
-    private final List<NotifyValueListener<T>> ownerList;
+    private final List<NotifyValueSubscription<T>> ownerList;
     private final AtomicBoolean isClosed = new AtomicBoolean(false);
 }

@@ -32,18 +32,6 @@ import static org.mockito.Mockito.*;
 public interface WaitableTests {
     
     @Test
-    default void waitable_CreateWithNullInitialValue_Throws() {
-        withConcurrency((contracts,concurrency)-> {
-            
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrency.createWaitable(null);
-            });
- 
-            assertThrown(thrown, "Value must be present.");
-        });
-    }
-    
-    @Test
     default void waitable_CreateWithValidInitial_Works() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
@@ -53,19 +41,6 @@ public interface WaitableTests {
             assertTrue(waitable.getIf(INITIAL::equals).isPresent());
             assertEquals(INITIAL, waitable.getIf(INITIAL::equals).get());
             assertFalse(waitable.getIf(MODIFIED::equals).isPresent());
-        });
-    }
-    
-    @Test
-    default void waitable_accept_WithNullValue_Throws() {
-        withConcurrency((contracts,concurrency)-> {
-            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
-            
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                waitable.accept(null);
-            });
-            
-            assertThrown(thrown, "Value must be present.");
         });
     }
     
@@ -84,19 +59,6 @@ public interface WaitableTests {
     }
     
     @Test
-    default void waitable_acceptIf_WithNullValue_Throws() {
-        withConcurrency((contracts,concurrency)-> {
-            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
-            final Predicate<String> predicate = s -> true;
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                waitable.acceptIf(predicate, (String)null);
-            });
-            
-            assertThrown(thrown, "Value must be present.");
-        });
-    }
-    
-    @Test
     default void waitable_acceptIf_WithNullValueSupplier_Throws() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
@@ -106,19 +68,6 @@ public interface WaitableTests {
             });
             
             assertThrown(thrown, "Value supplier must be present.");
-        });
-    }
-    
-    @Test
-    default void waitable_acceptIf_WithNullValueSupplierReturningNull_Throws() {
-        withConcurrency((contracts,concurrency)-> {
-            final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
-            final Predicate<String> predicate = s -> true;
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                waitable.acceptIf(predicate, () -> null);
-            });
-            
-            assertThrown(thrown, "Value must be present.");
         });
     }
     

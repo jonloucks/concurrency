@@ -18,10 +18,9 @@ public interface Concurrency extends AutoOpen {
     /**
      * Create a new Waitable with the given initial value
      *
-     * @param initialValue (null is not allowed)
+     * @param initialValue the initial value, null is allowed
      * @return the waitable
      * @param <T> the type of waitable
-     * @throws IllegalArgumentException if initialState is null
      */
     <T> Waitable<T> createWaitable(T initialValue);
     
@@ -56,6 +55,66 @@ public interface Concurrency extends AutoOpen {
      */
     <T> StateMachine<T> createStateMachine(Consumer<StateMachine.Config.Builder<T>> builderConsumer);
     
+    
+    /**
+     * Create a new Completable
+     *
+     * @param config the completable configuration
+     * @return the new Completable
+     * @param <T> the type of completion value
+     */
+    <T> Completable<T> createCompletable(Completable.Config<T> config);
+    
+    /**
+     * Create a new Completable
+     *
+     * @param builderConsumer receives the Completable Config Builder
+     * @return the new Completable
+     * @param <T> the type of completion value
+     */
+    <T> Completable<T> createCompletable(Consumer<Completable.Config.Builder<T>> builderConsumer);
+    
+    /**
+     * Create a new Completion
+     *
+     * @param config the Completion configuration
+     * @return the new Completable
+     * @param <T> the type of completion value
+     */
+    <T> Completion<T> createCompletion(Completion.Config<T> config);
+    
+    /**
+     * Create a new Completion
+     *
+     * @param builderConsumer receives the Completion Config Builder
+     * @return the new Completable
+     * @param <T> the type of completion value
+     */
+    <T> Completion<T> createCompletion(Consumer<Completion.Config.Builder<T>> builderConsumer);
+    
+    /**
+     * Guaranteed execution: complete later block.
+     * Either the delegate successfully takes ownership of the OnCompletion or
+     * a final {@link io.github.jonloucks.concurrency.api.Completion.State#FAILED} completion is dispatched
+     *
+     * @param onCompletion the OnCompletion callback
+     * @param delegate the intended delegate to receive the OnCompletion
+     * @param <T> the completion value type
+     */
+    <T> void completeLater(OnCompletion<T> onCompletion, Consumer<OnCompletion<T>> delegate);
+    
+    /**
+     * Guaranteed execution: complete now block
+     * When this method finishes, it is guaranteed the OnCompletion will have received a final completion.
+     * Exceptions will result in a {@link io.github.jonloucks.concurrency.api.Completion.State#FAILED} completion
+     * Exceptions will be rethrown.
+     *
+     * @param onCompletion the OnCompletion callback
+     * @param successBlock executed to determine the final completion value for an activity
+     * @return the final completion value
+     * @param <T> the completion value type
+     */
+    <T> T completeNow(OnCompletion<T> onCompletion, Supplier<T> successBlock);
     /**
      * The configuration used to create a new Concurrency instance.
      */

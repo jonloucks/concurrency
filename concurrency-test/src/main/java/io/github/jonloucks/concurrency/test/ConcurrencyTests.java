@@ -28,16 +28,6 @@ public interface ConcurrencyTests {
     }
     
     @Test
-    default void concurrency_createWaitable_WithNullInitialValue_Throws() {
-        withConcurrency((contracts, concurrency) -> {
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrency.createWaitable(null);
-            });
-            assertThrown(thrown);
-        });
-    }
-    
-    @Test
     default void concurrency_createWaitable_WithValidInitial_Works() {
         withConcurrency((contracts, concurrency) -> {
             final Waitable<String> stateMachine = concurrency.createWaitable("hello");
