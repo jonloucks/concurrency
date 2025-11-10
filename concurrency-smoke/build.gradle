@@ -1,0 +1,33 @@
+plugins {
+    id 'io.github.jonloucks.java-library-kit'
+    id 'io.github.jonloucks.maven-publish-kit'
+    id 'application'
+}
+
+javadoc {
+    exclude '**/**'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'io.github.jonloucks.concurrency.smoke.Main'
+    }
+}
+
+application {
+    applicationName = 'smoke'
+    mainModule = 'io.github.jonloucks.concurrency.smoke'
+    mainClass = 'io.github.jonloucks.concurrency.smoke.Main'
+}
+
+dependencies {
+    api project(":")
+
+    testImplementation project(":concurrency-test")
+    testImplementation libs.contracts
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}

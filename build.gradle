@@ -14,7 +14,7 @@ plugins {
 
 apply from: "${rootDir}/gradle/java-publishing.gradle"
 
-defaultTasks 'check', 'jacocoTestReport', 'jacocoTestCoverageVerification', 'spotbugsMain', 'publishToMavenLocal'
+defaultTasks 'check', 'installDist', 'jacocoTestReport', 'jacocoTestCoverageVerification', 'spotbugsMain', 'publishToMavenLocal'
 
 repositories {
     mavenCentral()
