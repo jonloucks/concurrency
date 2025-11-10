@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-
+    name: build
     runs-on: ubuntu-latest
     strategy:
       matrix: # row matrix only!
@@ -21,6 +21,12 @@ jobs:
       pages: write
 
     steps:
+    - name: Modify branch name
+      run: |
+        BRANCH_NAME="${{ github.head_ref || github.ref_name}}"
+        SIMPLE_BRANCH_NAME="${BRANCH_NAME//\//-}"
+        echo "SIMPLE_BRANCH_NAME=${SIMPLE_BRANCH_NAME}" >> $GITHUB_ENV
+
     - name: Checkout badges branch dedicated to storing badges only
       uses: actions/checkout@v4
       with:
@@ -61,7 +67,7 @@ jobs:
       id: jacoco
       uses: cicirello/jacoco-badge-generator@v2.11.0
       with:
-        coverage-badge-filename: ${{ github.head_ref }}-coverage.svg
+        coverage-badge-filename: ${{ env.SIMPLE_BRANCH_NAME }}-coverage.svg
         badges-directory: badges
         jacoco-csv-file: main-project/build/reports/jacoco/test/jacocoTestReport.csv
 
