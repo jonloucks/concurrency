@@ -35,8 +35,8 @@ public final class Main {
     public static void main(String[] args) {
         try {
             Stub.validate();
-            validateServiceLoaderOnly();
             validateReflectionOnly();
+            validateServiceLoaderOnly();
             SYSTEM_EXIT.accept(0);
         } catch (Exception thrown) {
             System.err.println(thrown.getMessage());
