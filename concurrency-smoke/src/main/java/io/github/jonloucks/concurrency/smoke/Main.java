@@ -81,7 +81,8 @@ public final class Main {
                 }
             };
             
-            withConcurrency(concurrencyConfig, concurrency -> Stub.validate(contracts));
+            withConcurrency(concurrencyConfig, concurrency ->
+                Stub.validate(contracts, concurrency));
         });
     }
   
