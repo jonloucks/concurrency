@@ -15,7 +15,7 @@ jobs:
         distribution: [ 'temurin' ]
         java-compiler-version: [ 17 ]
         java-source-version: [ 9 ]
-        java-jre-version: [ 9 ]
+        java-jre-version: [ 11 ]
     permissions:
       contents: write
       packages: write
