@@ -88,6 +88,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Determine if 'this' state can transition to the target</div>
 </dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Checks.html" class="type-name-link" title="class in io.github.jonloucks.concurrency.api">Checks</a> - Class in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
+<dd>
+<div class="block">Checks used internally and supported for external use.</div>
+</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html#CLOSED" class="member-name-link">CLOSED</a> - Enum constant in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></dt>
 <dd>
 <div class="block">A state that all new actions are invalid
@@ -166,6 +170,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Concurrency.Config.Builder.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">Concurrency.Config.Builder</a> - Interface in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
 <dd>
 <div class="block">The Concurrency configuration</div>
+</dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Checks.html#concurrencyCheck(io.github.jonloucks.concurrency.api.Concurrency)" class="member-name-link">concurrencyCheck(Concurrency)</a> - Static method in class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Checks.html" title="class in io.github.jonloucks.concurrency.api">Checks</a></dt>
+<dd>
+<div class="block">Check if given Concurrency is not null or invalid</div>
 </dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/ConcurrencyException.html" class="type-name-link" title="class in io.github.jonloucks.concurrency.api">ConcurrencyException</a> - Exception in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
 <dd>
@@ -526,6 +534,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Responsibility: to receive the information when an action or activity has finished.</div>
 </dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Checks.html#onCompletionCheck(io.github.jonloucks.concurrency.api.OnCompletion)" class="member-name-link">onCompletionCheck(OnCompletion&lt;T&gt;)</a> - Static method in class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Checks.html" title="class in io.github.jonloucks.concurrency.api">Checks</a></dt>
+<dd>
+<div class="block">Check if given OnCompletion is not null or invalid</div>
+</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html#OPENABLE" class="member-name-link">OPENABLE</a> - Enum constant in enum class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Idempotent.html" title="enum class in io.github.jonloucks.concurrency.api">Idempotent</a></dt>
 <dd>
 <div class="block">Initial state
@@ -619,6 +631,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Responsible for building a Transition</div>
 </dd>
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Checks.html#stateMachineCheck(io.github.jonloucks.concurrency.api.StateMachine)" class="member-name-link">stateMachineCheck(StateMachine&lt;T&gt;)</a> - Static method in class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Checks.html" title="class in io.github.jonloucks.concurrency.api">Checks</a></dt>
+<dd>
+<div class="block">Check if given StateMachine is not null or invalid</div>
+</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/StateMachineFactory.html" class="type-name-link" title="interface in io.github.jonloucks.concurrency.api">StateMachineFactory</a> - Interface in <a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/package-summary.html">io.github.jonloucks.concurrency.api</a></dt>
 <dd>
 <div class="block">Rule machine, containing a set of sets that can be transitioned to by events/actions</div>
@@ -672,6 +688,10 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:V">V</h2>
 <dl class="index">
+<dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Checks.html#validateConcurrency(io.github.jonloucks.contracts.api.Contracts,io.github.jonloucks.concurrency.api.Concurrency)" class="member-name-link">validateConcurrency(Contracts, Concurrency)</a> - Static method in class io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Checks.html" title="class in io.github.jonloucks.concurrency.api">Checks</a></dt>
+<dd>
+<div class="block">Quickly validates a Contracts and Concurrency</div>
+</dd>
 <dt><a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.Config.Builder.html#value(T)" class="member-name-link">value(T)</a> - Method in interface io.github.jonloucks.concurrency.api.<a href="io.github.jonloucks.concurrency.api/io/github/jonloucks/concurrency/api/Completion.Config.Builder.html" title="interface in io.github.jonloucks.concurrency.api">Completion.Config.Builder</a></dt>
 <dd>
 <div class="block">Assign the value</div>

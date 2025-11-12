@@ -4,21 +4,22 @@ import io.github.jonloucks.contracts.api.AutoClose;
 import io.github.jonloucks.contracts.api.AutoOpen;
 import io.github.jonloucks.contracts.api.Contracts;
 
+import static io.github.jonloucks.concurrency.api.Checks.stateMachineCheck;
 import static io.github.jonloucks.contracts.api.Checks.contractsCheck;
 import static io.github.jonloucks.contracts.api.Checks.nullCheck;
 
 /**
  * Idempotent state machine states
  */
-<span class="fc" id="L13">public enum Idempotent implements StateMachine.Rule&lt;Idempotent&gt; {</span>
+<span class="fc" id="L14">public enum Idempotent implements StateMachine.Rule&lt;Idempotent&gt; {</span>
     /**
      * Initial state
      * OPENABLE can transition to OPENED, OPENING, CLOSED, or DESTROYED.
      */
-<span class="fc" id="L18">    OPENABLE {</span>
+<span class="fc" id="L19">    OPENABLE {</span>
         @Override
         public boolean canTransition(String event, Idempotent goal) {
-<span class="fc bfc" id="L21" title="All 8 branches covered.">            return goal == OPENED || goal == OPENING || goal == CLOSED || goal == DESTROYED;</span>
+<span class="fc bfc" id="L22" title="All 8 branches covered.">            return goal == OPENED || goal == OPENING || goal == CLOSED || goal == DESTROYED;</span>
         }
     },
     /**
@@ -26,28 +27,28 @@ import static io.github.jonloucks.contracts.api.Checks.nullCheck;
      * Transitioning to OPENING and then OPENED will allow requests to not be rejected.
      * OPENING can transition to OPENED, CLOSED, OPENABLE, DESTROYED.
      */
-<span class="fc" id="L29">    OPENING {</span>
+<span class="fc" id="L30">    OPENING {</span>
         @Override
         public boolean canTransition(String event, Idempotent goal) {
-<span class="fc bfc" id="L32" title="All 8 branches covered.">            return goal == OPENED || goal == CLOSED || goal == OPENABLE || goal == DESTROYED;</span>
+<span class="fc bfc" id="L33" title="All 8 branches covered.">            return goal == OPENED || goal == CLOSED || goal == OPENABLE || goal == DESTROYED;</span>
         }
         @Override
         public boolean isRejecting() {
-<span class="fc" id="L36">            return false;</span>
+<span class="fc" id="L37">            return false;</span>
         }
     },
     /**
      * Resource, service is open to actions
      * OPEN can transition to CLOSING or CLOSED.
      */
-<span class="fc" id="L43">    OPENED {</span>
+<span class="fc" id="L44">    OPENED {</span>
         @Override
         public boolean canTransition(String event, Idempotent goal) {
-<span class="fc bfc" id="L46" title="All 4 branches covered.">            return goal == CLOSING || goal == CLOSED;</span>
+<span class="fc bfc" id="L47" title="All 4 branches covered.">            return goal == CLOSING || goal == CLOSED;</span>
         }
         @Override
         public boolean isRejecting() {
-<span class="fc" id="L50">            return false;</span>
+<span class="fc" id="L51">            return false;</span>
         }
     },
     /**
@@ -56,10 +57,10 @@ import static io.github.jonloucks.contracts.api.Checks.nullCheck;
      * if a new action will be processed.
      * CLOSING can transition to CLOSED or DESTROYED
      */
-<span class="fc" id="L59">    CLOSING {</span>
+<span class="fc" id="L60">    CLOSING {</span>
         @Override
         public boolean canTransition(String event, Idempotent goal) {
-<span class="fc bfc" id="L62" title="All 4 branches covered.">            return goal == CLOSED || goal == DESTROYED;</span>
+<span class="fc bfc" id="L63" title="All 4 branches covered.">            return goal == CLOSED || goal == DESTROYED;</span>
         }
     },
     /**
@@ -67,10 +68,10 @@ import static io.github.jonloucks.contracts.api.Checks.nullCheck;
      * Implementations can decide to ignore or throw exception, but never be processed.
      * CLOSED can transition to OPENABLE or DESTROYED
      */
-<span class="fc" id="L70">    CLOSED {</span>
+<span class="fc" id="L71">    CLOSED {</span>
         @Override
         public boolean canTransition(String event, Idempotent goal) {
-<span class="fc bfc" id="L73" title="All 4 branches covered.">            return goal == OPENABLE || goal == DESTROYED;</span>
+<span class="fc bfc" id="L74" title="All 4 branches covered.">            return goal == OPENABLE || goal == DESTROYED;</span>
         }
     },
     /**
@@ -78,11 +79,11 @@ import static io.github.jonloucks.contracts.api.Checks.nullCheck;
      * Implementations can decide to ignore or throw exception, but never be processed.
      * DESTROYED can not transition
      */
-<span class="fc" id="L81">    DESTROYED;</span>
+<span class="fc" id="L82">    DESTROYED;</span>
     
     @Override
     public boolean canTransition(String event, Idempotent goal) {
-<span class="fc" id="L85">        return false;</span>
+<span class="fc" id="L86">        return false;</span>
     }
     
     /**
@@ -93,7 +94,7 @@ import static io.github.jonloucks.contracts.api.Checks.nullCheck;
      * A request could be ignored, cause an exception, or be processed differently
      */
     public boolean isRejecting() {
-<span class="fc" id="L96">        return true;</span>
+<span class="fc" id="L97">        return true;</span>
     }
     
     /**
@@ -103,15 +104,15 @@ import static io.github.jonloucks.contracts.api.Checks.nullCheck;
      * @throws IllegalArgumentException if contracts is null
      */
     public static StateMachine&lt;Idempotent&gt; createStateMachine(Contracts contracts) {
-<span class="fc" id="L106">        final Contracts validContracts = contractsCheck(contracts);</span>
-<span class="fc" id="L107">        final StateMachineFactory factory = validContracts.claim(StateMachineFactory.CONTRACT);</span>
-<span class="fc" id="L108">        return factory.create( b -&gt; {</span>
-<span class="fc" id="L109">            b.initial(OPENABLE);</span>
-<span class="fc bfc" id="L110" title="All 2 branches covered.">            for (Idempotent idempotent : Idempotent.values()) {</span>
-<span class="fc" id="L111">                b.state(idempotent);</span>
-<span class="fc" id="L112">                b.rule(idempotent, idempotent);</span>
+<span class="fc" id="L107">        final Contracts validContracts = contractsCheck(contracts);</span>
+<span class="fc" id="L108">        final StateMachineFactory factory = validContracts.claim(StateMachineFactory.CONTRACT);</span>
+<span class="fc" id="L109">        return factory.create( b -&gt; {</span>
+<span class="fc" id="L110">            b.initial(OPENABLE);</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">            for (Idempotent idempotent : Idempotent.values()) {</span>
+<span class="fc" id="L112">                b.state(idempotent);</span>
+<span class="fc" id="L113">                b.rule(idempotent, idempotent);</span>
             }
-<span class="fc" id="L114">        });</span>
+<span class="fc" id="L115">        });</span>
     }
     
     /**
@@ -121,16 +122,16 @@ import static io.github.jonloucks.contracts.api.Checks.nullCheck;
      * @param close the close
      */
     public static void withClose(StateMachine&lt;Idempotent&gt; machine, AutoClose close) {
-<span class="fc" id="L124">        final StateMachine&lt;Idempotent&gt; validMachine = nullCheck(machine, &quot;State machine must be present.&quot;);</span>
-<span class="fc" id="L125">        final AutoClose validClose = nullCheck(close, &quot;Close must be present.&quot;);</span>
+<span class="fc" id="L125">        final StateMachine&lt;Idempotent&gt; validMachine = stateMachineCheck(machine);</span>
+<span class="fc" id="L126">        final AutoClose validClose = nullCheck(close, &quot;Close must be present.&quot;);</span>
         
-<span class="fc" id="L127">        validMachine.transition(b -&gt; b</span>
-<span class="fc" id="L128">            .event(&quot;close&quot;)</span>
-<span class="fc" id="L129">            .successState(Idempotent.CLOSED)</span>
-<span class="fc" id="L130">            .successValue(() -&gt; validClose.close())</span>
-<span class="fc" id="L131">            .failedValue(() -&gt; Void.TYPE)</span>
-<span class="fc" id="L132">            .errorValue(() -&gt; Void.TYPE));</span>
-<span class="fc" id="L133">    }</span>
+<span class="fc" id="L128">        validMachine.transition(b -&gt; b</span>
+<span class="fc" id="L129">            .event(&quot;close&quot;)</span>
+<span class="fc" id="L130">            .successState(Idempotent.CLOSED)</span>
+<span class="fc" id="L131">            .successValue(() -&gt; validClose.close())</span>
+<span class="fc" id="L132">            .failedValue(() -&gt; Void.TYPE)</span>
+<span class="fc" id="L133">            .errorValue(() -&gt; Void.TYPE));</span>
+<span class="fc" id="L134">    }</span>
     
     /**
      * Assist with an idempotent close
@@ -139,14 +140,14 @@ import static io.github.jonloucks.contracts.api.Checks.nullCheck;
      * @return the AutoClose
      */
     public static AutoClose withOpen(StateMachine&lt;Idempotent&gt; machine, AutoOpen open) {
-<span class="fc" id="L142">        final StateMachine&lt;Idempotent&gt; validMachine = nullCheck(machine, &quot;State machine must be present.&quot;);</span>
-<span class="fc" id="L143">        final AutoOpen validOpen = nullCheck(open, &quot;Open must be present.&quot;);</span>
+<span class="fc" id="L143">        final StateMachine&lt;Idempotent&gt; validMachine = stateMachineCheck(machine);</span>
+<span class="fc" id="L144">        final AutoOpen validOpen = nullCheck(open, &quot;Open must be present.&quot;);</span>
         
-<span class="fc" id="L145">        return validMachine.transition(b -&gt; b</span>
-<span class="fc" id="L146">            .event(&quot;open&quot;)</span>
-<span class="fc" id="L147">            .successState(Idempotent.OPENED)</span>
-<span class="fc" id="L148">            .successValue(validOpen::open)</span>
-<span class="fc" id="L149">            .failedValue(() -&gt; AutoClose.NONE)</span>
+<span class="fc" id="L146">        return validMachine.transition(b -&gt; b</span>
+<span class="fc" id="L147">            .event(&quot;open&quot;)</span>
+<span class="fc" id="L148">            .successState(Idempotent.OPENED)</span>
+<span class="fc" id="L149">            .successValue(validOpen::open)</span>
+<span class="fc" id="L150">            .failedValue(() -&gt; AutoClose.NONE)</span>
         );
     }
 }

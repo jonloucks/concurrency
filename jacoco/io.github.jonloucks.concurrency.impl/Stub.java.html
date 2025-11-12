@@ -2,6 +2,8 @@
 
 import io.github.jonloucks.contracts.api.GlobalContracts;
 
+import static io.github.jonloucks.contracts.api.Checks.validateContracts;
+
 /**
  * Provides runtime validation
  */
@@ -14,8 +16,8 @@ public final class Stub {
      * Provides runtime validation
      */
     public static void validate() {
-<span class="fc" id="L17">        io.github.jonloucks.contracts.api.Checks.validateContracts(GlobalContracts.getInstance());</span>
-<span class="fc" id="L18">        Internal.validate();</span>
-<span class="fc" id="L19">    }</span>
+<span class="fc" id="L19">        validateContracts(GlobalContracts.getInstance());</span>
+<span class="fc" id="L20">        Internal.validate();</span>
+<span class="fc" id="L21">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
