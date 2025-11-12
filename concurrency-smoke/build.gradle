@@ -1,0 +1,54 @@
+plugins {
+    id 'io.github.jonloucks.java-library-kit'
+    id 'io.github.jonloucks.maven-publish-kit'
+    id 'application'
+}
+
+tasks.named('check') {
+    dependsOn('distTar')
+}
+
+distZip {
+    archiveFileName.set( "smoke.zip")
+}
+
+distTar {
+    archiveFileName.set( "smoke.tar")
+}
+
+tasks.named('distTar') {
+    doLast { task ->
+        copy {
+            from task.outputs.files
+            into rootProject.layout.buildDirectory.get()
+        }
+    }
+}
+
+javadoc {
+    exclude '**/**'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'io.github.jonloucks.concurrency.smoke.Main'
+    }
+}
+
+application {
+    applicationName = 'smoke'
+    mainModule = 'io.github.jonloucks.concurrency.smoke'
+    mainClass = 'io.github.jonloucks.concurrency.smoke.Main'
+}
+
+dependencies {
+    api project(":")
+    api libs.contracts
+
+    testImplementation project(":concurrency-test")
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}

@@ -1,6 +1,7 @@
 package io.github.jonloucks.concurrency.impl;
 
 import io.github.jonloucks.concurrency.api.Completion;
+import io.github.jonloucks.concurrency.api.GlobalConcurrency;
 import io.github.jonloucks.concurrency.api.OnCompletion;
 import io.github.jonloucks.concurrency.api.StateMachine;
 import io.github.jonloucks.contracts.api.AutoClose;

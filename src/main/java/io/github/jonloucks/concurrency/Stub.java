@@ -1,7 +1,13 @@
 package io.github.jonloucks.concurrency;
 
-import io.github.jonloucks.contracts.api.Checks;
+import io.github.jonloucks.concurrency.api.Concurrency;
+import io.github.jonloucks.concurrency.api.ConcurrencyException;
+import io.github.jonloucks.concurrency.api.GlobalConcurrency;
+import io.github.jonloucks.contracts.api.ContractException;
+import io.github.jonloucks.contracts.api.Contracts;
 import io.github.jonloucks.contracts.api.GlobalContracts;
+
+import static io.github.jonloucks.concurrency.api.Checks.validateConcurrency;
 
 /**
  * A placeholder class to make sure dependencies are correct for api and implementation.
@@ -19,9 +25,27 @@ public final class Stub {
     }
     
     /**
-     * Validates basic functionality.
+     * Quickly validates Global Contracts and Concurrency
+     *
+     * @throws ContractException when invalid
+     * @throws ConcurrencyException when invalid
+     * @throws IllegalArgumentException when invalid
      */
     public static void validate() {
-        Checks.validateContracts(GlobalContracts.getInstance());
+        validate(GlobalContracts.getInstance(), GlobalConcurrency.getInstance());
+    }
+    
+    /**
+     * Quickly validates a Contracts and Concurrency
+     *
+     * @param contracts the Contracts to validate
+     * @param concurrency the Concurrency to validate
+     *
+     * @throws ContractException when invalid
+     * @throws ConcurrencyException when invalid
+     * @throws IllegalArgumentException when invalid
+     */
+    public static void validate(Contracts contracts, Concurrency concurrency) {
+        validateConcurrency(contracts, concurrency);
     }
 }

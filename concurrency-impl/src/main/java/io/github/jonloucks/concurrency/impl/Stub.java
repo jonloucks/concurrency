@@ -2,6 +2,8 @@ package io.github.jonloucks.concurrency.impl;
 
 import io.github.jonloucks.contracts.api.GlobalContracts;
 
+import static io.github.jonloucks.contracts.api.Checks.validateContracts;
+
 /**
  * Provides runtime validation
  */
@@ -14,7 +16,7 @@ public final class Stub {
      * Provides runtime validation
      */
     public static void validate() {
-        io.github.jonloucks.contracts.api.Checks.validateContracts(GlobalContracts.getInstance());
+        validateContracts(GlobalContracts.getInstance());
         Internal.validate();
     }
 }

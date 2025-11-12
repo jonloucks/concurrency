@@ -4,6 +4,7 @@ import io.github.jonloucks.contracts.api.AutoClose;
 import io.github.jonloucks.contracts.api.AutoOpen;
 import io.github.jonloucks.contracts.api.Contracts;
 
+import static io.github.jonloucks.concurrency.api.Checks.stateMachineCheck;
 import static io.github.jonloucks.contracts.api.Checks.contractsCheck;
 import static io.github.jonloucks.contracts.api.Checks.nullCheck;
 
@@ -121,7 +122,7 @@ public enum Idempotent implements StateMachine.Rule<Idempotent> {
      * @param close the close
      */
     public static void withClose(StateMachine<Idempotent> machine, AutoClose close) {
-        final StateMachine<Idempotent> validMachine = nullCheck(machine, "State machine must be present.");
+        final StateMachine<Idempotent> validMachine = stateMachineCheck(machine);
         final AutoClose validClose = nullCheck(close, "Close must be present.");
         
         validMachine.transition(b -> b
@@ -139,7 +140,7 @@ public enum Idempotent implements StateMachine.Rule<Idempotent> {
      * @return the AutoClose
      */
     public static AutoClose withOpen(StateMachine<Idempotent> machine, AutoOpen open) {
-        final StateMachine<Idempotent> validMachine = nullCheck(machine, "State machine must be present.");
+        final StateMachine<Idempotent> validMachine = stateMachineCheck(machine);
         final AutoOpen validOpen = nullCheck(open, "Open must be present.");
         
         return validMachine.transition(b -> b

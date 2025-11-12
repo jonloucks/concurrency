@@ -149,7 +149,7 @@ public interface IdempotentTests {
                 //noinspection resource
                 Idempotent.withOpen(null, AutoOpen.NONE);
             });
-            assertThrown(thrown, "State machine must be present.");
+            assertThrown(thrown, "StateMachine must be present.");
         });
     }
     
@@ -172,7 +172,7 @@ public interface IdempotentTests {
             final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
                 Idempotent.withClose(null, AutoClose.NONE);
             });
-            assertThrown(thrown, "State machine must be present.");
+            assertThrown(thrown, "StateMachine must be present.");
         });
     }
     
