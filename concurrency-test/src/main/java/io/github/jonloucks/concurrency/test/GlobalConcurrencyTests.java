@@ -140,6 +140,13 @@ public interface GlobalConcurrencyTests {
     }
     
     @Test
+    default void globalConcurrency_createCompletion_WithConfig_Works(@Mock Completion.Config<String> config) {
+        final Completion<String> completion = GlobalConcurrency.createCompletion(config);
+        
+        assertObject(completion);
+    }
+    
+    @Test
     default void globalConcurrency_completeLater_Works() {
         assertDoesNotThrow(() -> {
             GlobalConcurrency.completeLater(c -> {}, x -> {});

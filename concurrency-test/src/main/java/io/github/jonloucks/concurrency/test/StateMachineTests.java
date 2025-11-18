@@ -13,13 +13,14 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static io.github.jonloucks.concurrency.test.Tools.assumeStateMachineFactory;
 import static io.github.jonloucks.concurrency.test.Tools.withConcurrency;
 import static io.github.jonloucks.contracts.test.Tools.*;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -42,21 +43,19 @@ public interface StateMachineTests {
     default void stateMachine_create_WithNullInitial_Throws() {
         withConcurrency((contracts,concurrency) -> {
             final StateMachineFactory factory = assumeStateMachineFactory(contracts);
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                factory.create((String)null);
-            });
-            assertThrown(thrown, "Initial state must be present.");
+            assertThrown(IllegalArgumentException.class,
+                () ->  factory.create((String)null),
+                "Initial state must be present.");
         });
     }
     
     @Test
     default void stateMachine_create_WithNullConfig_Throws() {
-        withConcurrency((contracts,concurrency) -> {
+        withConcurrency((contracts, concurrency) -> {
             final StateMachineFactory factory = assumeStateMachineFactory(contracts);
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                factory.create((StateMachine.Config<String>)null);
-            });
-            assertThrown(thrown, "Config must be present.");
+            assertThrown(IllegalArgumentException.class,
+                () -> factory.create((StateMachine.Config<String>) null),
+                "Config must be present.");
         });
     }
     
@@ -64,10 +63,9 @@ public interface StateMachineTests {
     default void stateMachine_create_WithNullBuilderConsumer_Throws() {
         withConcurrency((contracts,concurrency) -> {
             final StateMachineFactory factory = assumeStateMachineFactory(contracts);
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                factory.create((Consumer<StateMachine.Config.Builder<String>>)null);
-            });
-            assertThrown(thrown, "Builder consumer must be present.");
+            assertThrown(IllegalArgumentException.class,
+                () -> factory.create((Consumer<StateMachine.Config.Builder<String>>)null),
+                "Builder consumer must be present.");
         });
     }
     
@@ -86,16 +84,40 @@ public interface StateMachineTests {
     }
     
     @Test
+    default void stateMachine_create_BuilderWithNullStates_Throws() {
+        withConcurrency((contracts,concurrency) -> {
+            final StateMachineFactory factory = assumeStateMachineFactory(contracts);
+            assertThrown(IllegalArgumentException.class,
+                () -> factory.create(b -> b.states(null)),
+                "State list must be present.");
+            
+        });
+    }
+    
+    @Test
+    default void stateMachine_create_BuilderWithStates_Works() {
+        withConcurrency((contracts,concurrency) -> {
+            final StateMachineFactory factory = assumeStateMachineFactory(contracts);
+            
+            final StateMachine<String> stateMachine = factory.create(
+                b -> b.states(Arrays.asList("green", "blue")).initial("blue"));
+            
+            assertEquals("blue", stateMachine.getState());
+            assertTrue(stateMachine.hasState("blue"));
+            assertTrue(stateMachine.hasState("green"));
+            assertFalse(stateMachine.hasState("unknown"));
+        });
+    }
+    
+    @Test
     default void stateMachine_setState_WithUnknownState_Throws() {
         withConcurrency((contracts,concurrency) -> {
             final StateMachineFactory factory = assumeStateMachineFactory(contracts);
             final StateMachine<String> stateMachine = factory.create("initial");
             
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                stateMachine.setState("go", "unknown");
-            });
-     
-            assertThrown(thrown, "State must be known.");
+            assertThrown(IllegalArgumentException.class,
+                () -> stateMachine.setState("go", "unknown"),
+        "State must be known.");
         });
     }
     
@@ -126,7 +148,7 @@ public interface StateMachineTests {
                 .initial(Thread.State.NEW)
                 .state(Thread.State.RUNNABLE)
                 .state(Thread.State.WAITING)
-                .rules(Thread.State.NEW, Collections.singletonList((s, r) -> {
+                .rules(Thread.State.NEW, singletonList((s, r) -> {
                     assertNotNull(s);
                     return !Thread.State.WAITING.equals(r);
                 }))
@@ -139,20 +161,81 @@ public interface StateMachineTests {
     }
     
     @Test
-    default void stateMachine_transition_WithoutEvent_Throws() {
+    default void stateMachine_createWithBuild_WithNullRules_Throws() {
+        withConcurrency((contracts, concurrency) -> {
+            final StateMachineFactory factory = assumeStateMachineFactory(contracts);
+            factory.create(b -> {
+                b.initial(1);
+                
+                assertThrown(IllegalArgumentException.class,
+                    () -> b.rules(1, null),
+                    "Rule list must be present.");
+                
+            });
+        });
+    }
+    
+    @Test
+    default void stateMachine_createWithBuild_WithNullRule_Throws() {
+        withConcurrency((contracts, concurrency) -> {
+            final StateMachineFactory factory = assumeStateMachineFactory(contracts);
+            factory.create(b -> {
+                b.initial(1);
+                
+                assertThrown(IllegalArgumentException.class,
+                    () -> b.rule(1, null),
+                    "Rule must be present.");
+            });
+        });
+    }
+    
+    @Test
+    default void stateMachine_createWithBuild_WithRules_Works() {
         withConcurrency((contracts,concurrency) -> {
             final StateMachineFactory factory = assumeStateMachineFactory(contracts);
-            final StateMachine<Thread.State> stateMachine = factory.create( b -> b
+            final StateMachine<Integer> stateMachine = factory.create(b -> {
+                b.initial(1).states(Arrays.asList(1, 2, 3));
+                
+                final List<StateMachine.Rule<Integer>> rules = singletonList((s, r) -> false);
+                
+                assertEquals(b, b.rules(1, rules));
+                assertEquals(rules, b.getStateRules(1));
+            });
+            assertFalse(stateMachine.isTransitionAllowed("abc", 2));
+        });
+    }
+    
+    @Test
+    default void stateMachine_createWithBuild_WithRule_Works() {
+        withConcurrency((contracts,concurrency) -> {
+            final StateMachineFactory factory = assumeStateMachineFactory(contracts);
+            final StateMachine<Integer> stateMachine = factory.create(b -> {
+                b.initial(1).states(Arrays.asList(1, 2, 3));
+                
+                StateMachine.Rule<Integer> rule = (s, r) -> false;
+                
+                assertEquals(b, b.rule(1, rule));
+                assertEquals(rule, b.getStateRules(1).get(0));
+            });
+            assertFalse(stateMachine.isTransitionAllowed("abc", 2));
+        });
+    }
+    
+    @Test
+    default void stateMachine_transition_WithoutEvent_Throws() {
+        withConcurrency((contracts, concurrency) -> {
+            final StateMachineFactory factory = assumeStateMachineFactory(contracts);
+            final StateMachine<Thread.State> stateMachine = factory.create(b -> b
                 .initial(Thread.State.NEW)
                 .states(Arrays.asList(Thread.State.values()))
             );
             
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                stateMachine.transition(b -> b
-                    .successState(Thread.State.RUNNABLE)
-                );
-            });
-            assertThrown(thrown, "Event must be present.");
+            assertThrown(IllegalArgumentException.class,
+                () -> {
+                    stateMachine.transition(b -> b
+                        .successState(Thread.State.RUNNABLE)
+                    );
+                }, "Event must be present.");
         });
     }
     
@@ -220,15 +303,13 @@ public interface StateMachineTests {
                 .states(Arrays.asList(Thread.State.values()))
             );
             
-            final Throwable thrown = assertThrows(Throwable.class, () -> {
+            assertThrown(Throwable.class, () -> {
                 stateMachine.transition( b -> b
                     .event("prepare")
                     .successValue(throwingBlock)
                     .successState(Thread.State.RUNNABLE)
                 );
             });
-            
-            assertThrown(thrown);
         });
     }
     
@@ -259,11 +340,9 @@ public interface StateMachineTests {
             final StateMachineFactory factory = assumeStateMachineFactory(contracts);
             final StateMachine<String> stateMachine = factory.create("initial");
   
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-               stateMachine.transition(b -> {});
-            });
-            
-            assertThrown(thrown, "Rule must be present.");
+            assertThrown(IllegalArgumentException.class,
+                () -> stateMachine.transition(b -> {}),
+                "Rule must be present.");
         });
     }
     
