@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Internal.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">concurrency</a> &gt; <a href="index.source.html" class="el_package">io.github.jonloucks.concurrency.impl</a> &gt; <span class="el_source">Internal.java</span></div><h1>Internal.java</h1><pre class="source lang-java linenums">package io.github.jonloucks.concurrency.impl;
 
 import io.github.jonloucks.concurrency.api.Completion;
-import io.github.jonloucks.concurrency.api.GlobalConcurrency;
 import io.github.jonloucks.concurrency.api.OnCompletion;
 import io.github.jonloucks.concurrency.api.StateMachine;
 import io.github.jonloucks.contracts.api.AutoClose;
@@ -31,65 +30,65 @@ final class Internal {
     }
     
     static &lt;T&gt; T stateCheck(T state) {
-<span class="fc" id="L34">        return nullCheck(state, &quot;Rule must be present.&quot;);</span>
+<span class="fc" id="L33">        return nullCheck(state, &quot;Rule must be present.&quot;);</span>
     }
     
     static String eventCheck(String event) {
-<span class="fc" id="L38">        return nullCheck(event, &quot;Event must be present.&quot;);</span>
+<span class="fc" id="L37">        return nullCheck(event, &quot;Event must be present.&quot;);</span>
     }
     
     static &lt;T&gt; StateMachine.Rule&lt;T&gt; ruleCheck(StateMachine.Rule&lt;T&gt; rule) {
-<span class="fc" id="L42">        return nullCheck(rule, &quot;Rule must be present.&quot;);</span>
+<span class="fc" id="L41">        return nullCheck(rule, &quot;Rule must be present.&quot;);</span>
     }
     
     static &lt;T&gt; Predicate&lt;T&gt; predicateCheck(Predicate&lt;T&gt; predicate) {
-<span class="fc" id="L46">        return nullCheck(predicate, &quot;Predicate must be present.&quot;);</span>
+<span class="fc" id="L45">        return nullCheck(predicate, &quot;Predicate must be present.&quot;);</span>
     }
     
     static &lt;T&gt; Consumer&lt;T&gt; listenerCheck(Consumer&lt;T&gt; consumer) {
-<span class="fc" id="L50">        return nullCheck(consumer, &quot;Listener must be present.&quot;);</span>
+<span class="fc" id="L49">        return nullCheck(consumer, &quot;Listener must be present.&quot;);</span>
     }
     
     static Duration timeoutCheck(Duration timeout) {
-<span class="fc" id="L54">        final Duration notNullTimeout = nullCheck(timeout, &quot;Timeout must be present.&quot;);</span>
-<span class="fc" id="L55">        illegalCheck(timeout, timeout.isNegative(), &quot;Timeout must not be negative.&quot;);</span>
-<span class="fc bfc" id="L56" title="All 2 branches covered.">        illegalCheck(timeout, timeout.compareTo(MAX_TIMEOUT) &gt; 0, &quot;Timeout must less than or equal to maximum time.&quot;);</span>
-<span class="fc" id="L57">        return notNullTimeout;</span>
+<span class="fc" id="L53">        final Duration notNullTimeout = nullCheck(timeout, &quot;Timeout must be present.&quot;);</span>
+<span class="fc" id="L54">        illegalCheck(timeout, timeout.isNegative(), &quot;Timeout must not be negative.&quot;);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        illegalCheck(timeout, timeout.compareTo(MAX_TIMEOUT) &gt; 0, &quot;Timeout must less than or equal to maximum time.&quot;);</span>
+<span class="fc" id="L56">        return notNullTimeout;</span>
     }
     
     static &lt;T&gt; Completion&lt;T&gt; completionCheck(Completion&lt;T&gt; completion) {
-<span class="fc" id="L61">        return nullCheck(completion, &quot;Completion must be present.&quot;);</span>
+<span class="fc" id="L60">        return nullCheck(completion, &quot;Completion must be present.&quot;);</span>
     }
     
     static &lt;T&gt; OnCompletion&lt;T&gt; onCompletionCheck(OnCompletion&lt;T&gt; onCompletion) {
-<span class="fc" id="L65">        return nullCheck(onCompletion, &quot;OnCompletion must be present.&quot;);</span>
+<span class="fc" id="L64">        return nullCheck(onCompletion, &quot;OnCompletion must be present.&quot;);</span>
     }
     
     static long getWaitMillis(Duration timeout, Instant start, Instant end) {
-<span class="fc" id="L69">        return Long.max(1, timeout.minus(Duration.between(start, end)).toMillis());</span>
+<span class="fc" id="L68">        return Long.max(1, timeout.minus(Duration.between(start, end)).toMillis());</span>
     }
     
     static boolean hasTimedOut(Duration timeout, Instant start, Instant end) {
-<span class="fc bfc" id="L73" title="All 2 branches covered.">        return Duration.between(start, end).compareTo(timeout) &gt;= 0;</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        return Duration.between(start, end).compareTo(timeout) &gt;= 0;</span>
     }
     
     static &lt;T&gt; void removeExact(List&lt;T&gt; list, T element) {
-<span class="fc bfc" id="L77" title="All 2 branches covered.">        list.removeIf(x -&gt; x == element);</span>
-<span class="fc" id="L78">    }</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        list.removeIf(x -&gt; x == element);</span>
+<span class="fc" id="L77">    }</span>
 
     static void validate() {
-<span class="fc" id="L81">        runWithIgnore(() -&gt; { throw new IOException(&quot;Validate&quot;); });</span>
-<span class="fc" id="L82">        runWithIgnore(() -&gt; { throw new InterruptedException(&quot;Validate&quot;); });</span>
-<span class="fc" id="L83">        runtimeTest_NotifyCompletionSubscription();</span>
-<span class="fc" id="L84">    }</span>
+<span class="fc" id="L80">        runWithIgnore(() -&gt; { throw new IOException(&quot;Validate&quot;); });</span>
+<span class="fc" id="L81">        runWithIgnore(() -&gt; { throw new InterruptedException(&quot;Validate&quot;); });</span>
+<span class="fc" id="L82">        runtimeTest_NotifyCompletionSubscription();</span>
+<span class="fc" id="L83">    }</span>
     
     private static void runtimeTest_NotifyCompletionSubscription() {
-<span class="pc" id="L87">        final NotifyCompletionSubscription&lt;String&gt; subscription = new NotifyCompletionSubscription&lt;&gt;(c-&gt;{}, new ArrayList&lt;&gt;());</span>
-<span class="fc" id="L88">        final AutoClose close = subscription.open();</span>
-<span class="fc" id="L89">        close.close();</span>
-<span class="fc" id="L90">        subscription.onCompletion(new CompletionBuilderImpl&lt;String&gt;().state(Completion.State.SUCCEEDED));</span>
-<span class="fc" id="L91">        close.close();</span>
-<span class="fc" id="L92">    }</span>
+<span class="pc" id="L86">        final NotifyCompletionSubscription&lt;String&gt; subscription = new NotifyCompletionSubscription&lt;&gt;(c-&gt;{}, new ArrayList&lt;&gt;());</span>
+<span class="fc" id="L87">        final AutoClose close = subscription.open();</span>
+<span class="fc" id="L88">        close.close();</span>
+<span class="fc" id="L89">        subscription.onCompletion(new CompletionBuilderImpl&lt;String&gt;().state(Completion.State.SUCCEEDED));</span>
+<span class="fc" id="L90">        close.close();</span>
+<span class="fc" id="L91">    }</span>
     
     @FunctionalInterface
     interface ThrowingRunnable&lt;E extends Throwable&gt; {
@@ -98,9 +97,9 @@ final class Internal {
     
     static &lt;E extends Throwable&gt; void runWithIgnore(ThrowingRunnable&lt;E&gt; runnable) {
         try {
-<span class="fc" id="L101">            runnable.run();</span>
-<span class="fc" id="L102">        } catch (Throwable ignored) {</span>
-<span class="fc" id="L103">        }</span>
-<span class="fc" id="L104">    }</span>
+<span class="fc" id="L100">            runnable.run();</span>
+<span class="fc" id="L101">        } catch (Throwable ignored) {</span>
+<span class="fc" id="L102">        }</span>
+<span class="fc" id="L103">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
