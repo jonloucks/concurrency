@@ -14,6 +14,7 @@ import org.mockito.quality.Strictness;
 
 import java.time.Duration;
 import java.util.Optional;
+import java.util.concurrent.Future;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -135,6 +136,34 @@ public interface GlobalConcurrencyTests {
     @Test
     default void globalConcurrency_createCompletion_WithConfigBuilder_Works() {
         final Completion<String> completion = GlobalConcurrency.createCompletion( b-> {});
+        
+        assertObject(completion);
+    }
+    
+    @Test
+    default void globalConcurrency_createCompletion_WithConfig_Works() {
+        final Completion.Config<String> config = new Completion.Config<>() {
+            @Override
+            public State getState() {
+                return State.PENDING;
+            }
+            
+            @Override
+            public Optional<Throwable> getThrown() {
+                return Optional.empty();
+            }
+            
+            @Override
+            public Optional<String> getValue() {
+                return Optional.empty();
+            }
+            
+            @Override
+            public Optional<Future<String>> getFuture() {
+                return Optional.empty();
+            }
+        };
+        final Completion<String> completion = GlobalConcurrency.createCompletion(config);
         
         assertObject(completion);
     }
