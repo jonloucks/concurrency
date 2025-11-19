@@ -10,6 +10,7 @@ import static io.github.jonloucks.contracts.api.Checks.contractsCheck;
 /**
  * Responsibility: Represent a progression step in the life cycle of an activity.
  */
+@FunctionalInterface
 public interface Completion&lt;T&gt; {
     
     /**
@@ -20,24 +21,30 @@ public interface Completion&lt;T&gt; {
     /**
      * @return optional thrown exception
      */
-    Optional&lt;Throwable&gt; getThrown();
+    default Optional&lt;Throwable&gt; getThrown() {
+<span class="fc" id="L25">        return Optional.empty();</span>
+    }
     
     /**
      * @return the optional completion value
      */
-    Optional&lt;T&gt; getValue();
+    default Optional&lt;T&gt; getValue() {
+<span class="fc" id="L32">        return Optional.empty();</span>
+    }
     
     /**
      * @return the optional associated Future
      */
-    Optional&lt;Future&lt;T&gt;&gt; getFuture();
+    default Optional&lt;Future&lt;T&gt;&gt; getFuture() {
+<span class="fc" id="L39">        return Optional.empty();</span>
+    }
     
     /**
      * True if final completion
      * @return true if final completion
      */
     default boolean isCompleted() {
-<span class="fc" id="L40">        return getState().isCompleted();</span>
+<span class="fc" id="L47">        return getState().isCompleted();</span>
     }
     
     /**
@@ -90,54 +97,54 @@ public interface Completion&lt;T&gt; {
     /**
      * The Completion states
      */
-<span class="fc" id="L93">    enum State implements StateMachine.Rule&lt;State&gt; {</span>
+<span class="fc" id="L100">    enum State implements StateMachine.Rule&lt;State&gt; {</span>
         /**
          * The initial state
          */
-<span class="fc" id="L97">        PENDING() {</span>
+<span class="fc" id="L104">        PENDING() {</span>
             @Override
             public boolean canTransition(String event, State goal) {
-<span class="fc bfc" id="L100" title="All 6 branches covered.">                return goal == FAILED || goal == CANCELLED || goal == SUCCEEDED;</span>
+<span class="fc bfc" id="L107" title="All 6 branches covered.">                return goal == FAILED || goal == CANCELLED || goal == SUCCEEDED;</span>
             }
         },
         /**
          * Represents a failed completion
          */
-<span class="fc" id="L106">        FAILED() {</span>
+<span class="fc" id="L113">        FAILED() {</span>
             @Override
             public boolean isCompleted() {
-<span class="fc" id="L109">                return true;</span>
+<span class="fc" id="L116">                return true;</span>
             }
         },
         /**
          * Represents a canceled completion
          */
-<span class="fc" id="L115">        CANCELLED() {</span>
+<span class="fc" id="L122">        CANCELLED() {</span>
             @Override
             public boolean isCompleted() {
-<span class="fc" id="L118">                return true;</span>
+<span class="fc" id="L125">                return true;</span>
             }
         },
         /**
          * Represents a successful completion
          */
-<span class="fc" id="L124">        SUCCEEDED() {</span>
+<span class="fc" id="L131">        SUCCEEDED() {</span>
             @Override
             public boolean isCompleted() {
-<span class="fc" id="L127">                return true;</span>
+<span class="fc" id="L134">                return true;</span>
             }
         };
         
         @Override
         public boolean canTransition(String event, State goal) {
-<span class="fc" id="L133">            return false;</span>
+<span class="fc" id="L140">            return false;</span>
         }
         
         /**
          * @return true of state is a completed state.
          */
         public boolean isCompleted() {
-<span class="fc" id="L140">            return false;</span>
+<span class="fc" id="L147">            return false;</span>
         }
         
         /**
@@ -148,15 +155,15 @@ public interface Completion&lt;T&gt; {
          * @throws IllegalArgumentException if contracts is null
          */
         public static StateMachine&lt;State&gt; createStateMachine(Contracts contracts) {
-<span class="fc" id="L151">            final Contracts validContracts = contractsCheck(contracts);</span>
-<span class="fc" id="L152">            final StateMachineFactory factory = validContracts.claim(StateMachineFactory.CONTRACT);</span>
-<span class="fc" id="L153">            return factory.create(b -&gt; {</span>
-<span class="fc" id="L154">                b.initial(PENDING);</span>
-<span class="fc bfc" id="L155" title="All 2 branches covered.">                for (State outcome : State.values()) {</span>
-<span class="fc" id="L156">                    b.state(outcome);</span>
-<span class="fc" id="L157">                    b.rule(outcome, outcome);</span>
+<span class="fc" id="L158">            final Contracts validContracts = contractsCheck(contracts);</span>
+<span class="fc" id="L159">            final StateMachineFactory factory = validContracts.claim(StateMachineFactory.CONTRACT);</span>
+<span class="fc" id="L160">            return factory.create(b -&gt; {</span>
+<span class="fc" id="L161">                b.initial(PENDING);</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">                for (State outcome : State.values()) {</span>
+<span class="fc" id="L163">                    b.state(outcome);</span>
+<span class="fc" id="L164">                    b.rule(outcome, outcome);</span>
                 }
-<span class="fc" id="L159">            });</span>
+<span class="fc" id="L166">            });</span>
         }
     }
 }

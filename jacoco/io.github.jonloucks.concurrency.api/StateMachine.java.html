@@ -92,27 +92,37 @@ public interface StateMachine&lt;T&gt; extends WaitableSupplier&lt;T&gt;, Waitab
         /**
          * @return the optional state if an exception is thrown
          */
-        Optional&lt;S&gt; getErrorState();
+        default Optional&lt;S&gt; getErrorState() {
+<span class="fc" id="L96">            return Optional.empty();</span>
+        }
         
         /**
          * @return the optional state if the transition is not allowed
          */
-        Optional&lt;S&gt; getFailedState();
+        default Optional&lt;S&gt; getFailedState() {
+<span class="fc" id="L103">            return Optional.empty();</span>
+        }
         
         /**
          * @return the optional return value on success
          */
-        Optional&lt;Supplier&lt;R&gt;&gt; getSuccessValue();
+        default Optional&lt;Supplier&lt;R&gt;&gt; getSuccessValue() {
+<span class="fc" id="L110">            return Optional.empty();</span>
+        }
         
         /**
          * @return the optional return value on exception thrown
          */
-        Optional&lt;Supplier&lt;R&gt;&gt; getErrorValue();
+        default Optional&lt;Supplier&lt;R&gt;&gt; getErrorValue() {
+<span class="fc" id="L117">            return Optional.empty();</span>
+        }
         
         /**
          * @return the optional return value if transition is not allowed
          */
-        Optional&lt;Supplier&lt;R&gt;&gt; getFailedValue();
+        default Optional&lt;Supplier&lt;R&gt;&gt; getFailedValue() {
+<span class="fc" id="L124">            return Optional.empty();</span>
+        }
    
         /**
          * Responsible for building a Transition
