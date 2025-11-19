@@ -14,14 +14,12 @@ import org.mockito.quality.Strictness;
 
 import java.time.Duration;
 import java.util.Optional;
-import java.util.concurrent.Future;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static io.github.jonloucks.contracts.test.Tools.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SuppressWarnings("CodeBlock2Expr")
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public interface GlobalConcurrencyTests {
@@ -63,21 +61,15 @@ public interface GlobalConcurrencyTests {
     @ParameterizedTest
     @MethodSource("io.github.jonloucks.concurrency.test.GlobalConcurrencyTests$GlobalConcurrencyTestsTools#invalidConfigs")
     default void globalConcurrency_createConcurrency_Invalid(Concurrency.Config config) {
-        final ConcurrencyException thrown = assertThrows(ConcurrencyException.class, () -> {
-            GlobalConcurrency.createConcurrency(config);
-        });
-        
-        assertThrown(thrown);
+        assertThrown(ConcurrencyException.class,
+            () -> GlobalConcurrency.createConcurrency(config));
     }
     
     @ParameterizedTest
     @MethodSource("io.github.jonloucks.concurrency.test.GlobalConcurrencyTests$GlobalConcurrencyTestsTools#invalidConfigs")
     default void globalConcurrency_SadPath(Concurrency.Config config) {
-        final ConcurrencyException thrown = assertThrows(ConcurrencyException.class, () -> {
-            GlobalConcurrency.createConcurrency(config);
-        });
-        
-        assertThrown(thrown);
+        assertThrown(ConcurrencyException.class,
+            () -> GlobalConcurrency.createConcurrency(config));
     }
     
     @Test
@@ -89,10 +81,8 @@ public interface GlobalConcurrencyTests {
     
     @Test
     default void globalConcurrency_createStateMachine_WithNullInitialState_Throws() {
-        final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            GlobalConcurrency.createStateMachine(null);
-        });
-        assertThrown(thrown);
+        assertThrown(IllegalArgumentException.class,
+            () -> GlobalConcurrency.createStateMachine(null));
     }
     
     @Test
@@ -104,19 +94,14 @@ public interface GlobalConcurrencyTests {
     
     @Test
     default void globalConcurrency_createStateMachine_WithNullEnumClass_Throws() {
-        final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            GlobalConcurrency.createStateMachine(null, Thread.State.NEW);
-        });
-        assertThrown(thrown);
+        assertThrown(IllegalArgumentException.class,
+            () -> GlobalConcurrency.createStateMachine(null, Thread.State.NEW));
     }
     
     @Test
     default void globalConcurrency_createStateMachine_WithEnumClassAndNullInitialState_Throws() {
-        final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            GlobalConcurrency.createStateMachine(Thread.State.class, null);
-        });
-        
-        assertThrown(thrown);
+        assertThrown(IllegalArgumentException.class,
+            () -> GlobalConcurrency.createStateMachine(Thread.State.class, null));
     }
     
     @Test
@@ -142,27 +127,7 @@ public interface GlobalConcurrencyTests {
     
     @Test
     default void globalConcurrency_createCompletion_WithConfig_Works() {
-        final Completion.Config<String> config = new Completion.Config<>() {
-            @Override
-            public State getState() {
-                return State.PENDING;
-            }
-            
-            @Override
-            public Optional<Throwable> getThrown() {
-                return Optional.empty();
-            }
-            
-            @Override
-            public Optional<String> getValue() {
-                return Optional.empty();
-            }
-            
-            @Override
-            public Optional<Future<String>> getFuture() {
-                return Optional.empty();
-            }
-        };
+        final Completion.Config<String> config = () -> Completion.State.PENDING;
         final Completion<String> completion = GlobalConcurrency.createCompletion(config);
         
         assertObject(completion);
@@ -170,9 +135,8 @@ public interface GlobalConcurrencyTests {
     
     @Test
     default void globalConcurrency_completeLater_Works() {
-        assertDoesNotThrow(() -> {
-            GlobalConcurrency.completeLater(c -> {}, x -> {});
-        });
+        assertDoesNotThrow(
+            () -> GlobalConcurrency.completeLater(c -> {}, x -> {}));
     }
 
     @Test

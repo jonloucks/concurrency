@@ -6,11 +6,9 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
-import static io.github.jonloucks.contracts.test.Tools.assertObject;
+import static io.github.jonloucks.contracts.test.Tools.assertThrown;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SuppressWarnings("CodeBlock2Expr")
 public interface BadConcurrencyFactoryTests {
     @Test
     default void badContractsFactory_HasProtectedConstructor() throws Throwable {
@@ -26,10 +24,6 @@ public interface BadConcurrencyFactoryTests {
     default void badContractsFactory_HasPrivateConstructor() throws Throwable {
         final BadConcurrencyFactory badContractsFactory = new BadConcurrencyFactory();
         final Concurrency.Config config = new Concurrency.Config(){};
-        final Exception thrown = assertThrows(Exception.class, () -> {
-            badContractsFactory.create(config);
-        });
-        
-        assertObject(thrown);
+        assertThrown(Exception.class, () -> badContractsFactory.create(config));
     }
 }

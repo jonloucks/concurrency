@@ -10,6 +10,7 @@ import static io.github.jonloucks.contracts.api.Checks.contractsCheck;
 /**
  * Responsibility: Represent a progression step in the life cycle of an activity.
  */
+@FunctionalInterface
 public interface Completion<T> {
     
     /**
@@ -20,17 +21,23 @@ public interface Completion<T> {
     /**
      * @return optional thrown exception
      */
-    Optional<Throwable> getThrown();
+    default Optional<Throwable> getThrown() {
+        return Optional.empty();
+    }
     
     /**
      * @return the optional completion value
      */
-    Optional<T> getValue();
+    default Optional<T> getValue() {
+        return Optional.empty();
+    }
     
     /**
      * @return the optional associated Future
      */
-    Optional<Future<T>> getFuture();
+    default Optional<Future<T>> getFuture() {
+        return Optional.empty();
+    }
     
     /**
      * True if final completion

@@ -32,20 +32,16 @@ public interface CompletableTests {
     @Test
     default void completable_create_withNullBuilderConsumer_Throws() {
         withConcurrency((contracts, concurrency) -> {
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrency.createCompletable((Consumer<Completable.Config.Builder<String>>) null);
-            });
-            assertThrown(thrown);
+            assertThrown(IllegalArgumentException.class,
+                () -> concurrency.createCompletable((Consumer<Completable.Config.Builder<String>>) null));
         });
     }
     
     @Test
     default void completable_create_withNullConfig_Throws() {
         withConcurrency((contracts, concurrency) -> {
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrency.createCompletable((Completable.Config<String>) null);
-            });
-            assertThrown(thrown);
+            assertThrown(IllegalArgumentException.class,
+                () -> concurrency.createCompletable((Completable.Config<String>) null));
         });
     }
     
@@ -84,10 +80,8 @@ public interface CompletableTests {
             final Completable<String> completable = concurrency.createCompletable(b -> {
             });
             final Completion<String> completion = concurrency.createCompletion(b -> b.state(FAILED));
-            final IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> {
-                completable.onCompletion(completion);
-            });
-            assertThrown(thrown);
+            assertThrown(IllegalStateException.class,
+                () -> completable.onCompletion(completion));
             assertObject(completable);
             assertFalse(completable.isCompleted());
             assertFalse(completable.getCompletion().isPresent());
@@ -101,11 +95,10 @@ public interface CompletableTests {
             });
             try (AutoClose close = completable.open()) {
                 ignore(close);
-                final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+                assertThrown(IllegalArgumentException.class, () -> {
                     //noinspection resource
                     completable.notify(null);
                 });
-                assertThrown(thrown);
             }
         });
     }

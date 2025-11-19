@@ -26,14 +26,13 @@ import static io.github.jonloucks.contracts.test.Tools.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@SuppressWarnings("CodeBlock2Expr")
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public interface WaitableTests {
     
     @Test
     default void waitable_CreateWithValidInitial_Works() {
-        withConcurrency((contracts,concurrency)-> {
+        withConcurrency((contracts,concurrency) -> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             
             assertObject(waitable);
@@ -46,15 +45,13 @@ public interface WaitableTests {
     
     @Test
     default void waitable_acceptWhen_WithNullPredicate_Throws() {
-        withConcurrency((contracts,concurrency)-> {
+        withConcurrency((contracts, concurrency) -> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final Supplier<String> valueSupplier = () -> INITIAL;
             
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                waitable.acceptWhen(null, valueSupplier);
-            });
-            
-            assertThrown(thrown, "Predicate must be present.");
+            assertThrown(IllegalArgumentException.class,
+                () -> waitable.acceptWhen(null, valueSupplier),
+                "Predicate must be present.");
         });
     }
     
@@ -63,11 +60,9 @@ public interface WaitableTests {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final Predicate<String> predicate = s -> true;
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                waitable.acceptIf(predicate, (Supplier<String>)null);
-            });
-            
-            assertThrown(thrown, "Value supplier must be present.");
+            assertThrown(IllegalArgumentException.class,
+                () -> waitable.acceptIf(predicate, (Supplier<String>)null),
+                "Value supplier must be present.");
         });
     }
     
@@ -75,24 +70,20 @@ public interface WaitableTests {
     default void waitable_acceptIf_WithNullPredicateAndValue_Throws() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                waitable.acceptIf(null, MODIFIED);
-            });
-            
-            assertThrown(thrown, "Predicate must be present.");
+            assertThrown(IllegalArgumentException.class,
+                () -> waitable.acceptIf(null, MODIFIED),
+                "Predicate must be present.");
         });
     }
 
     @Test
     default void waitable_acceptIf_WithNullPredicateAndSupplier_Throws() {
-        withConcurrency((contracts,concurrency)-> {
+        withConcurrency((contracts, concurrency) -> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final Supplier<String> initialSupplier = () -> INITIAL;
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                waitable.acceptIf(null, initialSupplier);
-            });
-            
-            assertThrown(thrown, "Predicate must be present.");
+            assertThrown(IllegalArgumentException.class,
+                () -> waitable.acceptIf(null, initialSupplier),
+                "Predicate must be present.");
         });
     }
     
@@ -100,11 +91,9 @@ public interface WaitableTests {
     default void waitable_getWhen_WithNullPredicate_Throws() {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                waitable.getWhen(null);
-            });
-            
-            assertThrown(thrown, "Predicate must be present.");
+            assertThrown(IllegalArgumentException.class,
+                () -> waitable.getWhen(null),
+                "Predicate must be present.");
         });
     }
     
@@ -113,11 +102,9 @@ public interface WaitableTests {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final Duration timeout = Duration.ofSeconds(1);
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                waitable.getWhen(null, timeout);
-            });
-            
-            assertThrown(thrown, "Predicate must be present.");
+            assertThrown(IllegalArgumentException.class,
+                () -> waitable.getWhen(null, timeout),
+                "Predicate must be present.");
         });
     }
     
@@ -126,11 +113,9 @@ public interface WaitableTests {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final Predicate<String> predicate = s -> true;
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                waitable.getWhen(predicate, null);
-            });
-            
-            assertThrown(thrown, "Timeout must be present.");
+            assertThrown(IllegalArgumentException.class,
+                () -> waitable.getWhen(predicate, null),
+                "Timeout must be present.");
         });
     }
     
@@ -140,11 +125,9 @@ public interface WaitableTests {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final Predicate<String> predicate = s -> true;
             final Duration timeout = Duration.ofSeconds(-1);
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                waitable.getWhen(predicate, timeout);
-            });
-            
-            assertThrown(thrown, "Timeout must not be negative.");
+            assertThrown(IllegalArgumentException.class,
+                () -> waitable.getWhen(predicate, timeout),
+                "Timeout must not be negative.");
         });
     }
     
@@ -154,11 +137,9 @@ public interface WaitableTests {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final Predicate<String> predicate = s -> true;
             final Duration timeout = Duration.ofSeconds(Long.MAX_VALUE);
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                waitable.getWhen(predicate, timeout);
-            });
-            
-            assertThrown(thrown, "Timeout must less than or equal to maximum time.");
+            assertThrown(IllegalArgumentException.class,
+                () -> waitable.getWhen(predicate, timeout),
+                "Timeout must less than or equal to maximum time.");
         });
     }
     
@@ -446,11 +427,11 @@ public interface WaitableTests {
         withConcurrency((contracts,concurrency)-> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final Consumer<String> listener = t -> {};
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+            assertThrown(IllegalArgumentException.class, () -> {
                 //noinspection resource
                 waitable.notifyIf(null, listener);
-            });
-            assertThrown(thrown, "Predicate must be present.");
+            },
+                "Predicate must be present.");
         });
     }
     
@@ -564,11 +545,11 @@ public interface WaitableTests {
         withConcurrency((contracts,concurrency) -> {
             final Waitable<String> waitable = concurrency.createWaitable(INITIAL);
             final Predicate<String> predicate = t -> true;
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+            assertThrown(IllegalArgumentException.class, () -> {
                 //noinspection resource
                 waitable.notifyIf(predicate, null);
-            });
-            assertThrown(thrown, "Listener must be present.");
+            },
+                "Listener must be present.");
         });
     }
     

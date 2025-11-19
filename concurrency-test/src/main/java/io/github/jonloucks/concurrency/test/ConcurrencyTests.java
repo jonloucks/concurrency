@@ -39,10 +39,8 @@ public interface ConcurrencyTests {
     @Test
     default void concurrency_createStateMachine_WithNullInitialState_Throws() {
         withConcurrency((contracts, concurrency) -> {
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrency.createStateMachine(null);
-            });
-            assertThrown(thrown);
+            assertThrown(IllegalArgumentException.class,
+                () -> concurrency.createStateMachine(null));
         });
     }
     
@@ -64,30 +62,24 @@ public interface ConcurrencyTests {
     @Test
     default void concurrency_createStateMachine_WithNullEnumClass_Throws() {
         withConcurrency((contracts, concurrency) -> {
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrency.createStateMachine(null, Thread.State.NEW);
-            });
-            assertThrown(thrown);
+            assertThrown(IllegalArgumentException.class,
+                () -> concurrency.createStateMachine(null, Thread.State.NEW));
         });
     }
     
     @Test
     default void concurrency_createStateMachine_WithEnumClassAndNullInitialState_Throws() {
         withConcurrency((contracts, concurrency) -> {
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrency.createStateMachine((Consumer<StateMachine.Config.Builder<String>>)null);
-            });
-            assertThrown(thrown);
+            assertThrown(IllegalArgumentException.class,
+                () -> concurrency.createStateMachine((Consumer<StateMachine.Config.Builder<String>>)null));
         });
     }
     
     @Test
     default void concurrency_createStateMachine_WithNullBuilderConsumer_Throws() {
         withConcurrency((contracts, concurrency) -> {
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrency.createStateMachine(Thread.State.class, null);
-            });
-            assertThrown(thrown);
+            assertThrown(IllegalArgumentException.class,
+                () -> concurrency.createStateMachine(Thread.State.class, null));
         });
     }
     
