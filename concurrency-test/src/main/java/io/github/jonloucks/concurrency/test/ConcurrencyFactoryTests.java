@@ -10,9 +10,7 @@ import org.junit.jupiter.api.Test;
 import static io.github.jonloucks.contracts.test.Tools.*;
 import static io.github.jonloucks.concurrency.test.Tools.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SuppressWarnings("CodeBlock2Expr")
 public interface ConcurrencyFactoryTests {
     
     @Test
@@ -27,11 +25,8 @@ public interface ConcurrencyFactoryTests {
             final Repository repository = contracts.claim(Repository.FACTORY).get();
             final ConcurrencyFactory concurrencyFactory = getConcurrencyFactory(config);
             
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrencyFactory.install(null, repository);
-            });
-            
-            assertThrown(thrown);
+            assertThrown(IllegalArgumentException.class,
+                () -> concurrencyFactory.install(null, repository));
         });
     }
     
@@ -46,11 +41,8 @@ public interface ConcurrencyFactoryTests {
             };
             final ConcurrencyFactory concurrencyFactory = getConcurrencyFactory(config);
             
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrencyFactory.install(config, null);
-            });
-            
-            assertThrown(thrown);
+            assertThrown(IllegalArgumentException.class,
+                () -> concurrencyFactory.install(config, null));
         });
     }
     
@@ -67,9 +59,7 @@ public interface ConcurrencyFactoryTests {
             final Repository repository = contracts.claim(Repository.FACTORY).get();
             final ConcurrencyFactory concurrencyFactory = getConcurrencyFactory(config);
             
-            assertDoesNotThrow(() -> {
-                concurrencyFactory.install(config, repository);
-            });
+            assertDoesNotThrow(() -> concurrencyFactory.install(config, repository));
         });
     }
     

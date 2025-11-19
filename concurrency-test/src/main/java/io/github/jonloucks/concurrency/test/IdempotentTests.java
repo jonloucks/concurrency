@@ -49,10 +49,9 @@ public interface IdempotentTests {
     
     @Test
     default void idempotent_createStateMachine_WithNullContracts_Throws() {
-        final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            Idempotent.createStateMachine(null);
-        });
-        assertThrown(thrown, "Contracts must be present.");
+        assertThrown(IllegalArgumentException.class,
+            () -> Idempotent.createStateMachine(null),
+            "Contracts must be present.");
     }
     
     @Test
@@ -60,14 +59,12 @@ public interface IdempotentTests {
         withConcurrencyInstalled(contracts -> {
             final StateMachine<Idempotent> stateMachine = Idempotent.createStateMachine(contracts);
             
-            final ConcurrencyException thrown = assertThrows(ConcurrencyException.class, () -> {
-                stateMachine.transition(b -> b
-                    .event("close")
-                    .successState(CLOSING)
-                    .successValue(() -> "success value")
-                );
-            });
-            assertThrown(thrown);
+            assertThrown(ConcurrencyException.class,
+                () -> stateMachine.transition(b -> b
+                .event("close")
+                .successState(CLOSING)
+                .successValue(() -> "success value")
+            ));
         });
     }
     
@@ -145,11 +142,10 @@ public interface IdempotentTests {
     @Test
     default void idempotent_withOpen_WithNullMachine_Throws() {
         withConcurrencyInstalled(contracts -> {
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+            assertThrown(IllegalArgumentException.class, () -> {
                 //noinspection resource
                 Idempotent.withOpen(null, AutoOpen.NONE);
-            });
-            assertThrown(thrown, "StateMachine must be present.");
+            }, "StateMachine must be present.");
         });
     }
     
@@ -158,21 +154,20 @@ public interface IdempotentTests {
         withConcurrencyInstalled(contracts -> {
             final StateMachine<Idempotent> stateMachine = Idempotent.createStateMachine(contracts);
             
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                //noinspection resource
-                Idempotent.withOpen(stateMachine, null);
-            });
-            assertThrown(thrown, "Open must be present.");
+            assertThrown(IllegalArgumentException.class, () -> {
+                    //noinspection resource
+                    Idempotent.withOpen(stateMachine, null);
+                },
+                "Open must be present.");
         });
     }
     
     @Test
     default void idempotent_withClose_WithNullMachine_Throws() {
         withConcurrencyInstalled(contracts -> {
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                Idempotent.withClose(null, AutoClose.NONE);
-            });
-            assertThrown(thrown, "StateMachine must be present.");
+            assertThrown(IllegalArgumentException.class,
+                () -> Idempotent.withClose(null, AutoClose.NONE),
+                "StateMachine must be present.");
         });
     }
     
@@ -181,10 +176,10 @@ public interface IdempotentTests {
         withConcurrencyInstalled(contracts -> {
             final StateMachine<Idempotent> stateMachine = Idempotent.createStateMachine(contracts);
             
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+            assertThrown(IllegalArgumentException.class, () -> {
                 Idempotent.withClose(stateMachine, null);
-            });
-            assertThrown(thrown, "Close must be present.");
+            },
+                "Close must be present.");
         });
     }
     

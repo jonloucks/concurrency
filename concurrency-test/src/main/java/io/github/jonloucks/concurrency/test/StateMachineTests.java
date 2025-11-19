@@ -33,6 +33,26 @@ import static org.mockito.Mockito.verify;
 public interface StateMachineTests {
     
     @Test
+    default void stateMachine_transition_Defaults() {
+        final StateMachine.Transition<String,Integer> transition = new StateMachine.Transition<>() {
+            @Override
+            public String getEvent() {
+                return "";
+            }
+            
+            @Override
+            public String getSuccessState() {
+                return "success";
+            }
+        };
+        
+        assertFalse(transition.getErrorValue().isPresent());
+        assertFalse(transition.getFailedValue().isPresent());
+        assertFalse(transition.getErrorState().isPresent());
+        assertFalse(transition.getFailedState().isPresent());
+    }
+    
+    @Test
     default void stateMachine_StateMachineFactory_Exists() {
         withConcurrency((contracts,concurrency) -> {
             assertTrue(contracts.isBound(StateMachineFactory.CONTRACT), "StateMachineFactory is required.");
@@ -240,7 +260,7 @@ public interface StateMachineTests {
     }
     
     @Test
-    default void stateMachine_transition_Works() {
+    default void stateMachine_transitionBuilder_Works() {
         withConcurrency((contracts,concurrency) -> {
             final StateMachineFactory factory = assumeStateMachineFactory(contracts);
             final StateMachine<Thread.State> stateMachine = factory.create( b -> b
@@ -252,6 +272,31 @@ public interface StateMachineTests {
                 .successState(Thread.State.RUNNABLE)
             );
        
+            assertEquals(Thread.State.RUNNABLE, stateMachine.getState());
+        });
+    }
+    
+    @Test
+    default void stateMachine_transition_Works() {
+        withConcurrency((contracts,concurrency) -> {
+            final StateMachineFactory factory = assumeStateMachineFactory(contracts);
+            final StateMachine<Thread.State> stateMachine = factory.create( b -> b
+                .initial(Thread.State.NEW)
+                .states(Arrays.asList(Thread.State.values()))
+            );
+  
+            stateMachine.transition(new StateMachine.Transition<Thread.State, String>() {
+                @Override
+                public String getEvent() {
+                    return "test";
+                }
+                
+                @Override
+                public Thread.State getSuccessState() {
+                    return Thread.State.RUNNABLE;
+                }
+            });
+            
             assertEquals(Thread.State.RUNNABLE, stateMachine.getState());
         });
     }

@@ -92,27 +92,37 @@ public interface StateMachine<T> extends WaitableSupplier<T>, WaitableNotify<T> 
         /**
          * @return the optional state if an exception is thrown
          */
-        Optional<S> getErrorState();
+        default Optional<S> getErrorState() {
+            return Optional.empty();
+        }
         
         /**
          * @return the optional state if the transition is not allowed
          */
-        Optional<S> getFailedState();
+        default Optional<S> getFailedState() {
+            return Optional.empty();
+        }
         
         /**
          * @return the optional return value on success
          */
-        Optional<Supplier<R>> getSuccessValue();
+        default Optional<Supplier<R>> getSuccessValue() {
+            return Optional.empty();
+        }
         
         /**
          * @return the optional return value on exception thrown
          */
-        Optional<Supplier<R>> getErrorValue();
+        default Optional<Supplier<R>> getErrorValue() {
+            return Optional.empty();
+        }
         
         /**
          * @return the optional return value if transition is not allowed
          */
-        Optional<Supplier<R>> getFailedValue();
+        default Optional<Supplier<R>> getFailedValue() {
+            return Optional.empty();
+        }
    
         /**
          * Responsible for building a Transition

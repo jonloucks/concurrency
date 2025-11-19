@@ -29,53 +29,44 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public interface CompletionsTests {
+    
     @Test
     default void completable_createCompletable_WithNullBuilderConsumer_Throws() {
         withConcurrency( (contracts, concurrency) -> {
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrency.createCompletable((Consumer<Completable.Config.Builder<String>>)null);
-            });
-            assertThrown(thrown);
+            assertThrown(IllegalArgumentException.class,
+                () -> concurrency.createCompletable((Consumer<Completable.Config.Builder<String>>)null));
         });
     }
     
     @Test
     default void completable_createCompletable_WithNullConfig_Throws() {
         withConcurrency( (contracts, concurrency) -> {
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrency.createCompletable((Completable.Config<String>)null);
-            });
-            assertThrown(thrown);
+            assertThrown(IllegalArgumentException.class,
+                () -> concurrency.createCompletable((Completable.Config<String>)null));
         });
     }
     
     @Test
     default void completable_createCompletion_WithNullBuilderConsumer_Throws() {
         withConcurrency( (contracts, concurrency) -> {
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrency.createCompletion((Consumer<Completion.Config.Builder<String>>)null);
-            });
-            assertThrown(thrown);
+            assertThrown(IllegalArgumentException.class,
+                () -> concurrency.createCompletion((Consumer<Completion.Config.Builder<String>>)null));
         });
     }
     
     @Test
     default void completable_createCompletion_WithNullConfig_Throws() {
         withConcurrency( (contracts, concurrency) -> {
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrency.createCompletion((Completion.Config<String>)null);
-            });
-            assertThrown(thrown);
+            assertThrown(IllegalArgumentException.class,
+                () -> concurrency.createCompletion((Completion.Config<String>)null));
         });
     }
     
     @Test
     default void completable_completeLater_WithNullOnCompletion_Throws(@Mock Supplier<String> successSupplier) {
         withConcurrency( (contracts, concurrency) -> {
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrency.completeNow(null, successSupplier);
-            });
-            assertThrown(thrown);
+            assertThrown(IllegalArgumentException.class,
+                () -> concurrency.completeNow(null, successSupplier));
             verify(successSupplier, times(0)).get();
         });
     }
@@ -87,10 +78,8 @@ public interface CompletionsTests {
             final Supplier<String> successSupplier = () -> {throw error;};
             final List<Completion<String>> completionList = new ArrayList<>();
             final OnCompletion<String> onCompletion = completionList::add;
-            final Error thrown = assertThrows(Error.class, () -> {
-                concurrency.completeNow(onCompletion, successSupplier);
-            });
-            assertThrown(thrown);
+            assertThrown(Error.class,
+                () -> concurrency.completeNow(onCompletion, successSupplier));
             assertEquals(1, completionList.size());
             final Completion<String> completion = completionList.get(0);
             assertEquals(FAILED, completion.getState());
@@ -124,10 +113,8 @@ public interface CompletionsTests {
         withConcurrency( (contracts, concurrency) -> {
             final List<Completion<String>> completionList = new ArrayList<>();
             final OnCompletion<String> onCompletion = completionList::add;
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrency.completeNow(onCompletion, null);
-            });
-            assertThrown(thrown);
+            assertThrown(IllegalArgumentException.class,
+                () -> concurrency.completeNow(onCompletion, null));
             assertEquals(1, completionList.size());
             final Completion<String> completion = completionList.get(0);
             assertEquals(FAILED, completion.getState());
@@ -140,10 +127,8 @@ public interface CompletionsTests {
     @Test
     default void completable_completeLater_WithNullOnCompletion_Throws(@Mock Consumer<OnCompletion<String>> delegate) {
         withConcurrency( (contracts, concurrency) -> {
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrency.completeLater(null, delegate);
-            });
-            assertThrown(thrown);
+            assertThrown(IllegalArgumentException.class,
+                () -> concurrency.completeLater(null, delegate));
             verify(delegate, times(0)).accept(any());
             verify(delegate, times(0)).accept(isNull());
         });
@@ -154,10 +139,8 @@ public interface CompletionsTests {
         withConcurrency( (contracts, concurrency) -> {
             final List<Completion<String>> completionList = new ArrayList<>();
             final OnCompletion<String> onCompletion = completionList::add;
-            final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-                concurrency.completeLater(onCompletion, null);
-            });
-            assertThrown(thrown);
+            assertThrown(IllegalArgumentException.class,
+                () -> concurrency.completeLater(onCompletion, null));
             assertEquals(1, completionList.size());
             final Completion<String> completion = completionList.get(0);
             assertEquals(FAILED, completion.getState());
@@ -174,10 +157,8 @@ public interface CompletionsTests {
             final OnCompletion<String> onCompletion = completionList::add;
             final Error error = new Error("Problem.");
             final Consumer<OnCompletion<String>> delegate = c -> {throw error;};
-            final Error thrown = assertThrows(Error.class, () -> {
-                concurrency.completeLater(onCompletion, delegate);
-            });
-            assertThrown(thrown);
+            assertThrown(Error.class,
+                () -> concurrency.completeLater(onCompletion, delegate));
             assertEquals(1, completionList.size());
             final Completion<String> completion = completionList.get(0);
             assertEquals(FAILED, completion.getState());
@@ -218,7 +199,7 @@ public interface CompletionsTests {
     }
     
     @Test
-    default void completions_create_WithBuilderConsumer_Works(@Mock Future<String> future) {
+    default void completion_create_WithBuilderConsumer_Works(@Mock Future<String> future) {
         withConcurrency( (contracts, concurrency) -> {
             final CompletionFactory factory = contracts.claim(CompletionFactory.CONTRACT);
             final Error thrown = new Error("Oh my.");
@@ -244,5 +225,14 @@ public interface CompletionsTests {
             assertEquals(thrown, completion.getThrown().get());
             assertEquals("text", completion.getValue().get());
         });
+    }
+    
+    @Test
+    default void completion_Defaults() {
+        final Completion<String> completion = () -> Completion.State.CANCELLED;
+        
+        assertFalse(completion.getValue().isPresent());
+        assertFalse(completion.getFuture().isPresent());
+        assertFalse(completion.getThrown().isPresent());
     }
 }
