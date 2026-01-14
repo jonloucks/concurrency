@@ -1,4 +1,4 @@
-# Concurrency v1.3.3
+# Concurrency v1.3.2
 
 Dependency updates
 
